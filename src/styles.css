@@ -2,28 +2,30 @@
 @import "tw-animate-css";
 
 @theme {
-  --font-sans: "Plus Jakarta Sans", "Segoe UI", ui-sans-serif, system-ui, sans-serif;
-  --font-display: "Plus Jakarta Sans", "Segoe UI", ui-sans-serif, system-ui, sans-serif;
+  --font-sans: "Nunito", "Segoe UI", ui-sans-serif, system-ui, sans-serif;
+  --font-display: "Fredoka", "Nunito", ui-sans-serif, system-ui, sans-serif;
 
-  --color-navy: #0b2a4a;
-  --color-navy-deep: #071c32;
-  --color-ink: #122033;
-  --color-muted: #5b6b7c;
-  --color-paper: #f7fbfe;
-  --color-sky: #e7f3fb;
-  --color-sky-deep: #cfe6f4;
-  --color-red: #c8102e;
-  --color-coral: #e85a32;
-  --color-teal: #0d8a7d;
-  --color-teal-dark: #0a6e64;
-  --color-line: #d5e2ec;
-  --color-card: #ffffff;
-  --color-success: #1b7f5a;
+  --color-navy: #4a2410;
+  --color-navy-deep: #2f1608;
+  --color-ink: #3d2410;
+  --color-muted: #6b5340;
+  --color-paper: #f6edd8;
+  --color-sky: #f3e6c8;
+  --color-sky-deep: #e8d4a8;
+  --color-red: #c45a2a;
+  --color-coral: #e07a3a;
+  --color-coral-dark: #c96528;
+  --color-teal: #3aa8a0;
+  --color-teal-dark: #2a8a84;
+  --color-gold: #f0d9a0;
+  --color-line: #e5d4b0;
+  --color-card: #fff9ee;
+  --color-success: #2a8a64;
 
   --color-background: var(--color-paper);
   --color-foreground: var(--color-ink);
   --color-primary: var(--color-navy);
-  --color-primary-foreground: #f8fafc;
+  --color-primary-foreground: #fff8ee;
   --color-secondary: var(--color-sky);
   --color-secondary-foreground: var(--color-navy);
   --color-muted-foreground: var(--color-muted);
@@ -37,14 +39,14 @@
   --color-card-foreground: var(--color-ink);
 
   --radius-xs: 4px;
-  --radius-sm: 8px;
-  --radius-md: 12px;
-  --radius-lg: 16px;
-  --radius-xl: 24px;
-  --radius: 12px;
+  --radius-sm: 10px;
+  --radius-md: 16px;
+  --radius-lg: 22px;
+  --radius-xl: 32px;
+  --radius: 16px;
 
-  --shadow-soft: 0 10px 30px -18px rgb(11 42 74 / 0.35);
-  --shadow-lift: 0 18px 40px -24px rgb(11 42 74 / 0.4);
+  --shadow-soft: 0 12px 28px -16px rgb(74 36 16 / 0.35);
+  --shadow-lift: 0 18px 40px -20px rgb(74 36 16 / 0.4);
 }
 
 @layer base {
@@ -63,6 +65,19 @@
     font-family: var(--font-sans);
     line-height: 1.55;
     -webkit-font-smoothing: antialiased;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4 {
+    font-family: var(--font-display);
+    text-wrap: balance;
+    letter-spacing: -0.02em;
+  }
+
+  p {
+    text-wrap: pretty;
   }
 
   ::selection {
@@ -106,4 +121,8 @@
   letter-spacing: 0.16em;
   text-transform: uppercase;
   color: var(--color-teal-dark);
+}
+
+@utility font-display {
+  font-family: var(--font-display);
 }
