@@ -15,7 +15,7 @@ export function LiveChat() {
         aria-expanded={open}
         aria-label="Open live chat"
       >
-        <img src="/images/chat-palm.jpg" alt="" className="size-full object-cover" width={1408} height={1408} />
+        <img src="/images/chat-palm.jpg" alt="" className="size-full object-cover object-[center_20%]" width={640} height={640} />
       </button>
       {open ? (
         <div className="fixed inset-0 z-50 flex items-end justify-end bg-navy-deep/40 p-4 sm:p-6" role="dialog" aria-label="Live chat">
