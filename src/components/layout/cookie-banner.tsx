@@ -28,7 +28,7 @@ export function CookieBanner() {
   if (!visible) return null;
 
   return (
-    <div className="fixed inset-x-0 bottom-0 z-50 border-t border-border bg-card p-4 shadow-[0_-12px_40px_-20px_rgb(11_42_74_/_0.4)]">
+    <div className="fixed inset-x-0 bottom-0 z-50 border-t border-border bg-card p-4 shadow-lift">
       <div className="container-page flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <p className="max-w-3xl text-sm text-muted">
           We use necessary cookies to run this site and optional cookies for analytics if you accept. We honor Global

@@ -9,7 +9,7 @@ const buttonVariants = cva(
     variants: {
       variant: {
         default: "bg-navy text-primary-foreground hover:bg-navy-deep",
-        coral: "bg-coral text-white hover:bg-[#d14d28]",
+        coral: "bg-coral text-white hover:bg-coral-dark",
         teal: "bg-teal text-accent-foreground hover:bg-teal-dark",
         outline: "border border-border bg-card text-navy hover:bg-sky",
         ghost: "text-navy hover:bg-sky",

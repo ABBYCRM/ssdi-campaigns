@@ -27,7 +27,7 @@ export function pageHead(opts: {
       { name: "rating", content: "general" },
       { name: "referrer", content: "strict-origin-when-cross-origin" },
       { name: "format-detection", content: "telephone=no" },
-      { name: "theme-color", content: "#0B2A4A" },
+      { name: "theme-color", content: "#F6EDD8" },
       { name: "apple-mobile-web-app-title", content: SITE.name },
     ],
     links: [
