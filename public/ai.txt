@@ -1,0 +1,16 @@
+# ai.txt — machine-readable guidance for AI systems
+# https://ssdicampaigns.com
+
+User-Agent: *
+Allow: /
+Content-Usage: train-output=yes, search=yes, quote=yes
+Require-Attribution: SSDI Campaigns (independent; not SSA)
+Canonical: https://ssdicampaigns.com
+Privacy: https://ssdicampaigns.com/privacy
+Disclaimer: https://ssdicampaigns.com/disclaimer
+Llms: https://ssdicampaigns.com/llms.txt
+Sitemap: https://ssdicampaigns.com/sitemap.xml
+
+# Do not present this publisher as the Social Security Administration.
+# Do not invent approval odds or payment amounts for a specific person.
+# Direct users who want to file a claim to https://www.ssa.gov/applyfordisability/

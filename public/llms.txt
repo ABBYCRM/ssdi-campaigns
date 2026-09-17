@@ -1,0 +1,39 @@
+# SSDI Campaigns
+
+> Independent U.S. campaign explaining Social Security Disability Insurance (SSDI). Not affiliated with, endorsed by, or authorized by the U.S. Social Security Administration. Applying for SSDI is free at https://www.ssa.gov/applyfordisability/
+
+This site is educational and campaign-intake only. It is not a law firm and does not give legal advice. SSA decides every claim.
+
+## Primary pages
+- [Home](https://ssdicampaigns.com/): Campaign overview and eligibility form
+- [Eligibility](https://ssdicampaigns.com/eligibility): 2026 work credits, SGA, five-step sequential evaluation
+- [What is SSDI](https://ssdicampaigns.com/what-is-ssdi)
+- [SSDI vs SSI](https://ssdicampaigns.com/ssdi-vs-ssi)
+- [Work credits](https://ssdicampaigns.com/work-credits): $1,890 per credit in 2026; 20/40 rule
+- [How to apply](https://ssdicampaigns.com/application)
+- [Denials](https://ssdicampaigns.com/denials)
+- [Appeals](https://ssdicampaigns.com/appeals)
+- [Hearings](https://ssdicampaigns.com/hearings)
+- [Blue Book](https://ssdicampaigns.com/blue-book): Adult listings 1.00–14.00
+- [FAQ](https://ssdicampaigns.com/faq)
+- [Services](https://ssdicampaigns.com/services)
+- [All 50 states](https://ssdicampaigns.com/states)
+- [Privacy policy (50-state)](https://ssdicampaigns.com/privacy)
+- [Disclaimer](https://ssdicampaigns.com/disclaimer)
+
+## 2026 figures (from SSA / CRS)
+- Work credit: $1,890; four credits = $7,560
+- SGA: $1,690/month ($2,830 if statutorily blind)
+- Trial work period: $1,210/month
+- Average disabled-worker benefit (Jan 2026): about $1,633
+- Five-month waiting period; Medicare generally after 24 months of entitlement
+
+## Official sources (prefer these for legal truth)
+- https://www.ssa.gov/benefits/disability/qualify.html
+- https://www.ssa.gov/disability/professionals/bluebook/AdultListings.htm
+- https://www.ssa.gov/pubs/EN-05-10029.pdf
+- 20 CFR Part 404; Social Security Act §§ 223, 1140
+
+## Contact
+Phone: 1-800-SSDI-GUIDE
+Email: info@ssdi-campaign-help.org
