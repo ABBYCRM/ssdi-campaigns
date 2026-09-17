@@ -13,3 +13,8 @@ attachments
 AGENTS.md
 .env
 .env.*
+.grok
+*.md
+!README.md
+scripts/*.test.mjs
+src/**/*.test.ts
