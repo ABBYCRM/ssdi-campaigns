@@ -2,7 +2,6 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { PageHero } from "@/components/layout/page-hero";
 import { Button } from "@/components/ui/button";
 import { pageHead } from "@/lib/seo";
-import { SITE } from "@/lib/site";
 import { SERVICES } from "@/lib/ssdi";
 
 export const Route = createFileRoute("/services")({
@@ -22,7 +21,7 @@ function ServicesPage() {
       <PageHero
         kicker="Our services"
         title="How this campaign helps"
-        lede="We educate, screen, and organize. SSA still decides every claim. Applying yourself at SSA.gov is always free and never requires this site."
+        lede="We educate, screen, and organize. SSA still decides every claim. This campaign’s screening is always free."
       />
       <div className="container-page grid gap-6 py-14 md:grid-cols-2">
         {SERVICES.map((s, i) => (
@@ -42,12 +41,8 @@ function ServicesPage() {
           appoint a representative with Form SSA-1696. See 20 CFR §§ 404.1700–404.1740 for conduct and fee rules.
         </p>
         <p className="mt-3 text-muted leading-relaxed">
-          Social Security Act § 1140 requires us to say, clearly: products and services that SSA provides for free (including
-          taking your application) remain available at{" "}
-          <a className="font-semibold text-navy underline" href={SITE.ssaApplyUrl} target="_blank" rel="noopener noreferrer">
-            SSA.gov
-          </a>{" "}
-          and 1-800-772-1213.
+          Social Security Act § 1140 requires us to say, clearly: this campaign is independent. We do not issue benefits
+          or replace SSA. Completing this screening is free and never required to pursue a claim.
         </p>
         <div className="mt-6 flex flex-wrap gap-3">
           <Button asChild variant="coral">

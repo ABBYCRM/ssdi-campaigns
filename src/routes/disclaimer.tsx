@@ -1,7 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { PageHero } from "@/components/layout/page-hero";
 import { pageHead } from "@/lib/seo";
-import { SITE, SSA_DISCLAIMER } from "@/lib/site";
+import { SSA_DISCLAIMER } from "@/lib/site";
 
 export const Route = createFileRoute("/disclaimer")({
   head: () =>
@@ -31,11 +31,7 @@ function Page() {
         </p>
         <p>
           Nothing on this site is legal, medical, or tax advice. Past results of other claimants are not yours. State DDS
-          names are used descriptively. Official resources:{" "}
-          <a className="font-semibold text-navy underline" href={SITE.ssaHome}>
-            SSA.gov
-          </a>
-          , 1-800-772-1213, TTY 1-800-325-0778.
+          names are used descriptively.
         </p>
       </article>
     </main>

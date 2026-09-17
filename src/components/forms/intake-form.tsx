@@ -74,10 +74,6 @@ export function IntakeForm({ compact, source = "site", className }: Props) {
           This form is not connected to a case file yet. A campaign specialist will follow up. You can also call{" "}
           <a className="font-semibold text-navy" href={`tel:${SITE.phoneTel}`}>
             {SITE.phoneDisplay}
-          </a>{" "}
-          or apply for free at{" "}
-          <a className="font-semibold text-navy underline" href={SITE.ssaApplyUrl} target="_blank" rel="noopener noreferrer">
-            SSA.gov
           </a>
           .
         </p>
@@ -85,25 +81,44 @@ export function IntakeForm({ compact, source = "site", className }: Props) {
     );
   }
 
+  const pill = compact
+    ? "h-11 rounded-full border-line bg-card px-5 placeholder:text-muted"
+    : undefined;
+
   return (
     <form onSubmit={onSubmit} className={cn("grid gap-3", className)} noValidate>
       <input type="text" name="company" className="hidden" tabIndex={-1} autoComplete="off" aria-hidden="true" />
-      <div className={cn("grid gap-3", compact ? "md:grid-cols-4" : "sm:grid-cols-2")}>
-        <Field label="Name" htmlFor={`${source}-name`}>
-          <Input id={`${source}-name`} name="name" autoComplete="name" required placeholder="Full name" />
+      <div className={cn("grid gap-3", compact ? "md:grid-cols-[1fr_1fr_1.2fr_auto]" : "sm:grid-cols-2")}>
+        <Field label="Name" htmlFor={`${source}-name`} hide={compact}>
+          <Input
+            id={`${source}-name`}
+            name="name"
+            autoComplete="name"
+            required
+            placeholder="Name"
+            className={pill}
+          />
         </Field>
-        <Field label="Phone" htmlFor={`${source}-phone`}>
-          <Input id={`${source}-phone`} name="phone" type="tel" autoComplete="tel" required placeholder="(555) 555-5555" />
+        <Field label="Phone" htmlFor={`${source}-phone`} hide={compact}>
+          <Input
+            id={`${source}-phone`}
+            name="phone"
+            type="tel"
+            autoComplete="tel"
+            required
+            placeholder="Phone"
+            className={pill}
+          />
         </Field>
         {!compact ? (
           <Field label="Email (optional)" htmlFor={`${source}-email`}>
             <Input id={`${source}-email`} name="email" type="email" autoComplete="email" placeholder="you@email.com" />
           </Field>
         ) : null}
-        <Field label="Disability type" htmlFor={`${source}-dtype`}>
+        <Field label="Disability type" htmlFor={`${source}-dtype`} hide={compact}>
           <Select value={disabilityType} onValueChange={setDisabilityType}>
-            <SelectTrigger id={`${source}-dtype`} aria-label="Disability type">
-              <SelectValue placeholder="Disability type" />
+            <SelectTrigger id={`${source}-dtype`} aria-label="Disability type" className={pill}>
+              <SelectValue placeholder="Disability Type" />
             </SelectTrigger>
             <SelectContent>
               {DISABILITY_OPTIONS.map((opt) => (
@@ -114,24 +129,31 @@ export function IntakeForm({ compact, source = "site", className }: Props) {
             </SelectContent>
           </Select>
         </Field>
-        <Field label="State" htmlFor={`${source}-state`}>
-          <Select value={state} onValueChange={setState}>
-            <SelectTrigger id={`${source}-state`} aria-label="State">
-              <SelectValue placeholder="Your state" />
-            </SelectTrigger>
-            <SelectContent>
-              {US_STATES.map((s) => (
-                <SelectItem key={s.slug} value={s.abbr}>
-                  {s.name}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-        </Field>
+        {!compact ? (
+          <Field label="State" htmlFor={`${source}-state`}>
+            <Select value={state} onValueChange={setState}>
+              <SelectTrigger id={`${source}-state`} aria-label="State">
+                <SelectValue placeholder="Your state" />
+              </SelectTrigger>
+              <SelectContent>
+                {US_STATES.map((s) => (
+                  <SelectItem key={s.slug} value={s.abbr}>
+                    {s.name}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </Field>
+        ) : null}
         {!compact ? (
           <Field label="ZIP (optional)" htmlFor={`${source}-zip`}>
             <Input id={`${source}-zip`} name="zip" inputMode="numeric" autoComplete="postal-code" placeholder="ZIP" />
           </Field>
+        ) : null}
+        {compact ? (
+          <Button type="submit" variant="teal" size="lg" disabled={pending} className="h-11 rounded-full px-6 font-extrabold uppercase tracking-wide">
+            {pending ? "Sending…" : "Submit your case"}
+          </Button>
         ) : null}
       </div>
       {!compact ? (
@@ -161,11 +183,13 @@ export function IntakeForm({ compact, source = "site", className }: Props) {
         </p>
       ) : null}
 
-      <Button type="submit" variant="teal" size="lg" disabled={pending} className={compact ? "md:w-auto" : "w-full sm:w-auto"}>
-        {pending ? "Sending…" : "Submit your case"}
-      </Button>
+      {!compact ? (
+        <Button type="submit" variant="teal" size="lg" disabled={pending} className="w-full font-extrabold uppercase tracking-wide sm:w-auto">
+          {pending ? "Sending…" : "Submit your case"}
+        </Button>
+      ) : null}
       <p className="text-[0.7rem] leading-relaxed text-muted">
-        Not a government agency. Applying at SSA is free. Consent is not required to obtain information — you may call{" "}
+        Independent campaign — not a government agency. Consent is not required to obtain information — you may call{" "}
         {SITE.phoneDisplay} instead.
       </p>
     </form>
@@ -176,14 +200,18 @@ function Field({
   label,
   htmlFor,
   children,
+  hide,
 }: {
   label: string;
   htmlFor: string;
   children: React.ReactNode;
+  hide?: boolean;
 }) {
   return (
     <div className="flex min-w-0 flex-col gap-1.5">
-      <Label htmlFor={htmlFor}>{label}</Label>
+      <Label htmlFor={htmlFor} className={hide ? "sr-only" : undefined}>
+        {label}
+      </Label>
       {children}
     </div>
   );

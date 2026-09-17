@@ -2,7 +2,7 @@
 
 Independent Social Security Disability Insurance education and intake site. Helps people understand eligibility, applications, denials, and appeals — and connect with a campaign advisor.
 
-**Not affiliated with, endorsed by, or authorized by the U.S. Social Security Administration.** Anyone can apply for SSDI at no charge at [SSA.gov](https://www.ssa.gov/applyfordisability/).
+**Not affiliated with, endorsed by, or authorized by the U.S. Social Security Administration.**
 
 Live domain (planned): [ssdicampaigns.com](https://ssdicampaigns.com)
 

@@ -105,7 +105,7 @@ export const FAQS: { q: string; a: string }[] = [
   },
   {
     q: "Is this the Social Security Administration?",
-    a: "No. SSDI Campaigns is an independent private campaign. We are not affiliated with, endorsed by, or authorized by the U.S. Social Security Administration. You can apply for benefits at no charge at SSA.gov or by calling SSA at 1-800-772-1213.",
+    a: "No. SSDI Campaigns is an independent private campaign. We are not affiliated with, endorsed by, or authorized by the U.S. Social Security Administration.",
   },
   {
     q: "How many work credits do I need?",
@@ -137,7 +137,7 @@ export const FAQS: { q: string; a: string }[] = [
   },
   {
     q: "Do I have to pay to apply?",
-    a: "No. Applying for Social Security disability benefits is free at SSA.gov. Representatives who appear before SSA may charge a fee only if SSA (or a court) approves it, typically a contingency of past-due benefits subject to SSA’s cap. We do not charge a fee to submit this screening form.",
+    a: "No. Applying for Social Security disability benefits is free. Representatives who appear before SSA may charge a fee only if SSA (or a court) approves it, typically a contingency of past-due benefits subject to SSA’s cap. We do not charge a fee to submit this screening form.",
   },
   {
     q: "Is this a law firm? Is this legal advice?",

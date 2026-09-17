@@ -1,7 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { PageHero } from "@/components/layout/page-hero";
 import { pageHead } from "@/lib/seo";
-import { SITE } from "@/lib/site";
 import { BLUE_BOOK } from "@/lib/ssdi";
 
 export const Route = createFileRoute("/blue-book")({
@@ -33,11 +32,8 @@ function Page() {
         ))}
       </div>
       <p className="container-page max-w-3xl pb-16 text-sm text-muted">
-        Official listings:{" "}
-        <a className="font-semibold text-navy underline" href={SITE.ssaBlueBook} target="_blank" rel="noopener noreferrer">
-          SSA Adult Listings
-        </a>
-        . Childhood claims use Part B.
+        Childhood claims use Part B of the listings. Meeting a listing is one path — many awards are decided on residual
+        functional capacity at steps 4 and 5.
       </p>
     </main>
   );

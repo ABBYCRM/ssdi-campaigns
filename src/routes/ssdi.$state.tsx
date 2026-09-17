@@ -56,8 +56,8 @@ function StatePage() {
             .
           </p>
           <p>
-            You can apply from {state.name} at no charge on SSA.gov. This page is geo-targeted educational content, not a
-            state government service.
+            You can pursue an SSDI claim from {state.name} with this campaign’s help. This page is geo-targeted
+            educational content, not a state government service.
           </p>
         </article>
         <aside className="h-fit rounded-xl border border-border bg-card p-5 shadow-soft">

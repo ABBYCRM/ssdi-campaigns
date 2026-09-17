@@ -13,7 +13,6 @@ export function JsonLd() {
     areaServed: "US",
     slogan: SITE.tagline,
     disambiguatingDescription: SSA_DISCLAIMER,
-    sameAs: [SITE.ssaHome],
     contactPoint: {
       "@type": "ContactPoint",
       telephone: SITE.phoneTel,

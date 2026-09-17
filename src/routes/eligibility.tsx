@@ -3,7 +3,6 @@ import { IntakeForm } from "@/components/forms/intake-form";
 import { PageHero } from "@/components/layout/page-hero";
 import { Button } from "@/components/ui/button";
 import { pageHead } from "@/lib/seo";
-import { SITE } from "@/lib/site";
 import { FIVE_STEPS, FIGURES_2026, WORK_CREDIT_TABLE } from "@/lib/ssdi";
 
 export const Route = createFileRoute("/eligibility")({
@@ -34,11 +33,7 @@ function EligibilityPage() {
             <p className="mt-3 text-muted leading-relaxed">
               To qualify for Social Security Disability Insurance you must (1) be insured for disability — enough work
               credits, earned recently enough — and (2) meet the Social Security Act’s definition of disability. You must
-              also be under full retirement age and file an application. See{" "}
-              <a className="font-semibold text-navy underline" href={SITE.ssaQualify} target="_blank" rel="noopener noreferrer">
-                SSA’s official qualification page
-              </a>
-              .
+              also be under full retirement age and file an application.
             </p>
           </section>
 
@@ -102,7 +97,8 @@ function EligibilityPage() {
             <h2 className="text-2xl font-extrabold text-navy">What this campaign does not do</h2>
             <p className="mt-3 text-muted leading-relaxed">
               We cannot declare you disabled, bind SSA, or promise a monthly amount. Your Primary Insurance Amount is
-              computed from your lifetime earnings record. File for free at SSA.gov even if you never speak with us.
+              computed from your lifetime earnings record. You can request a screening from this campaign even if you later
+              file on your own.
             </p>
             <div className="mt-6 flex flex-wrap gap-3">
               <Button asChild variant="coral">

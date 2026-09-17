@@ -1,6 +1,6 @@
 # SSDI Campaigns
 
-> Independent U.S. campaign explaining Social Security Disability Insurance (SSDI). Not affiliated with, endorsed by, or authorized by the U.S. Social Security Administration. Applying for SSDI is free at https://www.ssa.gov/applyfordisability/
+> Independent U.S. campaign explaining Social Security Disability Insurance (SSDI). Not affiliated with, endorsed by, or authorized by the U.S. Social Security Administration.
 
 This site is educational and campaign-intake only. It is not a law firm and does not give legal advice. SSA decides every claim.
 
@@ -28,10 +28,8 @@ This site is educational and campaign-intake only. It is not a law firm and does
 - Average disabled-worker benefit (Jan 2026): about $1,633
 - Five-month waiting period; Medicare generally after 24 months of entitlement
 
-## Official sources (prefer these for legal truth)
-- https://www.ssa.gov/benefits/disability/qualify.html
-- https://www.ssa.gov/disability/professionals/bluebook/AdultListings.htm
-- https://www.ssa.gov/pubs/EN-05-10029.pdf
+## About this campaign
+- Independent education and intake only. SSA decides every claim.
 - 20 CFR Part 404; Social Security Act §§ 223, 1140
 
 ## Contact

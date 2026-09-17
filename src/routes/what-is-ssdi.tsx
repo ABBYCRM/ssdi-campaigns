@@ -1,7 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { PageHero } from "@/components/layout/page-hero";
 import { pageHead } from "@/lib/seo";
-import { SITE } from "@/lib/site";
 import { FIGURES_2026 } from "@/lib/ssdi";
 
 export const Route = createFileRoute("/what-is-ssdi")({
@@ -50,15 +49,7 @@ function Page() {
           about every 7 years. Work activity, medical recovery, or failing to cooperate can stop benefits.
         </p>
         <p>
-          Official primer:{" "}
-          <a className="font-semibold text-navy underline" href="https://www.ssa.gov/pubs/EN-05-10029.pdf">
-            SSA Publication 05-10029
-          </a>
-          . Apply at{" "}
-          <a className="font-semibold text-navy underline" href={SITE.ssaApplyUrl}>
-            SSA.gov
-          </a>
-          .
+          This page is educational. For a screening, request a free consultation — this campaign does not issue benefits.
         </p>
         <Link to="/eligibility" className="inline-block font-semibold text-teal-dark hover:underline">
           See 2026 eligibility rules

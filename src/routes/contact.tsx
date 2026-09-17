@@ -38,7 +38,7 @@ function ContactPage() {
             <a className="underline" href={`mailto:${SITE.privacyEmail}`}>
               {SITE.privacyEmail}
             </a>
-            . Apply for benefits at no charge on SSA.gov.
+            . Independent campaign — not a government agency.
           </p>
         </aside>
       </div>

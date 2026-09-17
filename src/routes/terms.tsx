@@ -29,7 +29,7 @@ function Page() {
         </p>
         <p>
           You agree not to submit false information, not to use the site to harass, and not to scrape in a way that degrades
-          service. Form submissions are optional. Applying at SSA.gov is free and independent of these terms.
+          service. Form submissions are optional. Using this campaign is independent of any other filing you may make.
         </p>
         <p>
           THE SITE IS PROVIDED “AS IS.” TO THE MAXIMUM EXTENT PERMITTED BY LAW WE DISCLAIM IMPLIED WARRANTIES. OUR

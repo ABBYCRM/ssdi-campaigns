@@ -1,7 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { PageHero } from "@/components/layout/page-hero";
 import { pageHead } from "@/lib/seo";
-import { SITE } from "@/lib/site";
 import { FIGURES_2026 } from "@/lib/ssdi";
 
 export const Route = createFileRoute("/application")({
@@ -9,7 +8,7 @@ export const Route = createFileRoute("/application")({
     pageHead({
       title: "How to Apply for SSDI",
       description:
-        "How to file an SSDI application for free at SSA.gov, what medical and work evidence to gather, and typical 2026 processing times.",
+        "How to file an SSDI application, what medical and work evidence to gather, and typical 2026 processing times.",
       path: "/application",
     }),
   component: Page,
@@ -21,16 +20,13 @@ function Page() {
       <PageHero
         kicker="Filing"
         title="How to apply for SSDI"
-        lede="You can — and should — file with SSA yourself at no charge. A campaign can help you prepare. It cannot file as if it were SSA."
+        lede="You can file your own SSDI claim at no charge. A campaign can help you prepare. It cannot file as if it were SSA."
       />
       <article className="container-page max-w-3xl space-y-5 py-14 text-muted leading-relaxed">
         <ol className="list-decimal space-y-3 pl-5">
           <li>
-            <strong className="text-navy">Protect a filing date.</strong> Apply online at{" "}
-            <a className="font-semibold text-navy underline" href={SITE.ssaApplyUrl}>
-              SSA.gov/applyfordisability
-            </a>
-            , by phone at 1-800-772-1213, or at a field office. The protective filing date can affect back pay.
+            <strong className="text-navy">Protect a filing date.</strong> Apply with SSA online, by phone, or at a field
+            office. The protective filing date can affect back pay. This campaign can help you get the file ready.
           </li>
           <li>
             <strong className="text-navy">List every medical source.</strong> Doctors, clinics, hospitals, therapists, VA,

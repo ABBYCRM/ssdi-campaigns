@@ -1,7 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { PageHero } from "@/components/layout/page-hero";
 import { pageHead } from "@/lib/seo";
-import { SITE } from "@/lib/site";
 import { FIGURES_2026, WORK_CREDIT_TABLE } from "@/lib/ssdi";
 
 export const Route = createFileRoute("/work-credits")({
@@ -52,11 +51,8 @@ function Page() {
           </table>
         </div>
         <p>
-          Official source:{" "}
-          <a className="font-semibold text-navy underline" href={SITE.ssaCredits}>
-            SSA work credits planner
-          </a>{" "}
-          and Publication 05-10072.
+          Credits are earned through covered wages or self-employment. Your date last insured is the last day you still
+          meet the recent-work test.
         </p>
       </article>
     </main>

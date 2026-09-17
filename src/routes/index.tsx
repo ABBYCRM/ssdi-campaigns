@@ -24,8 +24,8 @@ function Home() {
           src="/images/hero.jpg"
           alt="Tropical beach with palm trees and turquoise water"
           className="h-[20rem] w-full object-cover object-center sm:h-[24rem] md:h-[28rem]"
-          width={1792}
-          height={1008}
+          width={1280}
+          height={720}
         />
         <h1 className="pointer-events-none absolute inset-y-0 left-0 z-[1] flex w-[68%] items-center justify-center px-4 text-center font-display text-[1.7rem] font-semibold uppercase leading-[1.1] tracking-wide text-navy drop-shadow-[0_2px_0_rgb(255_248_238_/_0.75)] sm:text-4xl md:text-5xl lg:text-[3.35rem]">
           SSDI Benefits:
@@ -33,11 +33,11 @@ function Home() {
           Are You Eligible?
         </h1>
         <img
-          src="/images/badger-point.png"
+          src="/images/badger-point.webp"
           alt="Happy Badger, the SSDI Campaigns mascot, pointing the way"
           className="absolute bottom-0 right-2 z-[2] w-36 drop-shadow-lg sm:right-6 sm:w-48 md:right-10 md:w-60 lg:w-72"
-          width={720}
-          height={720}
+          width={560}
+          height={560}
         />
       </section>
 
@@ -103,11 +103,11 @@ function Home() {
             <p className="font-display text-lg font-semibold uppercase tracking-wide">Common campaign services:</p>
           </div>
           <img
-            src="/images/badger-relax.png"
+            src="/images/badger-relax.webp"
             alt="Happy Badger relaxing on a beach towel"
             className="w-64 drop-shadow-md sm:w-80 md:w-[22rem]"
-            width={900}
-            height={506}
+            width={800}
+            height={450}
           />
         </div>
       </section>

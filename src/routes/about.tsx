@@ -2,7 +2,7 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { PageHero } from "@/components/layout/page-hero";
 import { Button } from "@/components/ui/button";
 import { pageHead } from "@/lib/seo";
-import { SITE, SSA_DISCLAIMER } from "@/lib/site";
+import { SSA_DISCLAIMER } from "@/lib/site";
 
 export const Route = createFileRoute("/about")({
   head: () =>
@@ -45,9 +45,7 @@ function AboutPage() {
               <Link to="/contact">Talk with us</Link>
             </Button>
             <Button asChild variant="outline">
-              <a href={SITE.ssaHome} target="_blank" rel="noopener noreferrer">
-                Visit SSA.gov
-              </a>
+              <Link to="/eligibility">Check eligibility</Link>
             </Button>
           </div>
         </article>

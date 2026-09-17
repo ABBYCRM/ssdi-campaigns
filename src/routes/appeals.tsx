@@ -33,8 +33,8 @@ function Page() {
         ))}
       </div>
       <p className="container-page max-w-3xl pb-16 text-sm text-muted">
-        You can appeal online at SSA.gov. This campaign can help you understand the record and connect you with a
-        representative for a hearing.{" "}
+        You can appeal a denial through SSA’s four-level process. This campaign can help you understand the record and
+        connect you with a representative for a hearing.{" "}
         <Link to="/hearings" className="font-semibold text-teal-dark hover:underline">
           Hearings explained
         </Link>
