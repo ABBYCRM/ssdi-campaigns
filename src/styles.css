@@ -1,0 +1,18 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+
+@theme {
+  --font-sans: "Plus Jakarta Sans", "Segoe UI", ui-sans-serif, system-ui, sans-serif;
+  --color-navy: #0b2a4a;
+  --color-navy-deep: #071c32;
+  --color-ink: #122033;
+  --color-muted: #5b6b7c;
+  --color-paper: #f7fbfe;
+  --color-sky: #e7f3fb;
+  --color-red: #c8102e;
+  --color-coral: #e85a32;
+  --color-teal: #0d8a7d;
+  --color-teal-dark: #0a6e64;
+  --color-line: #d5e2ec;
+  --color-card: #ffffff;
+}

@@ -1,0 +1,21 @@
+export const SITE = {
+  name: "SSDI Campaigns",
+  legalName: "SSDI Campaigns",
+  tagline: "Independent help navigating Social Security Disability Insurance.",
+  description:
+    "Independent SSDI campaign helping people understand eligibility, applications, denials, and appeals. Not affiliated with the U.S. Social Security Administration. Apply for free at SSA.gov.",
+  url: "https://ssdicampaigns.com",
+  domain: "ssdicampaigns.com",
+  phoneDisplay: "1-800-SSDI-GUIDE",
+  phoneTel: "+18007734483",
+  email: "info@ssdi-campaign-help.org",
+  privacyEmail: "privacy@ssdi-campaign-help.org",
+  hours: "Monday–Friday, 8:00 a.m. to 8:00 p.m. ET",
+  locale: "en_US",
+  country: "US",
+  ssaApplyUrl: "https://www.ssa.gov/applyfordisability/",
+  ssaHome: "https://www.ssa.gov/",
+  ssaBlueBook: "https://www.ssa.gov/disability/professionals/bluebook/AdultListings.htm",
+  ssaCredits: "https://www.ssa.gov/benefits/retirement/planner/credits.html",
+  ssaQualify: "https://www.ssa.gov/benefits/disability/qualify.html",
+} as const;
