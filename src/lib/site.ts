@@ -3,7 +3,7 @@ export const SITE = {
   legalName: "SSDI Campaigns",
   tagline: "Independent help navigating Social Security Disability Insurance.",
   description:
-    "Independent SSDI campaign helping people understand eligibility, applications, denials, and appeals. Not affiliated with the U.S. Social Security Administration. Apply for free at SSA.gov.",
+    "Independent SSDI campaign helping people understand eligibility, applications, denials, and appeals. Not affiliated with the U.S. Social Security Administration.",
   url: "https://ssdicampaigns.com",
   domain: "ssdicampaigns.com",
   phoneDisplay: "1-800-SSDI-GUIDE",
@@ -13,11 +13,6 @@ export const SITE = {
   hours: "Monday–Friday, 8:00 a.m. to 8:00 p.m. ET",
   locale: "en_US",
   country: "US",
-  ssaApplyUrl: "https://www.ssa.gov/applyfordisability/",
-  ssaHome: "https://www.ssa.gov/",
-  ssaBlueBook: "https://www.ssa.gov/disability/professionals/bluebook/AdultListings.htm",
-  ssaCredits: "https://www.ssa.gov/benefits/retirement/planner/credits.html",
-  ssaQualify: "https://www.ssa.gov/benefits/disability/qualify.html",
 } as const;
 
 export const NAV = [
@@ -82,7 +77,6 @@ export const KEYWORDS = [
   "work credits",
   "substantial gainful activity",
   "Blue Book listings",
-  "SSA disability",
   "disabled worker benefits",
   "SSDI vs SSI",
   "free SSDI consultation",
@@ -92,6 +86,6 @@ export const KEYWORDS = [
 ].join(", ");
 
 export const SSA_DISCLAIMER =
-  "Independent campaign. Not affiliated with, endorsed by, or authorized by the U.S. Social Security Administration, the Centers for Medicare & Medicaid Services, or the Department of Health and Human Services. You can apply for Social Security disability benefits at no charge at SSA.gov.";
+  "Independent campaign. Not affiliated with the U.S. Social Security Administration.";
 
 export const TCPA_CONSENT = `By checking this box, I provide my electronic signature under the E-SIGN Act and give prior express written consent for SSDI Campaigns to contact me at the telephone number I provided, including by live agent, autodialed or prerecorded/artificial voice calls, and SMS/text messages, about SSDI eligibility, applications, and related campaign services. Message and data rates may apply. Message frequency varies. Consent is not a condition of receiving any service. I may opt out of texts by replying STOP and get help by replying HELP. See our Privacy Policy and SMS Terms.`;
