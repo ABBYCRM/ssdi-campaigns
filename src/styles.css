@@ -3,16 +3,107 @@
 
 @theme {
   --font-sans: "Plus Jakarta Sans", "Segoe UI", ui-sans-serif, system-ui, sans-serif;
+  --font-display: "Plus Jakarta Sans", "Segoe UI", ui-sans-serif, system-ui, sans-serif;
+
   --color-navy: #0b2a4a;
   --color-navy-deep: #071c32;
   --color-ink: #122033;
   --color-muted: #5b6b7c;
   --color-paper: #f7fbfe;
   --color-sky: #e7f3fb;
+  --color-sky-deep: #cfe6f4;
   --color-red: #c8102e;
   --color-coral: #e85a32;
   --color-teal: #0d8a7d;
   --color-teal-dark: #0a6e64;
   --color-line: #d5e2ec;
   --color-card: #ffffff;
+  --color-success: #1b7f5a;
+
+  --color-background: var(--color-paper);
+  --color-foreground: var(--color-ink);
+  --color-primary: var(--color-navy);
+  --color-primary-foreground: #f8fafc;
+  --color-secondary: var(--color-sky);
+  --color-secondary-foreground: var(--color-navy);
+  --color-muted-foreground: var(--color-muted);
+  --color-accent: var(--color-teal);
+  --color-accent-foreground: #f8fffe;
+  --color-destructive: var(--color-red);
+  --color-destructive-foreground: #fff;
+  --color-border: var(--color-line);
+  --color-input: var(--color-line);
+  --color-ring: var(--color-teal);
+  --color-card-foreground: var(--color-ink);
+
+  --radius-xs: 4px;
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 16px;
+  --radius-xl: 24px;
+  --radius: 12px;
+
+  --shadow-soft: 0 10px 30px -18px rgb(11 42 74 / 0.35);
+  --shadow-lift: 0 18px 40px -24px rgb(11 42 74 / 0.4);
+}
+
+@layer base {
+  button:not(:disabled),
+  [role="button"]:not(:disabled) {
+    cursor: pointer;
+  }
+
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    background: var(--color-paper);
+    color: var(--color-ink);
+    font-family: var(--font-sans);
+    line-height: 1.55;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  ::selection {
+    background: color-mix(in oklab, var(--color-teal) 28%, white);
+    color: var(--color-navy);
+  }
+
+  a:focus-visible,
+  button:focus-visible,
+  input:focus-visible,
+  select:focus-visible,
+  textarea:focus-visible {
+    outline: 2px solid var(--color-teal);
+    outline-offset: 2px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+@utility container-page {
+  margin-inline: auto;
+  width: 100%;
+  max-width: 72rem;
+  padding-inline: 1.25rem;
+}
+
+@utility eyebrow {
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--color-teal-dark);
 }
