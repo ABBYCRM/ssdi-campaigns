@@ -14,6 +14,8 @@ import { Button } from "@/components/ui/button";
 import { pageHead } from "@/lib/seo";
 import { SITE } from "@/lib/site";
 import { FAQS, FIGURES_2026, SERVICES } from "@/lib/ssdi";
+import { HERO_IMG } from "@/lib/hero-img";
+import { CONSULT_IMG } from "@/lib/consult-img";
 
 export const Route = createFileRoute("/")({
   head: () =>
@@ -31,7 +33,7 @@ function Home() {
     <main id="main">
       <section className="relative overflow-hidden bg-sky" aria-label="Campaign hero">
         <img
-          src="/images/hero.jpg"
+          src={HERO_IMG}
           alt="A couple meeting with an SSDI campaign advisor in front of a city skyline"
           className="mx-auto h-auto w-full max-w-5xl object-contain object-bottom"
           width={1792}
@@ -176,7 +178,7 @@ function Home() {
           </div>
           <div className="overflow-hidden rounded-xl border border-border bg-card shadow-soft">
             <img
-              src="/images/consult.jpg"
+              src={CONSULT_IMG}
               alt="Advisor reviewing disability paperwork with a couple at a table"
               className="h-64 w-full object-cover"
               width={1792}
