@@ -1,0 +1,4 @@
+Contact: mailto:privacy@ssdi-campaign-help.org
+Policy: https://ssdicampaigns.com/privacy
+Preferred-Languages: en
+Canonical: https://ssdicampaigns.com/.well-known/security.txt
