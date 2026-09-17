@@ -4,10 +4,11 @@ WORKDIR /app
 
 RUN apk add --no-cache libc6-compat
 
-COPY package.json package-lock.json ./
+# package-lock.json is optional; npm install works without it.
+COPY package.json ./
 # App Platform injects NODE_ENV=production at build time; keep devDependencies
 # so Vite / Nitro / Tailwind can compile the site.
-RUN npm ci --include=dev --no-audit --no-fund
+RUN npm install --include=dev --no-audit --no-fund
 
 COPY . .
 
