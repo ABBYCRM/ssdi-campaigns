@@ -32,3 +32,25 @@ services:
       - key: VITE_AUTH_ENABLED
         value: "false"
         scope: RUN_AND_BUILD_TIME
+      # SSDI Campaigns only. Never reuse CaseClosedFL HubSpot tokens, Resend
+      # keys, sending domains, or Vapi assistant IDs. Bind these secrets in
+      # the App Platform dashboard — do not commit values:
+      #   HUBSPOT_ACCESS_TOKEN          (primary CRM; SSDI private app)
+      #   GOOGLE_SHEETS_SPREADSHEET_ID  (backup / failover only)
+      #   GOOGLE_SHEETS_RANGE           (default Leads!A1)
+      #   GOOGLE_SHEETS_CLIENT_EMAIL
+      #   GOOGLE_SHEETS_PRIVATE_KEY
+      #   GOOGLE_SHEETS_SERVICE_ACCOUNT_JSON
+      #   RESEND_API_KEY                (ssdicampaigns.com Resend project)
+      #   VAPI_WEBHOOK_SECRET
+      #   VAPI_ASSISTANT_ID             (SSDI assistant — not CaseClosedFL)
+      - key: RESEND_API_KEY
+        type: SECRET
+        scope: RUN_TIME
+        value: ""
+      - key: RESEND_FROM_EMAIL
+        value: "SSDI Campaigns <noreply@ssdicampaigns.com>"
+        scope: RUN_TIME
+      - key: RESEND_REPLY_TO
+        value: "info@ssdicampaigns.com"
+        scope: RUN_TIME

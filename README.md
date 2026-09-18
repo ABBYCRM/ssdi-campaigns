@@ -13,7 +13,7 @@ Live domain (planned): [ssdicampaigns.com](https://ssdicampaigns.com)
 - SEO: JSON-LD, sitemap, robots, `llms.txt` / `ai.txt`
 - Legal pages: privacy, terms, disclaimer, SMS terms, cookies, accessibility, do-not-sell, privacy request
 - DigitalOcean App Platform spec (`.do/app.yaml`) + production `Dockerfile`
-- Optional HubSpot intake stub in `backend/` (not wired until a private-app token is set)
+- Intake API in `backend/` — HubSpot-primary CRM persist, optional Google Sheets backup, SSDI-only Resend placeholders, Vapi webhook skeleton
 
 ## Stack
 
@@ -35,11 +35,17 @@ npm run typecheck
 
 ## Intake / CRM
 
-The public form currently validates on the server and returns success without persisting records. To wire HubSpot:
+Leads POST to `/intake` (standalone `backend/server.mjs`, also used in-process by the site when `HUBSPOT_ACCESS_TOKEN` is set on the web service).
 
-1. Create a HubSpot private app with `crm.objects.contacts.write`
-2. Set `HUBSPOT_ACCESS_TOKEN` (never commit it)
-3. See `backend/README.md` for the field map and TCPA retention notes
+1. **HubSpot is primary.** Create a private app in the **SSDI** HubSpot portal (`crm.objects.contacts.read` + `crm.objects.contacts.write`) and set `HUBSPOT_ACCESS_TOKEN`. Never commit it. Never use a CaseClosedFL token.
+2. **Google Sheets is backup / failover only.** Set `GOOGLE_SHEETS_SPREADSHEET_ID` plus a service account (`GOOGLE_SHEETS_CLIENT_EMAIL` + `GOOGLE_SHEETS_PRIVATE_KEY`, or `GOOGLE_SHEETS_SERVICE_ACCOUNT_JSON`). Sheets runs after a successful HubSpot write, or when HubSpot is unwired/unavailable. It is not the primary CRM.
+3. **TCPA is fail-closed** (`tcpa === true` required). Consent and `source` are mapped onto the HubSpot contact.
+4. **Resend is SSDI-domain only** (`ssdicampaigns.com`). See `.do/app.yaml` placeholders: `RESEND_API_KEY`, `RESEND_FROM_EMAIL`, `RESEND_REPLY_TO`. Do not reuse CaseClosedFL Resend keys or domains.
+5. **Vapi** (`POST /webhooks/vapi`) is a separate SSDI assistant skeleton that posts completed-call leads into the same `/intake` path. Set `VAPI_ASSISTANT_ID` / `VAPI_WEBHOOK_SECRET`; do not paste CaseClosedFL assistant IDs.
+
+`GET /health` reports `crm: "wired" | "unwired"` from HubSpot token presence.
+
+Field map, TCPA retention, and env details: [`backend/README.md`](backend/README.md). Example env file: [`.env.example`](.env.example).
 
 Do not send health narratives to advertising properties.
 

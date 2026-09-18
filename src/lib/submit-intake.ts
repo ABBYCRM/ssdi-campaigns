@@ -192,9 +192,61 @@ async function forwardWebhook(lead: StoredLead) {
   }
 }
 
+function forbiddenBrand(value: string | undefined) {
+  const s = (value ?? "").toLowerCase();
+  return s.includes("caseclosedfl");
+}
+
+async function persistCrm(lead: StoredLead, data: IntakeInput) {
+  const payload = {
+    name: data.name,
+    phone: data.phone,
+    email: data.email,
+    disabilityType: data.disabilityType,
+    state: data.state,
+    zip: data.zip,
+    message: data.message,
+    tcpa: data.tcpa,
+    sensitiveHealth: data.sensitiveHealth,
+    source: data.source || lead.source,
+    id: lead.id,
+    receivedAt: lead.receivedAt,
+  };
+  const api = env("INTAKE_API_URL");
+  if (api) {
+    const ac = new AbortController();
+    const t = setTimeout(() => ac.abort(), 8000);
+    try {
+      const res = await fetch(`${api.replace(/\/$/, "")}/intake`, {
+        method: "POST",
+        headers: { "content-type": "application/json", accept: "application/json" },
+        body: JSON.stringify(payload),
+        signal: ac.signal,
+      });
+      return (await res.json().catch(() => null)) as { forwardedTo?: string | null; hubspot?: { ok?: boolean } } | null;
+    } finally {
+      clearTimeout(t);
+    }
+  }
+  const { persistIntake } = (await import("../../backend/lib/persist.mjs")) as {
+    persistIntake: (
+      payload: unknown,
+      deps?: { env?: NodeJS.ProcessEnv; fetch?: typeof fetch },
+    ) => Promise<{ forwardedTo?: string | null; hubspot?: { ok?: boolean } }>;
+  };
+  return persistIntake(payload, { env: process.env, fetch: globalThis.fetch });
+}
+
 async function emailOps(lead: StoredLead) {
   const key = env("RESEND_API_KEY");
-  if (!key) return;
+  if (!key || forbiddenBrand(key)) return;
+  const from =
+    env("RESEND_FROM_EMAIL") ?? env("INTAKE_FROM_EMAIL") ?? "SSDI Campaigns <noreply@ssdicampaigns.com>";
+  const replyTo = env("RESEND_REPLY_TO");
+  if (forbiddenBrand(from) || forbiddenBrand(replyTo)) {
+    console.error("intake email blocked: CaseClosedFL identity is not allowed on SSDI Campaigns");
+    return;
+  }
   const ac = new AbortController();
   const t = setTimeout(() => ac.abort(), 5000);
   try {
@@ -205,8 +257,9 @@ async function emailOps(lead: StoredLead) {
         "content-type": "application/json",
       },
       body: JSON.stringify({
-        from: env("INTAKE_FROM_EMAIL") ?? "SSDI Campaigns <noreply@ssdi-campaign-help.org>",
-        to: [SITE.email],
+        from,
+        to: [env("INTAKE_NOTIFY_EMAIL") ?? replyTo ?? SITE.email],
+        ...(replyTo ? { reply_to: replyTo } : {}),
         subject: `New SSDI intake — ${lead.name}`,
         text: [
           `Name: ${lead.name}`,
@@ -246,6 +299,15 @@ export const submitIntake = createServerFn({ method: "POST" })
     } catch (err) {
       console.error("intake persist failed", err);
     }
+    let crm: { forwardedTo?: string | null; hubspot?: { ok?: boolean } } | null = null;
+    try {
+      crm = await persistCrm(lead, data);
+    } catch (err) {
+      console.error("intake crm persist failed", err);
+    }
+    // HubSpot is primary (persistCrm). The published Google Form is a legacy
+    // backup with the same rule as GOOGLE_SHEETS_*: copy after HubSpot success,
+    // or failover when HubSpot is unwired/unavailable.
     await Promise.allSettled([forwardGoogleForm(lead), forwardWebhook(lead), emailOps(lead)]);
-    return { ok: true as const, id, receivedAt: lead.receivedAt };
+    return { ok: true as const, id, receivedAt: lead.receivedAt, forwardedTo: crm?.forwardedTo ?? null };
   });
