@@ -22,23 +22,16 @@ function Home() {
       <section className="relative overflow-hidden" aria-label="Campaign hero">
         <img
           src="/images/hero.jpg"
-          alt="Tropical beach with palm trees and turquoise water"
-          className="h-[20rem] w-full object-cover object-[center_40%] sm:h-[24rem] md:h-[28rem]"
-          width={1280}
-          height={720}
+          alt="Happy Badger standing on a tropical beach, pointing toward SSDI eligibility"
+          className="h-[20rem] w-full object-cover object-[62%_42%] sm:h-[24rem] md:h-[30rem] lg:h-[32rem]"
+          width={1600}
+          height={900}
         />
-        <h1 className="pointer-events-none absolute inset-y-0 left-0 z-[1] flex w-[58%] items-center justify-center px-4 text-center font-display text-[1.7rem] font-semibold uppercase leading-[1.1] tracking-wide text-navy drop-shadow-[0_2px_0_rgb(255_248_238_/_0.75)] sm:w-[55%] sm:text-4xl md:text-5xl lg:text-[3.35rem]">
+        <h1 className="pointer-events-none absolute inset-y-0 left-0 z-[1] flex w-[58%] items-center justify-center px-4 text-center font-display text-[1.7rem] font-semibold uppercase leading-[1.1] tracking-wide text-navy drop-shadow-[0_2px_0_rgb(255_248_238_/_0.75)] sm:w-[54%] sm:text-4xl md:text-5xl lg:text-[3.35rem]">
           SSDI Benefits:
           <br />
           Are You Eligible?
         </h1>
-        <img
-          src="/images/badger-point.webp"
-          alt="Happy Badger, the SSDI Campaigns mascot, pointing the way"
-          className="absolute bottom-0 right-0 z-[2] w-[9.5rem] drop-shadow-[0_10px_18px_rgb(74_36_16_/_0.35)] sm:right-4 sm:w-52 md:right-8 md:w-64 lg:w-80"
-          width={534}
-          height={640}
-        />
       </section>
 
       <section className="relative px-4 pb-8 pt-8 md:pb-12">
