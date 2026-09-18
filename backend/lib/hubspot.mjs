@@ -1,6 +1,13 @@
-import { envTrim } from "./brand.mjs";
+import { envTrim, ssdiOnlyValue } from "./brand.mjs";
 
 const HUBSPOT_API = "https://api.hubapi.com";
+const HSFORMS_API = "https://api.hsforms.com";
+
+/** CaseClosedFL production HubSpot portal. SSDI must never write here. */
+export const CASECLOSEDFL_HUBSPOT_PORTAL_ID = "247081451";
+
+/** Dedicated Key-card group (mirrors the CaseClosedFL intake-group pattern, SSDI-only). */
+export const SSDI_INTAKE_PROPERTY_GROUP = "ssdi_campaigns_intake";
 
 /** NOTE → contact (HubSpot-defined association). */
 const NOTE_TO_CONTACT = 202;
@@ -36,109 +43,126 @@ function enumOptions(values) {
   }));
 }
 
+function intakeProp(def) {
+  return {
+    groupName: SSDI_INTAKE_PROPERTY_GROUP,
+    hidden: false,
+    formField: false,
+    ...def,
+  };
+}
+
 export const HUBSPOT_CUSTOM_PROPERTIES = [
-  {
+  intakeProp({
     name: "ssdi_tcpa_consent",
     label: "SSDI TCPA Consent",
     type: "bool",
     fieldType: "booleancheckbox",
-    groupName: "contactinformation",
     description: "Prior express written consent to call/SMS (SSDI Campaigns).",
-  },
-  {
+  }),
+  intakeProp({
     name: "ssdi_tcpa_consent_at",
     label: "SSDI TCPA Consent At",
     type: "string",
     fieldType: "text",
-    groupName: "contactinformation",
     description: "ISO timestamp of TCPA consent capture.",
-  },
-  {
+  }),
+  intakeProp({
     name: "ssdi_campaign_source",
     label: "SSDI Campaign Source",
     type: "string",
     fieldType: "text",
-    groupName: "contactinformation",
     description: "Intake source (site, vapi-ssdi, state page, etc.).",
-  },
-  {
+  }),
+  intakeProp({
+    name: "ssdi_source",
+    label: "SSDI Source",
+    type: "string",
+    fieldType: "text",
+    description: "Same as ssdi_campaign_source. Portal/ops alias.",
+  }),
+  intakeProp({
     name: "ssdi_disability_type",
     label: "SSDI Disability Type",
     type: "string",
     fieldType: "text",
-    groupName: "contactinformation",
     description: "Campaign screening category. CRM-only — not for ads.",
-  },
-  {
+  }),
+  intakeProp({
+    name: "ssdi_state",
+    label: "SSDI Intake State",
+    type: "string",
+    fieldType: "text",
+    description: "USPS state from the screening form or Vapi. Also written to standard state.",
+  }),
+  intakeProp({
+    name: "ssdi_zip",
+    label: "SSDI Intake ZIP",
+    type: "string",
+    fieldType: "text",
+    description: "ZIP from the screening form or Vapi. Also written to standard zip.",
+  }),
+  intakeProp({
     name: "ssdi_intake_id",
     label: "SSDI Intake ID",
     type: "string",
     fieldType: "text",
-    groupName: "contactinformation",
-  },
-  {
+  }),
+  intakeProp({
     name: "ssdi_sensitive_health_ack",
     label: "SSDI Sensitive Health Ack",
     type: "bool",
     fieldType: "booleancheckbox",
-    groupName: "contactinformation",
-  },
-  {
+  }),
+  intakeProp({
     name: "ssdi_message",
     label: "SSDI Intake Note",
     type: "string",
     fieldType: "textarea",
-    groupName: "contactinformation",
     description: "Optional message from the lead. Truncated. CRM-only.",
-  },
-  {
+  }),
+  intakeProp({
     name: "ssdi_validator_status",
     label: "SSDI Validator Status",
     type: "enumeration",
     fieldType: "select",
-    groupName: "contactinformation",
     description: "SSDI-Validator result: VALIDATED / INCOMPLETE / CONTRADICTED (plus NEW / VALIDATING / FOLLOW_UP).",
     options: enumOptions(SSDI_LEAD_STAGES),
-  },
-  {
+  }),
+  intakeProp({
     name: "ssdi_fraud_signal",
     label: "SSDI Fraud Signal",
     type: "string",
     fieldType: "text",
-    groupName: "contactinformation",
     description: "Aggregate fraud-engine signal from SSDI-Validator. Not an accusation.",
-  },
-  {
+  }),
+  intakeProp({
     name: "ssdi_validator_id",
     label: "SSDI Validator ID",
     type: "string",
     fieldType: "text",
-    groupName: "contactinformation",
-  },
-  {
+  }),
+  intakeProp({
     name: "ssdi_validator_reason",
     label: "SSDI Validator Reason",
     type: "string",
     fieldType: "text",
-    groupName: "contactinformation",
-  },
-  {
+  }),
+  intakeProp({
     name: "ssdi_lead_stage",
     label: "SSDI Lead Stage",
     type: "enumeration",
     fieldType: "select",
-    groupName: "contactinformation",
     description: "Pipeline mirror: NEW → VALIDATING → VALIDATED/INCOMPLETE/CONTRADICTED → FOLLOW_UP.",
     options: enumOptions(SSDI_LEAD_STAGES),
-  },
-  {
+  }),
+  intakeProp({
     name: "ssdi_inbound_phone",
     label: "SSDI Inbound Phone",
     type: "string",
     fieldType: "text",
-    groupName: "contactinformation",
     description: "Campaign inbound +15616520362.",
-  },
+  }),
 ];
 
 export const HUBSPOT_DEAL_PROPERTIES = [
@@ -159,11 +183,27 @@ export const HUBSPOT_DEAL_PROPERTIES = [
 ];
 
 export function hubspotToken(env = process.env) {
-  return envTrim(env, "HUBSPOT_ACCESS_TOKEN");
+  const raw = ssdiOnlyValue(envTrim(env, "HUBSPOT_ACCESS_TOKEN"));
+  if (!raw || raw === "__HUBSPOT_ACCESS_TOKEN__" || raw.startsWith("__")) return undefined;
+  return raw;
+}
+
+export function configuredHubSpotPortalId(env = process.env) {
+  return envTrim(env, "HUBSPOT_PORTAL_ID");
+}
+
+export function isForbiddenHubSpotPortal(portalId) {
+  return String(portalId || "").trim() === CASECLOSEDFL_HUBSPOT_PORTAL_ID;
 }
 
 export function isHubSpotWired(env = process.env) {
-  return Boolean(hubspotToken(env));
+  if (!hubspotToken(env)) return false;
+  if (isForbiddenHubSpotPortal(configuredHubSpotPortalId(env))) return false;
+  return true;
+}
+
+export function hubspotFormId(env = process.env) {
+  return ssdiOnlyValue(envTrim(env, "HUBSPOT_FORM_ID"));
 }
 
 function splitName(name) {
@@ -197,6 +237,7 @@ function customProperties(lead, extra = {}) {
     ssdi_tcpa_consent: "true",
     ssdi_tcpa_consent_at: lead.receivedAt,
     ssdi_campaign_source: lead.source || "ssdi-campaigns",
+    ssdi_source: lead.source || "ssdi-campaigns",
     ssdi_intake_id: lead.id,
     ssdi_sensitive_health_ack: lead.sensitiveHealth ? "true" : "false",
     ssdi_validator_status: extra.validatorStatus || stage,
@@ -204,6 +245,8 @@ function customProperties(lead, extra = {}) {
     ssdi_inbound_phone: "+15616520362",
   };
   if (lead.disabilityType) props.ssdi_disability_type = lead.disabilityType;
+  if (lead.state) props.ssdi_state = lead.state;
+  if (lead.zip) props.ssdi_zip = lead.zip;
   if (lead.message) props.ssdi_message = lead.message.slice(0, 500);
   if (extra.fraudSignal) props.ssdi_fraud_signal = String(extra.fraudSignal).slice(0, 120);
   if (extra.validatorId) props.ssdi_validator_id = extra.validatorId;
@@ -239,10 +282,12 @@ async function hsJson(fetchFn, token, path, { method = "GET", body } = {}) {
 
 let propertiesEnsured = false;
 let pipelineCache = null;
+let identityCache = null;
 
 export function resetHubSpotPropertyCache() {
   propertiesEnsured = false;
   pipelineCache = null;
+  identityCache = null;
 }
 
 async function ensureObjectProperties(fetchFn, token, object, defs) {
@@ -256,11 +301,52 @@ async function ensureObjectProperties(fetchFn, token, object, defs) {
   );
 }
 
+async function ensureIntakePropertyGroup(fetchFn, token) {
+  const get = await hsJson(fetchFn, token, `/crm/v3/properties/contacts/groups/${SSDI_INTAKE_PROPERTY_GROUP}`);
+  if (get.ok || get.status === 409) return true;
+  const created = await hsJson(fetchFn, token, "/crm/v3/properties/contacts/groups", {
+    method: "POST",
+    body: {
+      name: SSDI_INTAKE_PROPERTY_GROUP,
+      label: "SSDI Campaigns Intake",
+      displayOrder: 2,
+    },
+  });
+  return created.ok || created.status === 409 || created.status === 400;
+}
+
 async function ensureCustomProperties(fetchFn, token) {
   if (propertiesEnsured) return;
+  await ensureIntakePropertyGroup(fetchFn, token);
   await ensureObjectProperties(fetchFn, token, "contacts", HUBSPOT_CUSTOM_PROPERTIES);
   await ensureObjectProperties(fetchFn, token, "deals", HUBSPOT_DEAL_PROPERTIES);
   propertiesEnsured = true;
+}
+
+/**
+ * Identify the HubSpot portal behind the token. Blocks the CaseClosedFL portal.
+ */
+export async function resolveHubSpotIdentity(fetchFn, token, env = process.env) {
+  if (identityCache) return identityCache;
+  const configured = configuredHubSpotPortalId(env);
+  if (isForbiddenHubSpotPortal(configured)) {
+    identityCache = { ok: false, forbidden: true, portalId: configured, reason: "forbidden_portal" };
+    return identityCache;
+  }
+  try {
+    const me = await hsJson(fetchFn, token, "/integrations/v1/me");
+    const portalId = me.json?.portalId != null ? String(me.json.portalId) : configured || null;
+    if (isForbiddenHubSpotPortal(portalId)) {
+      identityCache = { ok: false, forbidden: true, portalId, reason: "forbidden_portal" };
+      return identityCache;
+    }
+    identityCache = { ok: me.ok || Boolean(portalId), forbidden: false, portalId };
+    return identityCache;
+  } catch (err) {
+    console.error("hubspot identity failed", err);
+    identityCache = { ok: true, forbidden: false, portalId: configured || null, reason: "identity_unknown" };
+    return identityCache;
+  }
 }
 
 async function searchContact(fetchFn, token, lead) {
@@ -334,45 +420,77 @@ function escapeHtml(value) {
     .replace(/"/g, "&quot;");
 }
 
+function formatWhatsAppSection(emoji, title, lines) {
+  const header = `${emoji} <strong>${escapeHtml(title)}</strong>`;
+  const body = lines
+    .filter((line) => line != null && String(line).length)
+    .map((line) => escapeHtml(String(line)).replace(/\n/g, "<br>"))
+    .join("<br>");
+  return body ? `<p>${header}<br>${body}</p>` : `<p>${header}</p>`;
+}
+
+/**
+ * Canonical HubSpot-safe intake NOTE (WhatsApp-style HTML). Same sauce as the
+ * CaseClosedFL note bridge, SSDI educational-screening copy only.
+ */
 export function intakeNoteHtml(lead) {
-  const rows = [
-    ["Name", lead.name],
-    ["Phone", lead.phone],
-    ["Email", lead.email || ""],
-    ["Disability type", lead.disabilityType || ""],
-    ["State", lead.state || ""],
-    ["ZIP", lead.zip || ""],
-    ["Source", lead.source || ""],
-    ["TCPA", "true"],
-    ["Sensitive health ack", lead.sensitiveHealth ? "true" : "false"],
-    ["Intake ID", lead.id],
-    ["Received", lead.receivedAt],
-    ["Inbound", "+15616520362"],
+  const vapi = String(lead.source || "").toLowerCase().includes("vapi");
+  const sections = [
+    formatWhatsAppSection("📍", "SSDI Campaigns screening", [
+      "✅ SSDI Campaigns Qualified Educational Screening Intake",
+      `Intake ID: ${lead.id}`,
+      `Name: ${lead.name}`,
+      `Phone: ${lead.phone}`,
+      `Email: ${lead.email || ""}`,
+      `State: ${lead.state || ""}`,
+      `ZIP: ${lead.zip || ""}`,
+      `Disability type: ${lead.disabilityType || ""}`,
+      `Source: ${lead.source || "ssdi-campaigns"}`,
+      "Inbound: +15616520362",
+    ]),
+    formatWhatsAppSection("✅", "Consent", [
+      "TCPA prior express written consent: YES",
+      `Sensitive health acknowledgment: ${lead.sensitiveHealth ? "YES" : "NO"}`,
+      `Consent recorded at: ${lead.receivedAt}`,
+      `Phone authorized: ${lead.phone}`,
+    ]),
+    formatWhatsAppSection("📝", "Narrative", [lead.message || "(none)"]),
   ];
-  const lines = rows
-    .map(([k, v]) => `<div><strong>${escapeHtml(k)}:</strong> ${escapeHtml(v)}</div>`)
-    .join("");
-  const msg = lead.message
-    ? `<p><strong>Message:</strong><br/>${escapeHtml(lead.message).slice(0, 2000)}</p>`
-    : "";
-  return `<h3>SSDI Campaigns Qualified Educational Screening Intake</h3>${lines}${msg}<p><em>Educational screening only. Not SSA-affiliated. Not legal advice. Not an SSA decision.</em></p>`;
+  if (vapi) {
+    sections.push(
+      formatWhatsAppSection("📞", "Inbound voice", [
+        "Channel: inbound phone",
+        "Provider: Vapi",
+        `Source: ${lead.source}`,
+      ]),
+    );
+  }
+  sections.push(
+    formatWhatsAppSection("⚖️", "Disclaimer", [
+      "Educational screening only. Not SSA-affiliated. Not legal advice. Not an SSA decision.",
+    ]),
+  );
+  return sections.join("");
 }
 
 export function validationNoteHtml(lead, result) {
   if (result?.hubspotNote) return String(result.hubspotNote);
   const status = result?.status || "INCOMPLETE";
-  const reason = result?.reason ? escapeHtml(result.reason) : "";
-  const fraud = result?.fraudSignal ? escapeHtml(result.fraudSignal) : "none";
-  const vid = result?.validationId ? escapeHtml(result.validationId) : "";
-  const human = result?.humanNote ? `<pre>${escapeHtml(result.humanNote).slice(0, 4000)}</pre>` : "";
-  return `<h3>SSDI Campaigns Validation</h3>
-<div><strong>Status:</strong> ${escapeHtml(status)}</div>
-<div><strong>Reason:</strong> ${reason}</div>
-<div><strong>Fraud signal:</strong> ${fraud}</div>
-<div><strong>Validator ID:</strong> ${vid}</div>
-<div><strong>Intake ID:</strong> ${escapeHtml(lead.id)}</div>
-${human}
-<p><em>Educational screening only. Not SSA-affiliated. Not legal advice. Not an SSA decision.</em></p>`;
+  const human = result?.humanNote ? String(result.humanNote).slice(0, 4000) : "";
+  return [
+    formatWhatsAppSection("🔎", "SSDI Campaigns Validation", [
+      `Status: ${status}`,
+      `Reason: ${result?.reason || ""}`,
+      `Fraud signal: ${result?.fraudSignal || "none"}`,
+      `Validator ID: ${result?.validationId || ""}`,
+      `Intake ID: ${lead.id}`,
+    ]),
+    human
+      ? formatWhatsAppSection("📋", "Staff note", [human])
+      : formatWhatsAppSection("⚖️", "Disclaimer", [
+          "Educational screening only. Not SSA-affiliated. Not legal advice. Not an SSA decision.",
+        ]),
+  ].join("");
 }
 
 export async function createHubSpotNote(contactId, html, { env = process.env, fetch: fetchFn = globalThis.fetch } = {}) {
@@ -552,15 +670,94 @@ export async function attachValidatorToHubSpot(lead, contactId, result, { env = 
   return { ok: patchOk || note.ok === true, patchOk, note, deal };
 }
 
+function formFieldsFromLead(lead) {
+  const { firstname, lastname } = splitName(lead.name);
+  const fields = [
+    { name: "firstname", value: firstname },
+    { name: "lastname", value: lastname },
+    { name: "phone", value: lead.phone },
+  ];
+  if (lead.email) fields.push({ name: "email", value: lead.email });
+  if (lead.state) fields.push({ name: "state", value: lead.state });
+  if (lead.zip) fields.push({ name: "zip", value: lead.zip });
+  if (lead.disabilityType) fields.push({ name: "ssdi_disability_type", value: lead.disabilityType });
+  fields.push({ name: "ssdi_tcpa_consent", value: "true" });
+  fields.push({ name: "ssdi_campaign_source", value: lead.source || "ssdi-campaigns" });
+  fields.push({ name: "ssdi_intake_id", value: lead.id });
+  return fields.filter((f) => f.value != null && String(f.value).length);
+}
+
 /**
- * Create or update a HubSpot contact. Maps TCPA consent + campaign source onto
- * custom properties (best-effort) and standard firstname/lastname/phone/email.
- * Server-side equivalent of a HubSpot form — we do not embed marketing forms.
+ * Optional HubSpot Forms v3 submit (server-side equivalent of a form embed).
+ * Requires HUBSPOT_FORM_ID. Portal ID from HUBSPOT_PORTAL_ID or /integrations/v1/me.
+ * CRM upsert still runs either way — this is extra form-analytics, not a stub for CRM.
+ */
+export async function submitHubSpotForm(lead, { env = process.env, fetch: fetchFn = globalThis.fetch, portalId } = {}) {
+  const token = hubspotToken(env);
+  const formId = hubspotFormId(env);
+  const pid = portalId || configuredHubSpotPortalId(env);
+  if (!token || !formId || !pid) {
+    return { ok: false, skipped: true, reason: !formId ? "no_form_id" : "unwired" };
+  }
+  if (isForbiddenHubSpotPortal(pid)) {
+    return { ok: false, skipped: true, reason: "forbidden_portal" };
+  }
+  const url = `${HSFORMS_API}/submissions/v3/integration/secure/submit/${encodeURIComponent(pid)}/${encodeURIComponent(formId)}`;
+  const payload = {
+    fields: formFieldsFromLead(lead),
+    context: {
+      pageUri: "https://ssdicampaigns.com/contact",
+      pageName: "SSDI Campaigns intake",
+    },
+    legalConsentOptions: {
+      consent: {
+        consentToProcess: true,
+        text: "TCPA prior express written consent captured on ssdicampaigns.com.",
+      },
+    },
+  };
+  try {
+    const res = await fetchFn(url, {
+      method: "POST",
+      headers: {
+        authorization: `Bearer ${token}`,
+        "content-type": "application/json",
+        accept: "application/json",
+      },
+      body: JSON.stringify(payload),
+    });
+    if (!res.ok) {
+      const text = await res.text().catch(() => "");
+      console.error("hubspot form submit failed", res.status, text.slice(0, 300));
+      return { ok: false, error: `form_${res.status}` };
+    }
+    return { ok: true };
+  } catch (err) {
+    console.error("hubspot form submit failed", err);
+    return { ok: false, error: "form_network" };
+  }
+}
+
+/**
+ * Create or update a HubSpot contact from the site form or Vapi.
+ * First-class CRM write: custom ssdi_* properties, intake NOTE, SSDI Campaigns
+ * deal pipeline. Optional Forms v3 submit when HUBSPOT_FORM_ID is set.
+ * Never writes to the CaseClosedFL portal.
  */
 export async function upsertHubSpotContact(lead, { env = process.env, fetch: fetchFn = globalThis.fetch, extra = {} } = {}) {
   const token = hubspotToken(env);
   if (!token) {
     return { ok: false, skipped: true, reason: "unwired" };
+  }
+  if (isForbiddenHubSpotPortal(configuredHubSpotPortalId(env))) {
+    console.error("hubspot blocked: CaseClosedFL portal id is not allowed on SSDI Campaigns");
+    return { ok: false, skipped: true, reason: "forbidden_portal" };
+  }
+
+  const identity = await resolveHubSpotIdentity(fetchFn, token, env);
+  if (identity.forbidden) {
+    console.error("hubspot blocked: token belongs to the CaseClosedFL portal");
+    return { ok: false, skipped: true, reason: "forbidden_portal", portalId: identity.portalId };
   }
 
   await ensureCustomProperties(fetchFn, token);
@@ -583,7 +780,8 @@ export async function upsertHubSpotContact(lead, { env = process.env, fetch: fet
       env,
       fetch: fetchFn,
     });
-    return { ...result, note, deal };
+    const form = await submitHubSpotForm(lead, { env, fetch: fetchFn, portalId: identity.portalId });
+    return { ...result, note, deal, form, portalId: identity.portalId };
   } catch (err) {
     console.error("hubspot upsert failed", err);
     return { ok: false, error: "hubspot_network" };

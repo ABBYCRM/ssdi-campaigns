@@ -3,7 +3,7 @@ import { generateKeyPairSync } from "node:crypto";
 import { once } from "node:events";
 import { afterEach, describe, it } from "node:test";
 import { containsForbiddenBrand, DEFAULT_RESEND_FROM, DEFAULT_RESEND_REPLY_TO, SSDI_VAPI_ASSISTANT_ID, ssdiOnlyValue } from "./lib/brand.mjs";
-import { resetHubSpotPropertyCache } from "./lib/hubspot.mjs";
+import { CASECLOSEDFL_HUBSPOT_PORTAL_ID, isHubSpotWired, resetHubSpotPropertyCache } from "./lib/hubspot.mjs";
 import { healthStatus, persistIntake } from "./lib/persist.mjs";
 import { resendFromEmail, resendReplyTo } from "./lib/resend.mjs";
 import { extractVapiLead, verifyVapiSecret } from "./lib/vapi.mjs";
@@ -48,6 +48,15 @@ function jsonResponse(status, body) {
 
 function hubspotFetch({ existingId = null, failWrite = false } = {}) {
   return mockFetch(async (url, init) => {
+    if (url.includes("/integrations/v1/me")) {
+      return jsonResponse(200, { portalId: 555001 });
+    }
+    if (url.includes("/crm/v3/properties/contacts/groups")) {
+      return jsonResponse(200, { name: "ssdi_campaigns_intake" });
+    }
+    if (url.includes("api.hsforms.com")) {
+      return jsonResponse(200, { inlineMessage: "Thanks" });
+    }
     if (url.includes("/crm/v3/properties/") && init.method === "POST") {
       return jsonResponse(201, { name: "ok" });
     }
@@ -205,11 +214,22 @@ describe("HubSpot primary persist", () => {
     assert.equal(body.properties.phone, "4155550100");
     assert.equal(body.properties.ssdi_tcpa_consent, "true");
     assert.equal(body.properties.ssdi_campaign_source, "site");
+    assert.equal(body.properties.ssdi_source, "site");
+    assert.equal(body.properties.ssdi_disability_type, leadPayload().disabilityType);
+    assert.equal(body.properties.ssdi_state, "CA");
+    assert.equal(body.properties.ssdi_zip, "94110");
+    assert.equal(body.properties.ssdi_sensitive_health_ack, "true");
+    assert.equal(body.properties.state, "CA");
+    assert.equal(body.properties.zip, "94110");
     assert.equal(body.properties.hs_lead_status, "NEW");
     assert.equal(body.properties.ssdi_lead_stage, "NEW");
     assert.equal(body.properties.ssdi_inbound_phone, "+15616520362");
     assert.ok(fetchFn.calls.some((c) => c.url.includes("/crm/v3/objects/notes")));
+    const intakeNote = fetchFn.calls.find((c) => c.url.includes("/crm/v3/objects/notes"));
+    assert.match(String(intakeNote.init.body), /Qualified Educational Screening Intake/);
+    assert.match(String(intakeNote.init.body), /TCPA prior express written consent: YES/);
     assert.ok(fetchFn.calls.some((c) => c.url.includes("/crm/v3/objects/deals") && c.init.method === "POST"));
+    assert.ok(fetchFn.calls.some((c) => c.url.includes("/crm/v3/pipelines/deals")));
   });
 
   it("updates an existing contact found by email", async () => {
@@ -225,6 +245,41 @@ describe("HubSpot primary persist", () => {
         (c) => c.url.endsWith("/crm/v3/objects/contacts/hs_existing") && c.init.method === "PATCH",
       ),
     );
+  });
+
+  it("refuses the CaseClosedFL HubSpot portal", async () => {
+    assert.equal(CASECLOSEDFL_HUBSPOT_PORTAL_ID, "247081451");
+    assert.equal(
+      isHubSpotWired({ HUBSPOT_ACCESS_TOKEN: "pat-ssdi-test", HUBSPOT_PORTAL_ID: CASECLOSEDFL_HUBSPOT_PORTAL_ID }),
+      false,
+    );
+    const fetchFn = hubspotFetch();
+    const result = await persistIntake(leadPayload(), {
+      env: { HUBSPOT_ACCESS_TOKEN: "pat-ssdi-test", HUBSPOT_PORTAL_ID: CASECLOSEDFL_HUBSPOT_PORTAL_ID },
+      fetch: fetchFn,
+    });
+    assert.equal(result.hubspot.ok, false);
+    assert.equal(
+      fetchFn.calls.some((c) => c.url.endsWith("/crm/v3/objects/contacts") && c.init.method === "POST"),
+      false,
+    );
+  });
+
+  it("submits the optional HubSpot form after CRM upsert", async () => {
+    const fetchFn = hubspotFetch();
+    await persistIntake(leadPayload(), {
+      env: {
+        HUBSPOT_ACCESS_TOKEN: "pat-ssdi-test",
+        HUBSPOT_PORTAL_ID: "555001",
+        HUBSPOT_FORM_ID: "form-ssdi-intake",
+      },
+      fetch: fetchFn,
+    });
+    const formCall = fetchFn.calls.find((c) => c.url.includes("api.hsforms.com") && c.url.includes("form-ssdi-intake"));
+    assert.ok(formCall);
+    const formBody = JSON.parse(formCall.init.body);
+    assert.equal(formBody.fields.find((f) => f.name === "phone").value, "4155550100");
+    assert.equal(formBody.context.pageUri, "https://ssdicampaigns.com/contact");
   });
 
   it("returns 502 when HubSpot is wired and both destinations fail", async () => {
@@ -300,6 +355,11 @@ describe("health", () => {
   it("reports crm wired only when HubSpot token is present", () => {
     assert.equal(healthStatus({}).crm, "unwired");
     assert.equal(healthStatus({ HUBSPOT_ACCESS_TOKEN: "   " }).crm, "unwired");
+    assert.equal(healthStatus({ HUBSPOT_ACCESS_TOKEN: "__HUBSPOT_ACCESS_TOKEN__" }).crm, "unwired");
+    assert.equal(
+      healthStatus({ HUBSPOT_ACCESS_TOKEN: "pat-ssdi", HUBSPOT_PORTAL_ID: "247081451" }).crm,
+      "unwired",
+    );
     assert.deepEqual(healthStatus({ HUBSPOT_ACCESS_TOKEN: "pat-ssdi" }).crm, "wired");
     const both = healthStatus({
       HUBSPOT_ACCESS_TOKEN: "pat-ssdi",

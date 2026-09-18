@@ -55,7 +55,7 @@ Create a **new** private app in the SSDI HubSpot portal:
 | `crm.objects.deals.read` + `write` | Pipeline deals |
 | `crm.schemas.deals.write` | Create the **SSDI Campaigns** deal pipeline once |
 
-Set `HUBSPOT_ACCESS_TOKEN` in App Platform. **Never commit it. Never reuse another campaign’s token.**
+Set `HUBSPOT_ACCESS_TOKEN` in App Platform. **Never commit it. Never reuse a CaseClosedFL token or portal `247081451`.** Step-by-step: [`docs/HUBSPOT.md`](../docs/HUBSPOT.md).
 
 ### Contact properties this API ensures
 
@@ -63,11 +63,11 @@ Set `HUBSPOT_ACCESS_TOKEN` in App Platform. **Never commit it. Never reuse anoth
 | --- | --- | --- |
 | `firstname` / `lastname` | `name` | Split on first space |
 | `phone` / `email` | intake | Search keys |
-| `state` / `zip` | intake | Standard HubSpot fields |
+| `state` / `zip` | intake | Standard HubSpot fields **and** `ssdi_state` / `ssdi_zip` |
 | `ssdi_disability_type` | `disabilityType` | CRM-only |
 | `ssdi_tcpa_consent` + `ssdi_tcpa_consent_at` | `tcpa` | Retain for the life of the contact |
 | `ssdi_sensitive_health_ack` | `sensitiveHealth` | |
-| `ssdi_campaign_source` | `source` | `site`, `vapi-ssdi`, state pages, … |
+| `ssdi_campaign_source` + `ssdi_source` | `source` | `site`, `vapi-ssdi`, state pages, … |
 | `ssdi_intake_id` | lead id | |
 | `ssdi_validator_status` | validator | `NEW` → `VALIDATING` → `VALIDATED` / `INCOMPLETE` / `CONTRADICTED` / `FOLLOW_UP` |
 | `ssdi_fraud_signal` | validator `staff_verdict` / `fraud_overall` | Signal, not an accusation |

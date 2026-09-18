@@ -197,6 +197,9 @@ export async function persistIntake(payload, deps = {}) {
       wired: hubspotWired,
       action: hubspot.action,
       contactId: hubspot.contactId,
+      dealId: hubspot.deal?.dealId,
+      noteId: hubspot.note?.noteId,
+      reason: hubspot.reason,
     },
     sheets: {
       ok: sheets.ok === true,
