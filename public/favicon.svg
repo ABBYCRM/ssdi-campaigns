@@ -1,15 +1,15 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" role="img" aria-label="SSDI Campaigns">
-  <circle cx="8" cy="8" r="8" fill="#3AA8A0"/>
-  <circle cx="8" cy="8" r="6.4" fill="#FFF8EE"/>
-  <g fill="#C45A2A">
+  <circle cx="8" cy="8" r="8" fill="#0B1F3A"/>
+  <circle cx="8" cy="8" r="6.5" fill="#E8F4FC"/>
+  <g fill="#C41E3A">
     <circle cx="5.1" cy="6.2" r="1.55"/>
     <path d="M2.85 12.15c.12-1.8 1.02-2.95 2.25-2.95s2.13 1.15 2.25 2.95z"/>
   </g>
-  <g fill="#3AA8A0">
+  <g fill="#0D9488">
     <circle cx="10.9" cy="6.2" r="1.55"/>
     <path d="M8.65 12.15c.12-1.8 1.02-2.95 2.25-2.95s2.13 1.15 2.25 2.95z"/>
   </g>
-  <g fill="#4A2410">
+  <g fill="#0B1F3A">
     <circle cx="8" cy="6.65" r="1.7"/>
     <path d="M5.55 12.55c.14-1.95 1.15-3.2 2.45-3.2s2.31 1.25 2.45 3.2z"/>
   </g>

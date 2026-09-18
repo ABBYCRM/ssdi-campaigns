@@ -11,7 +11,7 @@ export const intakeSchema = z.object({
     .refine((v) => v.replace(/\D/g, "").length >= 10, "Enter a valid phone number."),
   email: z.union([z.string().trim().email("Enter a valid email."), z.literal("")]).optional(),
   disabilityType: z.string().min(1, "Select a disability type."),
-  state: z.string().optional(),
+  state: z.string().min(2, "Select your state."),
   zip: z.string().trim().max(10).optional(),
   message: z.string().trim().max(2000).optional(),
   tcpa: z.boolean().refine((v) => v === true, "Consent is required to be contacted by phone or text."),

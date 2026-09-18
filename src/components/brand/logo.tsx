@@ -8,14 +8,15 @@ export function LogoMark({ className }: { className?: string }) {
       role="img"
       aria-label="SSDI Campaigns"
     >
-      <circle cx="24" cy="24" r="23" fill="#3AA8A0" />
-      <circle cx="24" cy="24" r="19.5" fill="#FFF8EE" />
-      <circle cx="15.5" cy="18.5" r="4" fill="#C45A2A" />
-      <path d="M9.6 32.2c.5-5 3-7.7 5.9-7.7s5.4 2.7 5.9 7.7" fill="#C45A2A" />
-      <circle cx="24" cy="16.6" r="4.4" fill="#4A2410" />
-      <path d="M16.6 32.4c.7-5.6 3.5-8.6 7.4-8.6s6.7 3 7.4 8.6" fill="#4A2410" />
-      <circle cx="32.5" cy="18.5" r="4" fill="#3AA8A0" />
-      <path d="M26.6 32.2c.5-5 3-7.7 5.9-7.7s5.4 2.7 5.9 7.7" fill="#3AA8A0" />
+      <circle cx="24" cy="24" r="23" fill="#0B2A4A" />
+      <path d="M6 34c4 7 12 11 18 11s14-4 18-11" fill="#C8102E" />
+      <path d="M8 36c4 6 11 9 16 9s12-3 16-9" fill="#E85A32" opacity="0.9" />
+      <circle cx="16.5" cy="18" r="4.1" fill="#F4F8FC" />
+      <path d="M10.4 31.2c.6-5.2 3.2-8 6.1-8s5.5 2.8 6.1 8" fill="#F4F8FC" />
+      <circle cx="24" cy="16.2" r="4.4" fill="#FFFFFF" />
+      <path d="M16.8 32c.7-5.8 3.6-8.8 7.2-8.8s6.5 3 7.2 8.8" fill="#FFFFFF" />
+      <circle cx="31.6" cy="18" r="4.1" fill="#E8F4FC" />
+      <path d="M25.4 31.2c.6-5.2 3.2-8 6.2-8s5.5 2.8 6.1 8" fill="#E8F4FC" />
     </svg>
   );
 }
@@ -23,8 +24,8 @@ export function LogoMark({ className }: { className?: string }) {
 export function Logo({ className }: { className?: string }) {
   return (
     <span className={cn("flex items-center gap-2.5", className)}>
-      <LogoMark className="size-10" />
-      <span className="font-display whitespace-nowrap text-sm font-semibold uppercase leading-none tracking-[0.08em] text-navy sm:text-base">
+      <LogoMark className="size-9" />
+      <span className="whitespace-nowrap text-sm font-extrabold tracking-[0.06em] text-navy uppercase leading-none sm:text-[0.95rem]">
         SSDI Campaigns
       </span>
     </span>
