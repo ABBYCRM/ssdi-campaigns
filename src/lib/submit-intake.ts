@@ -242,7 +242,7 @@ async function emailOps(lead: StoredLead) {
   if (!key || forbiddenBrand(key)) return;
   const from =
     env("RESEND_FROM_EMAIL") ?? env("INTAKE_FROM_EMAIL") ?? "SSDI Campaigns <noreply@ssdicampaigns.com>";
-  const replyTo = env("RESEND_REPLY_TO");
+  const replyTo = env("RESEND_REPLY_TO") ?? "Intake@abbycrm.com";
   if (forbiddenBrand(from) || forbiddenBrand(replyTo)) {
     console.error("intake email blocked: CaseClosedFL identity is not allowed on SSDI Campaigns");
     return;

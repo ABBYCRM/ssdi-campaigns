@@ -33,5 +33,6 @@ This site is educational and campaign-intake only. It is not a law firm and does
 - 20 CFR Part 404; Social Security Act §§ 223, 1140
 
 ## Contact
-Phone: 1-800-SSDI-GUIDE
+Phone: set VITE_PUBLIC_PHONE / INBOUND_PHONE_NUMBER to the SSDI Vapi inbound line (not CaseClosedFL)
 Email: info@ssdi-campaign-help.org
+Intake replies: Intake@abbycrm.com

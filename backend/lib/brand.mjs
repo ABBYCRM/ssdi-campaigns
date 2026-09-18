@@ -6,7 +6,8 @@ export const BRAND = "ssdi-campaigns";
 export const SSDI_SENDING_DOMAIN = "ssdicampaigns.com";
 
 export const DEFAULT_RESEND_FROM = `SSDI Campaigns <noreply@${SSDI_SENDING_DOMAIN}>`;
-export const DEFAULT_RESEND_REPLY_TO = `info@${SSDI_SENDING_DOMAIN}`;
+/** Luis-approved Reply-To (not CaseClosedFL). From-address stays on ssdicampaigns.com. */
+export const DEFAULT_RESEND_REPLY_TO = "Intake@abbycrm.com";
 
 /** Markers that must never appear in SSDI runtime defaults or Resend identity. */
 export const FORBIDDEN_BRAND_MARKERS = [

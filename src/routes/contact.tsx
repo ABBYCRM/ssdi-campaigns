@@ -5,19 +5,21 @@ import { IntakeForm } from "@/components/forms/intake-form";
 import { PageHero } from "@/components/layout/page-hero";
 import { pageHead } from "@/lib/seo";
 import { SITE } from "@/lib/site";
+import { getPublicPhone } from "@/lib/public-phone";
 
 export const Route = createFileRoute("/contact")({
   head: () =>
     pageHead({
       title: "Free SSDI Consultation",
       description:
-        "Request a free SSDI eligibility screening. Call 1-800-SSDI-GUIDE or submit the form. Independent campaign — not affiliated with SSA.",
+        "Request a free SSDI eligibility screening. Call the campaign line or submit the form. Independent campaign — not affiliated with SSA.",
       path: "/contact",
     }),
   component: ContactPage,
 });
 
 function ContactPage() {
+  const phone = getPublicPhone();
   return (
     <main id="main">
       <PageHero
@@ -30,7 +32,15 @@ function ContactPage() {
           <IntakeForm source="contact" />
         </div>
         <aside className="space-y-4">
-          <Card icon={<Phone className="size-4" />} title="Call" body={SITE.phoneDisplay} href={`tel:${SITE.phoneTel}`} />
+          {phone.provisioned ? (
+            <Card icon={<Phone className="size-4" />} title="Call" body={phone.display} href={`tel:${phone.tel}`} />
+          ) : (
+            <Card
+              icon={<Phone className="size-4" />}
+              title="Call"
+              body="Inbound line pending — use this form. The SSDI Vapi number will appear here once provisioned."
+            />
+          )}
           <Card icon={<Mail className="size-4" />} title="Email" body={SITE.email} href={`mailto:${SITE.email}`} />
           <Card icon={<Clock className="size-4" />} title="Hours" body={SITE.hours} />
           <p className="text-xs leading-relaxed text-muted">

@@ -1,3 +1,7 @@
+import { contactPhonePhrase, getPublicPhone } from "./public-phone";
+
+const publicPhone = getPublicPhone();
+
 export const SITE = {
   name: "SSDI Campaigns",
   legalName: "SSDI Campaigns",
@@ -6,8 +10,12 @@ export const SITE = {
     "Independent SSDI campaign helping people understand eligibility, applications, denials, and appeals. Not affiliated with the U.S. Social Security Administration.",
   url: "https://ssdicampaigns.com",
   domain: "ssdicampaigns.com",
-  phoneDisplay: "1-800-SSDI-GUIDE",
-  phoneTel: "+18007734483",
+  /** Formatted SSDI Vapi number, or empty until VITE_PUBLIC_PHONE / INBOUND_PHONE_NUMBER is set. */
+  phoneDisplay: publicPhone.display,
+  phoneTel: publicPhone.tel,
+  phoneProvisioned: publicPhone.provisioned,
+  /** For legal copy: live number, or "the campaign contact form" before provisioning. */
+  phonePhrase: contactPhonePhrase(),
   email: "info@ssdi-campaign-help.org",
   privacyEmail: "privacy@ssdi-campaign-help.org",
   hours: "Monday–Friday, 8:00 a.m. to 8:00 p.m. ET",

@@ -27,7 +27,7 @@ function Page() {
       <article className="container-page max-w-3xl space-y-8 py-14 text-sm leading-relaxed text-muted">
         <p>
           Operator: {SITE.legalName} (“we,” “us”). Contact: {SITE.email}. Privacy requests: {SITE.privacyEmail}. Phone:{" "}
-          {SITE.phoneDisplay}. Website: {SITE.domain}.
+          {SITE.phonePhrase}. Website: {SITE.domain}.
         </p>
 
         <Section title="1. Who we are — and who we are not">

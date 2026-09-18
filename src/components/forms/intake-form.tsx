@@ -10,6 +10,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { DISABILITY_OPTIONS, intakeSchema } from "@/lib/form-schema";
 import { US_STATES } from "@/lib/states";
 import { SITE, TCPA_CONSENT } from "@/lib/site";
+import { CallLink } from "@/components/layout/call-link";
 import { submitIntake } from "@/lib/submit-intake";
 import { cn } from "@/lib/utils";
 
@@ -71,11 +72,15 @@ export function IntakeForm({ compact, source = "site", className }: Props) {
         </span>
         <h3 className="text-lg font-bold text-navy">Request received</h3>
         <p className="max-w-md text-sm text-muted">
-          Thanks. A campaign specialist will follow up at the number you provided. You can also call{" "}
-          <a className="font-semibold text-navy" href={`tel:${SITE.phoneTel}`}>
-            {SITE.phoneDisplay}
-          </a>
-          .
+          Thanks. A campaign specialist will follow up at the number you provided.
+          {SITE.phoneProvisioned ? (
+            <>
+              {" "}
+              You can also call <CallLink className="font-semibold text-navy" icon={false} />.
+            </>
+          ) : (
+            <> You can also use the contact form if you need to reach us.</>
+          )}
         </p>
       </div>
     );
@@ -161,8 +166,15 @@ export function IntakeForm({ compact, source = "site", className }: Props) {
         {pending ? "Sending…" : "Submit your case"}
       </Button>
       <p className="text-[0.7rem] leading-relaxed text-muted">
-        Not a government agency. Applying at SSA is free. Consent is not required to obtain information — you may call{" "}
-        {SITE.phoneDisplay} instead.
+        Not a government agency. Applying at SSA is free. Consent is not required to obtain information — you may{" "}
+        {SITE.phoneProvisioned ? (
+          <>
+            call <CallLink className="font-semibold text-navy" icon={false} /> instead
+          </>
+        ) : (
+          <>use the contact form instead</>
+        )}
+        .
       </p>
     </form>
   );

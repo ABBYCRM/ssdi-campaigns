@@ -106,10 +106,11 @@ function crmFetch({ hubspot, sheetsOk = true } = {}) {
 }
 
 describe("brand isolation", () => {
-  it("defaults Resend identity to ssdicampaigns.com", () => {
+  it("defaults Resend From to ssdicampaigns.com and Reply-To to Intake@abbycrm.com", () => {
     assert.match(DEFAULT_RESEND_FROM, /ssdicampaigns\.com/);
-    assert.match(DEFAULT_RESEND_REPLY_TO, /ssdicampaigns\.com/);
+    assert.equal(DEFAULT_RESEND_REPLY_TO, "Intake@abbycrm.com");
     assert.equal(containsForbiddenBrand(DEFAULT_RESEND_FROM), false);
+    assert.equal(containsForbiddenBrand(DEFAULT_RESEND_REPLY_TO), false);
     assert.equal(containsForbiddenBrand("noreply@caseclosedfl.com"), true);
     assert.equal(ssdiOnlyValue("SSDI Campaigns <hello@caseclosedfl.com>"), undefined);
     assert.equal(resendFromEmail({ RESEND_FROM_EMAIL: "CaseClosedFL <a@caseclosedfl.com>" }), DEFAULT_RESEND_FROM);

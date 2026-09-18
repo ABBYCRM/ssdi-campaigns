@@ -1,10 +1,11 @@
 import * as React from "react";
 import { Link } from "@tanstack/react-router";
-import { Menu, Phone } from "lucide-react";
+import { Menu } from "lucide-react";
 import { Logo } from "@/components/brand/logo";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
-import { NAV, SITE } from "@/lib/site";
+import { CallLink } from "@/components/layout/call-link";
+import { NAV } from "@/lib/site";
 
 export function SiteHeader() {
   const [open, setOpen] = React.useState(false);
@@ -33,13 +34,7 @@ export function SiteHeader() {
           <Button asChild variant="coral" size="sm" className="whitespace-nowrap">
             <Link to="/contact">Free Consultation</Link>
           </Button>
-          <a
-            href={`tel:${SITE.phoneTel}`}
-            className="flex items-center gap-1.5 whitespace-nowrap text-sm font-extrabold tracking-tight text-navy"
-          >
-            <Phone className="size-4 text-teal" />
-            {SITE.phoneDisplay}
-          </a>
+          <CallLink className="whitespace-nowrap text-sm font-extrabold tracking-tight text-navy" />
         </div>
 
         <Sheet open={open} onOpenChange={setOpen}>
@@ -78,9 +73,7 @@ export function SiteHeader() {
                   Free Consultation
                 </Link>
               </Button>
-              <a href={`tel:${SITE.phoneTel}`} className="text-center text-sm font-bold text-navy">
-                {SITE.phoneDisplay}
-              </a>
+              <CallLink className="justify-center text-sm font-bold text-navy" />
             </div>
           </SheetContent>
         </Sheet>

@@ -53,14 +53,25 @@ Share the spreadsheet with the service account as Editor. This is **not** the pr
 
 Placeholders in `.do/app.yaml`. Use a Resend account + domain for **ssdicampaigns.com**. Never reuse CaseClosedFL Resend keys or `caseclosedfl.com` from/reply addresses.
 
-| Variable | Example |
+| Variable | Value |
 | --- | --- |
-| `RESEND_API_KEY` | (secret, SSDI Resend project) |
+| `RESEND_API_KEY` | secret, SSDI Resend project |
 | `RESEND_FROM_EMAIL` | `SSDI Campaigns <noreply@ssdicampaigns.com>` |
-| `RESEND_REPLY_TO` | `info@ssdicampaigns.com` |
+| `RESEND_REPLY_TO` | `Intake@abbycrm.com` (Luis-approved) |
 | `INTAKE_NOTIFY_EMAIL` | optional ops inbox; defaults to reply-to |
 
+**Verify `ssdicampaigns.com` before sending:** Resend → Domains → Add `ssdicampaigns.com` → copy SPF + DKIM (and optional DMARC) to DNS → wait until status is **Verified**. Until then, From `noreply@ssdicampaigns.com` will bounce or be rejected.
+
 Values containing CaseClosedFL hostnames are ignored at runtime.
+
+## Public click-to-call (SSDI Vapi number)
+
+After the **SSDI** Vapi assistant has an inbound number, set:
+
+- `VITE_PUBLIC_PHONE` (build-time; Vite inlines this into header/footer/CTAs)
+- `INBOUND_PHONE_NUMBER` (same E.164; used if `VITE_PUBLIC_PHONE` is empty at build)
+
+Redeploy so the web image rebuilds. Do **not** use CaseClosedFL `+15615661360`. Until these are set, click-to-call CTAs go to `/contact` instead of a fake number.
 
 ## Vapi webhook (separate SSDI assistant)
 

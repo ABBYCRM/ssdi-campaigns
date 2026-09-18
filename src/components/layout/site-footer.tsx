@@ -1,6 +1,7 @@
 import { Link } from "@tanstack/react-router";
-import { Mail, Phone } from "lucide-react";
+import { Mail } from "lucide-react";
 import { Logo } from "@/components/brand/logo";
+import { CallLink } from "@/components/layout/call-link";
 import { LEGAL_LINKS, NAV, RESOURCE_LINKS, SITE, SSA_DISCLAIMER } from "@/lib/site";
 
 export function SiteFooter() {
@@ -13,9 +14,7 @@ export function SiteFooter() {
             Independent campaign helping people understand SSDI eligibility, applications, denials, and appeals.
           </p>
           <p className="mt-4 flex flex-col gap-1.5 text-sm font-semibold text-navy">
-            <a href={`tel:${SITE.phoneTel}`} className="inline-flex items-center gap-2">
-              <Phone className="size-4 text-teal" /> {SITE.phoneDisplay}
-            </a>
+            <CallLink className="font-semibold" iconClassName="size-4 text-teal" />
             <a href={`mailto:${SITE.email}`} className="inline-flex items-center gap-2">
               <Mail className="size-4 text-teal" /> {SITE.email}
             </a>

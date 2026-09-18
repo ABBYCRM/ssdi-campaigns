@@ -2,25 +2,27 @@ import { SITE, SSA_DISCLAIMER } from "@/lib/site";
 import { FAQS } from "@/lib/ssdi";
 
 export function JsonLd() {
-  const org = {
+  const org: Record<string, unknown> = {
     "@context": "https://schema.org",
     "@type": ["Organization", "NGO"],
     name: SITE.name,
     url: SITE.url,
     email: SITE.email,
-    telephone: SITE.phoneTel,
     description: SITE.description,
     areaServed: "US",
     slogan: SITE.tagline,
     disambiguatingDescription: SSA_DISCLAIMER,
-    contactPoint: {
+  };
+  if (SITE.phoneProvisioned && SITE.phoneTel) {
+    org.telephone = SITE.phoneTel;
+    org.contactPoint = {
       "@type": "ContactPoint",
       telephone: SITE.phoneTel,
       contactType: "customer support",
       areaServed: "US",
       availableLanguage: ["English"],
-    },
-  };
+    };
+  }
 
   const website = {
     "@context": "https://schema.org",

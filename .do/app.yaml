@@ -41,7 +41,9 @@ services:
       #   GOOGLE_SHEETS_CLIENT_EMAIL
       #   GOOGLE_SHEETS_PRIVATE_KEY
       #   GOOGLE_SHEETS_SERVICE_ACCOUNT_JSON
-      #   RESEND_API_KEY                (ssdicampaigns.com Resend project)
+      #   RESEND_API_KEY                (ssdicampaigns.com Resend project — verify domain)
+      #   VITE_PUBLIC_PHONE             (SSDI Vapi number; rebuild after setting)
+      #   INBOUND_PHONE_NUMBER          (same number; never CaseClosedFL +15615661360)
       #   VAPI_WEBHOOK_SECRET
       #   VAPI_ASSISTANT_ID             (SSDI assistant — not CaseClosedFL)
       - key: RESEND_API_KEY
@@ -52,5 +54,13 @@ services:
         value: "SSDI Campaigns <noreply@ssdicampaigns.com>"
         scope: RUN_TIME
       - key: RESEND_REPLY_TO
-        value: "info@ssdicampaigns.com"
+        value: "Intake@abbycrm.com"
         scope: RUN_TIME
+      # After the SSDI Vapi assistant number exists, set both to that E.164
+      # number and redeploy (Vite inlines VITE_* at build). Never +15615661360.
+      - key: VITE_PUBLIC_PHONE
+        value: ""
+        scope: RUN_AND_BUILD_TIME
+      - key: INBOUND_PHONE_NUMBER
+        value: ""
+        scope: RUN_AND_BUILD_TIME

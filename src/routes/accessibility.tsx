@@ -25,7 +25,7 @@ function Page() {
         <p>
           We aim to conform to WCAG 2.2 Level AA: semantic headings, skip link, visible focus, form labels, 4.5:1 text
           contrast, keyboard access to navigation and the accordion, and respect for prefers-reduced-motion. Alternative
-          contact: {SITE.phoneDisplay} and {SITE.email}.
+          contact: {SITE.phonePhrase} and {SITE.email}.
         </p>
         <p>
           If you encounter a barrier, email {SITE.email} with the page URL and a description. We will work to fix it. This

@@ -24,7 +24,7 @@ function Page() {
         </p>
         <p>
           Opt out: reply STOP, END, CANCEL, UNSUBSCRIBE, or QUIT. We will confirm and cease marketing texts. For help:
-          reply HELP or call {SITE.phoneDisplay}. Carriers are not liable for delayed or undelivered messages.
+          reply HELP or call {SITE.phonePhrase}. Carriers are not liable for delayed or undelivered messages.
         </p>
         <p>
           Consent is obtained via an unchecked checkbox and is not a condition of receiving services. See our{" "}
