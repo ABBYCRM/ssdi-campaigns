@@ -2,7 +2,7 @@
  * SSDI Campaigns intake API.
  *
  * POST /intake — HubSpot-primary lead persist (Sheets backup/failover).
- * POST /webhooks/vapi — SSDI Vapi assistant → same /intake path.
+ * POST /api/vapi/inbound — public SSDI Vapi webhook (also /webhooks/vapi).
  * GET  /health — crm wired/unwired from HUBSPOT_ACCESS_TOKEN.
  *
  * Independent of CaseClosedFL. Do not set CaseClosedFL Resend keys, domains,
@@ -11,7 +11,7 @@
 import http from "node:http";
 import { pathToFileURL } from "node:url";
 import { healthStatus, persistIntake } from "./lib/persist.mjs";
-import { extractVapiLead, verifyVapiSecret } from "./lib/vapi.mjs";
+import { handleVapiWebhook } from "./lib/vapi-handler.mjs";
 
 const PORT = Number(process.env.PORT || 8787);
 
@@ -71,12 +71,8 @@ export function createHandler(deps = {}) {
       return;
     }
 
-    if (req.method === "POST" && (path === "/webhooks/vapi" || path === "/vapi/webhook")) {
-      const secret = verifyVapiSecret(req.headers, env);
-      if (!secret.ok) {
-        json(res, 401, { ok: false, error: "unauthorized" });
-        return;
-      }
+    const vapiPaths = ["/api/vapi/inbound", "/webhooks/vapi", "/vapi/webhook", "/vapi/inbound"];
+    if (req.method === "POST" && vapiPaths.includes(path)) {
       let body = {};
       try {
         body = await readJsonBody(req);
@@ -84,16 +80,21 @@ export function createHandler(deps = {}) {
         json(res, 400, { ok: false, error: "invalid_json" });
         return;
       }
-      const extracted = extractVapiLead(body, env);
-      if (extracted.skip) {
-        json(res, 202, { ok: true, ignored: true, reason: extracted.error });
-        return;
-      }
-      const result = await persistIntake(extracted.payload, { env, fetch: fetchFn });
-      json(res, result.status || (result.ok ? 202 : 422), {
-        ...result,
-        via: "vapi",
-        eventType: extracted.eventType,
+      const result = await handleVapiWebhook({
+        body,
+        headers: req.headers,
+        env,
+        fetch: fetchFn,
+      });
+      json(res, result.status, result.body);
+      return;
+    }
+
+    if (req.method === "GET" && path === "/api/vapi/inbound") {
+      json(res, 200, {
+        ok: true,
+        service: "ssdi-vapi-inbound",
+        path: "/api/vapi/inbound",
       });
       return;
     }

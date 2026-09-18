@@ -2,7 +2,7 @@ import assert from "node:assert/strict";
 import { generateKeyPairSync } from "node:crypto";
 import { once } from "node:events";
 import { afterEach, describe, it } from "node:test";
-import { containsForbiddenBrand, DEFAULT_RESEND_FROM, DEFAULT_RESEND_REPLY_TO, ssdiOnlyValue } from "./lib/brand.mjs";
+import { containsForbiddenBrand, DEFAULT_RESEND_FROM, DEFAULT_RESEND_REPLY_TO, SSDI_VAPI_ASSISTANT_ID, ssdiOnlyValue } from "./lib/brand.mjs";
 import { resetHubSpotPropertyCache } from "./lib/hubspot.mjs";
 import { healthStatus, persistIntake } from "./lib/persist.mjs";
 import { resendFromEmail, resendReplyTo } from "./lib/resend.mjs";
@@ -269,7 +269,7 @@ describe("Vapi webhook mapping", () => {
     const extracted = extractVapiLead({
       message: {
         type: "end-of-call-report",
-        call: { assistantId: "asst_ssdi_only", customer: { number: "+14155550100" } },
+        call: { assistantId: SSDI_VAPI_ASSISTANT_ID, customer: { number: "+14155550100" } },
         analysis: {
           summary: "Caller asked about a denial",
           structuredData: {
@@ -306,16 +306,19 @@ describe("Vapi webhook mapping", () => {
     assert.equal(extracted.error, "assistant_mismatch");
   });
 
-  it("does not default any CaseClosedFL assistant id", () => {
+  it("defaults to the SSDI assistant id, never CaseClosedFL", () => {
+    assert.equal(SSDI_VAPI_ASSISTANT_ID, "c0f5dd63-3c51-4eb6-9f62-8a6e2391c954");
+    assert.equal(containsForbiddenBrand(SSDI_VAPI_ASSISTANT_ID), false);
     const extracted = extractVapiLead({
       message: {
         type: "end-of-call-report",
-        call: { customer: { number: "+14155550199" } },
+        call: { assistantId: SSDI_VAPI_ASSISTANT_ID, customer: { number: "+14155550199" } },
         analysis: { structuredData: { name: "Pat", tcpa: true } },
       },
     });
     assert.equal(extracted.ok, true);
-    assert.equal(extracted.assistantId, null);
+    assert.equal(extracted.skip, undefined);
+    assert.equal(extracted.assistantId, SSDI_VAPI_ASSISTANT_ID);
   });
 
   it("fail-closes Vapi leads without tcpa true", async () => {
@@ -387,7 +390,35 @@ describe("HTTP server", () => {
         body: JSON.stringify({
           message: {
             type: "end-of-call-report",
-            call: { assistantId: "asst_ssdi_only", customer: { number: "4155550100" } },
+            call: { assistantId: SSDI_VAPI_ASSISTANT_ID, customer: { number: "4155550100" } },
+            analysis: {
+              structuredData: {
+                name: "Ada Lovelace",
+                email: "ada@example.com",
+                tcpa: true,
+                source: "vapi-ssdi",
+              },
+            },
+          },
+        }),
+      });
+      const body = await res.json();
+      assert.equal(res.status, 202);
+      assert.equal(body.via, "vapi");
+      assert.equal(body.forwardedTo, "hubspot");
+    });
+  });
+
+  it("POST /api/vapi/inbound accepts end-of-call reports", async () => {
+    const fetchFn = hubspotFetch();
+    await withServer({ env: { HUBSPOT_ACCESS_TOKEN: "pat-ssdi" }, fetch: fetchFn }, async (port) => {
+      const res = await fetch(`http://127.0.0.1:${port}/api/vapi/inbound`, {
+        method: "POST",
+        headers: { "content-type": "application/json" },
+        body: JSON.stringify({
+          message: {
+            type: "end-of-call-report",
+            call: { assistantId: SSDI_VAPI_ASSISTANT_ID, customer: { number: "4155550100" } },
             analysis: {
               structuredData: {
                 name: "Ada Lovelace",

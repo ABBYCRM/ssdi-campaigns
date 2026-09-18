@@ -12,7 +12,7 @@ export const Route = createFileRoute("/contact")({
     pageHead({
       title: "Free SSDI Consultation",
       description:
-        "Request a free SSDI eligibility screening. Call the campaign line or submit the form. Independent campaign — not affiliated with SSA.",
+        "Request a free SSDI eligibility screening. Call +1 (561) 652-0362 or email Intake@abbycrm.com. Independent campaign — not affiliated with SSA.",
       path: "/contact",
     }),
   component: ContactPage,

@@ -6,8 +6,14 @@ export const BRAND = "ssdi-campaigns";
 export const SSDI_SENDING_DOMAIN = "ssdicampaigns.com";
 
 export const DEFAULT_RESEND_FROM = `SSDI Campaigns <noreply@${SSDI_SENDING_DOMAIN}>`;
-/** Luis-approved Reply-To (not CaseClosedFL). From-address stays on ssdicampaigns.com. */
+/** Luis-approved Reply-To / public contact email (not CaseClosedFL). */
 export const DEFAULT_RESEND_REPLY_TO = "Intake@abbycrm.com";
+
+/** SSDI Vapi inbound. Never CaseClosedFL +15615661360. */
+export const SSDI_INBOUND_E164 = "+15616520362";
+
+/** SSDI Vapi assistant (not CaseClosedFL). */
+export const SSDI_VAPI_ASSISTANT_ID = "c0f5dd63-3c51-4eb6-9f62-8a6e2391c954";
 
 /** Markers that must never appear in SSDI runtime defaults or Resend identity. */
 export const FORBIDDEN_BRAND_MARKERS = [

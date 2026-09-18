@@ -10,7 +10,8 @@ Do **not** copy CaseClosedFL HubSpot private-app tokens, Resend API keys, sendin
 | --- | --- | --- |
 | `GET` | `/health` | `crm: "wired" \| "unwired"` from `HUBSPOT_ACCESS_TOKEN` presence |
 | `POST` | `/intake` | Validate + persist a lead |
-| `POST` | `/webhooks/vapi` | SSDI Vapi assistant → same persist path (`/vapi/webhook` alias) |
+| `POST` | `/api/vapi/inbound` | **Production Vapi URL** — end-of-call / tool results → same persist path |
+| `POST` | `/webhooks/vapi` | Alias of `/api/vapi/inbound` |
 
 Intake JSON: `{ name, phone, email, disabilityType, state, zip, message, tcpa, sensitiveHealth, source }`.
 
@@ -66,23 +67,24 @@ Values containing CaseClosedFL hostnames are ignored at runtime.
 
 ## Public click-to-call (SSDI Vapi number)
 
-After the **SSDI** Vapi assistant has an inbound number, set:
+Provisioned inbound: **+1 (561) 652-0362** (`+15616520362`). Env defaults in `.do/app.yaml`:
 
-- `VITE_PUBLIC_PHONE` (build-time; Vite inlines this into header/footer/CTAs)
-- `INBOUND_PHONE_NUMBER` (same E.164; used if `VITE_PUBLIC_PHONE` is empty at build)
+- `VITE_PUBLIC_PHONE=+15616520362`
+- `INBOUND_PHONE_NUMBER=+15616520362`
 
-Redeploy so the web image rebuilds. Do **not** use CaseClosedFL `+15615661360`. Until these are set, click-to-call CTAs go to `/contact` instead of a fake number.
+Do **not** use CaseClosedFL `+15615661360`. The site also defaults to the SSDI number in code if env is empty.
 
-## Vapi webhook (separate SSDI assistant)
+## Vapi webhook (SSDI assistant)
 
-Point a **new** SSDI Vapi assistant’s server URL at `https://<intake-host>/webhooks/vapi`. Do not use CaseClosedFL assistant IDs.
+**Server URL (point the assistant here):** `https://ssdicampaigns.com/api/vapi/inbound`
 
-| Variable | Purpose |
-| --- | --- |
-| `VAPI_WEBHOOK_SECRET` | optional shared secret (`x-vapi-secret` or `Authorization: Bearer`) |
-| `VAPI_ASSISTANT_ID` | optional; other assistant IDs are ignored |
+- Assistant id: `c0f5dd63-3c51-4eb6-9f62-8a6e2391c954` (`VAPI_ASSISTANT_ID`)
+- Accepts `end-of-call-report` and tool/function-call payloads; maps onto `/intake`
+- Optional `VAPI_WEBHOOK_SECRET` (`x-vapi-secret` or `Authorization: Bearer`)
+- Other assistant IDs (including CaseClosedFL) are ignored
+- Aliases on the standalone API: `/webhooks/vapi`, `/vapi/webhook`
 
-Completed-call leads (`end-of-call-report`) and lead-named tool/function calls are mapped onto `/intake`. Structured data should include `tcpa: true` or the request fail-closes with `422`.
+Structured data should include `tcpa: true` or the request fail-closes with `422`.
 
 ## Run locally
 

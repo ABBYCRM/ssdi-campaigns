@@ -41,8 +41,8 @@ Leads POST to `/intake` (standalone `backend/server.mjs`, also used in-process b
 2. **Google Sheets is backup / failover only.** Set `GOOGLE_SHEETS_SPREADSHEET_ID` plus a service account (`GOOGLE_SHEETS_CLIENT_EMAIL` + `GOOGLE_SHEETS_PRIVATE_KEY`, or `GOOGLE_SHEETS_SERVICE_ACCOUNT_JSON`). Sheets runs after a successful HubSpot write, or when HubSpot is unwired/unavailable. It is not the primary CRM.
 3. **TCPA is fail-closed** (`tcpa === true` required). Consent and `source` are mapped onto the HubSpot contact.
 4. **Resend is SSDI-domain only.** `RESEND_FROM_EMAIL` defaults to `SSDI Campaigns <noreply@ssdicampaigns.com>`. `RESEND_REPLY_TO` defaults to `Intake@abbycrm.com` (Luis-approved). Verify **ssdicampaigns.com** in the SSDI Resend project (Domains → DNS SPF/DKIM → status Verified) before sending. Do not reuse CaseClosedFL Resend keys or domains.
-5. **Vapi** (`POST /webhooks/vapi`) is a separate SSDI assistant skeleton that posts completed-call leads into the same `/intake` path. Set `VAPI_ASSISTANT_ID` / `VAPI_WEBHOOK_SECRET`; do not paste CaseClosedFL assistant IDs.
-6. **Public phone (click-to-call).** After the SSDI Vapi number exists, set `VITE_PUBLIC_PHONE` and `INBOUND_PHONE_NUMBER` to that E.164 number (rebuild required for `VITE_*`). Header, footer, and CTAs read it. Never hardcode CaseClosedFL `+15615661360`. Until provisioned, those CTAs link to `/contact`.
+5. **Vapi.** Public webhook: `POST https://ssdicampaigns.com/api/vapi/inbound` (aliases `/webhooks/vapi`). Assistant id `c0f5dd63-3c51-4eb6-9f62-8a6e2391c954`. Optional `VAPI_WEBHOOK_SECRET`. Do not paste CaseClosedFL assistant IDs.
+6. **Public phone / email.** Click-to-call is **+1 (561) 652-0362** (`VITE_PUBLIC_PHONE` / `INBOUND_PHONE_NUMBER` default `+15616520362`). Contact email is **Intake@abbycrm.com**. Never CaseClosedFL `+15615661360`.
 
 `GET /health` reports `crm: "wired" | "unwired"` from HubSpot token presence.
 

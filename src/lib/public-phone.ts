@@ -1,12 +1,15 @@
 /**
  * Public click-to-call number for SSDI Campaigns.
  *
- * Source (first match): VITE_PUBLIC_PHONE, then INBOUND_PHONE_NUMBER.
- * Set these to the SSDI Vapi inbound number after that assistant exists.
- * Never default to CaseClosedFL +1 561-566-1360.
+ * Source (first match): VITE_PUBLIC_PHONE, then INBOUND_PHONE_NUMBER, then the
+ * provisioned SSDI Vapi inbound. Never CaseClosedFL +1 561-566-1360.
  */
 
+/** CaseClosedFL inbound — rejected if it ever appears in env. */
 export const CASECLOSEDFL_INBOUND_DIGITS = "5615661360";
+
+/** Provisioned SSDI Vapi inbound (E.164). */
+export const SSDI_INBOUND_E164 = "+15616520362";
 
 export type PublicPhone = {
   provisioned: boolean;
@@ -37,7 +40,7 @@ export function formatUsDisplay(value: string): string {
   const d = phoneDigits(value);
   const local = d.length === 11 && d.startsWith("1") ? d.slice(1) : d;
   if (local.length === 10) {
-    return `(${local.slice(0, 3)}) ${local.slice(3, 6)}-${local.slice(6)}`;
+    return `+1 (${local.slice(0, 3)}) ${local.slice(3, 6)}-${local.slice(6)}`;
   }
   return String(value).trim();
 }
@@ -46,7 +49,7 @@ export function resolvePublicPhone(env: {
   VITE_PUBLIC_PHONE?: string;
   INBOUND_PHONE_NUMBER?: string;
 }): PublicPhone {
-  const raw = String(env.VITE_PUBLIC_PHONE || env.INBOUND_PHONE_NUMBER || "").trim();
+  const raw = String(env.VITE_PUBLIC_PHONE || env.INBOUND_PHONE_NUMBER || SSDI_INBOUND_E164).trim();
   if (!raw) return { provisioned: false, display: "", tel: "" };
   if (isForbiddenInboundPhone(raw)) {
     return { provisioned: false, display: "", tel: "", blocked: "caseclosedfl" };
@@ -82,7 +85,7 @@ export function getPublicPhone(): PublicPhone {
   });
 }
 
-/** Legal-copy phrase: the live number, or a form fallback before Vapi is provisioned. */
+/** Legal-copy phrase: the live SSDI number. */
 export function contactPhonePhrase(): string {
   const phone = getPublicPhone();
   return phone.provisioned ? phone.display : "the campaign contact form";

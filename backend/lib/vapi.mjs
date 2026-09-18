@@ -1,4 +1,4 @@
-import { envTrim, ssdiOnlyValue } from "./brand.mjs";
+import { envTrim, ssdiOnlyValue, SSDI_VAPI_ASSISTANT_ID } from "./brand.mjs";
 
 function asObject(value) {
   return value && typeof value === "object" && !Array.isArray(value) ? value : {};
@@ -43,17 +43,19 @@ function toolResults(message) {
 
 /**
  * Map a Vapi assistant webhook (SSDI assistant only) onto the same /intake
- * payload. No CaseClosedFL assistant IDs are hardcoded or defaulted.
+ * payload. Defaults to the SSDI assistant id; no CaseClosedFL IDs.
  */
 export function extractVapiLead(body, env = process.env) {
   const root = asObject(body);
   const message = asObject(root.message?.type ? root.message : root);
   const type = String(message.type || root.type || "");
 
-  const interesting =
+    const interesting =
     type === "end-of-call-report" ||
     type === "tool-calls" ||
     type === "function-call" ||
+    type === "tool-call" ||
+    /end-of-call|tool-call|function-call/i.test(type) ||
     type === "";
   if (type && !interesting) {
     return { ok: false, skip: true, error: "ignored_event" };
@@ -65,7 +67,8 @@ export function extractVapiLead(body, env = process.env) {
     ssdiOnlyValue(root.assistantId) ||
     ssdiOnlyValue(message.assistantId);
 
-  const expected = ssdiOnlyValue(envTrim(env, "VAPI_ASSISTANT_ID"));
+  const expected =
+    ssdiOnlyValue(envTrim(env, "VAPI_ASSISTANT_ID")) || SSDI_VAPI_ASSISTANT_ID;
   if (expected && assistantId && assistantId !== expected) {
     return { ok: false, skip: true, error: "assistant_mismatch" };
   }
