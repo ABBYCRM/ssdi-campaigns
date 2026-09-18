@@ -19,18 +19,18 @@ export function SiteFooter() {
           <ul className="mt-3 text-sm">
             {NAV.map((l) => (
               <li key={l.to}>
-                <Link to={l.to} className="inline-flex min-h-11 items-center text-muted hover:text-navy">
+                <Link to={l.to} className="inline-flex min-h-11 min-w-11 items-center px-1 text-muted hover:text-navy">
                   {l.label}
                 </Link>
               </li>
             ))}
             <li>
-              <Link to="/faq" className="inline-flex min-h-11 items-center text-muted hover:text-navy">
+              <Link to="/faq" className="inline-flex min-h-11 min-w-11 items-center px-1 text-muted hover:text-navy">
                 FAQ
               </Link>
             </li>
             <li>
-              <Link to="/states" className="inline-flex min-h-11 items-center text-muted hover:text-navy">
+              <Link to="/states" className="inline-flex min-h-11 min-w-11 items-center px-1 text-muted hover:text-navy">
                 All 50 States
               </Link>
             </li>
@@ -41,7 +41,7 @@ export function SiteFooter() {
           <ul className="mt-3 text-sm">
             {RESOURCE_LINKS.slice(0, 8).map((l) => (
               <li key={l.to}>
-                <Link to={l.to} className="inline-flex min-h-11 items-center text-muted hover:text-navy">
+                <Link to={l.to} className="inline-flex min-h-11 min-w-11 items-center px-1 text-muted hover:text-navy">
                   {l.label}
                 </Link>
               </li>
@@ -53,13 +53,13 @@ export function SiteFooter() {
           <ul className="mt-3 text-sm">
             {LEGAL_LINKS.map((l) => (
               <li key={l.to}>
-                <Link to={l.to} className="inline-flex min-h-11 items-center text-muted hover:text-navy">
+                <Link to={l.to} className="inline-flex min-h-11 min-w-11 items-center px-1 text-muted hover:text-navy">
                   {l.label}
                 </Link>
               </li>
             ))}
             <li>
-              <a href="/sitemap.xml" className="inline-flex min-h-11 items-center text-muted hover:text-navy">
+              <a href="/sitemap.xml" className="inline-flex min-h-11 min-w-11 items-center px-1 text-muted hover:text-navy">
                 XML Sitemap
               </a>
             </li>

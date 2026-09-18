@@ -14,7 +14,7 @@ export function SiteHeader() {
   return (
     <header className="sticky top-0 z-40 border-b border-border/80 bg-card/95 backdrop-blur-sm">
       <div className="container-page flex h-16 items-center justify-between gap-2 sm:gap-3">
-        <Link to="/" className="min-w-0 shrink-0" aria-label="SSDI Campaigns home">
+        <Link to="/" className="inline-flex min-h-11 min-w-0 shrink-0 items-center" aria-label="SSDI Campaigns home">
           <Logo />
         </Link>
 
@@ -23,7 +23,7 @@ export function SiteHeader() {
             <Link
               key={item.to}
               to={item.to}
-              className="whitespace-nowrap rounded-md px-2.5 py-2 text-[0.72rem] font-bold uppercase tracking-[0.12em] text-navy/80 transition-colors hover:bg-sky hover:text-navy"
+              className="inline-flex min-h-11 items-center whitespace-nowrap rounded-md px-2.5 py-2 text-[0.72rem] font-bold uppercase tracking-[0.12em] text-navy/80 transition-colors hover:bg-sky hover:text-navy"
               activeProps={{ className: "text-red" }}
             >
               {item.label}

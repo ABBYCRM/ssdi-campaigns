@@ -34,13 +34,13 @@ function Home() {
         <img
           src="/images/hero.jpg"
           alt="A couple meeting with an SSDI campaign advisor in front of a city skyline"
-          className="mx-auto h-[14rem] w-full max-w-5xl object-cover object-bottom sm:h-[20rem] md:h-[26rem] lg:h-[32rem]"
+          className="mx-auto h-[13rem] w-full max-w-5xl object-cover object-bottom sm:h-[18rem] md:h-[22rem] lg:h-[26rem]"
           width={1792}
           height={1008}
         />
       </section>
 
-      <section className="bg-card px-4 pb-4 pt-8 text-center md:pt-10">
+      <section className="bg-card px-4 pb-8 pt-8 text-center md:pb-10 md:pt-10">
         <h1 className="text-[1.65rem] font-extrabold leading-[1.15] tracking-tight sm:text-4xl md:text-5xl">
           <span className="text-red">SSDI Benefits:</span>{" "}
           <span className="text-navy">Are You Eligible?</span>
