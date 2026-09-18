@@ -77,6 +77,7 @@ export const KEYWORDS = [
   "work credits",
   "substantial gainful activity",
   "Blue Book listings",
+  "SSA disability",
   "disabled worker benefits",
   "SSDI vs SSI",
   "free SSDI consultation",
@@ -86,6 +87,6 @@ export const KEYWORDS = [
 ].join(", ");
 
 export const SSA_DISCLAIMER =
-  "Independent campaign. Not affiliated with the U.S. Social Security Administration.";
+  "Independent campaign. Not affiliated with, endorsed by, or authorized by the U.S. Social Security Administration, the Centers for Medicare & Medicaid Services, or the Department of Health and Human Services.";
 
 export const TCPA_CONSENT = `By checking this box, I provide my electronic signature under the E-SIGN Act and give prior express written consent for SSDI Campaigns to contact me at the telephone number I provided, including by live agent, autodialed or prerecorded/artificial voice calls, and SMS/text messages, about SSDI eligibility, applications, and related campaign services. Message and data rates may apply. Message frequency varies. Consent is not a condition of receiving any service. I may opt out of texts by replying STOP and get help by replying HELP. See our Privacy Policy and SMS Terms.`;
