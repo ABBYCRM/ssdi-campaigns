@@ -1,7 +1,11 @@
 import { createServerFn } from "@tanstack/react-start";
-import { env } from "./env.server";
 import { intakeSchema, type IntakeInput } from "./form-schema";
 import { SITE } from "./site";
+
+function env(key: string): string | undefined {
+  const v = process.env[key]?.trim();
+  return v || undefined;
+}
 
 const recentByPhone = new Map<string, number[]>();
 
@@ -70,6 +74,42 @@ function leadCell(value: string | undefined) {
   return value ?? "";
 }
 
+function bytesToBase64(bytes: Uint8Array) {
+  let binary = "";
+  for (let i = 0; i < bytes.length; i++) binary += String.fromCharCode(bytes[i]!);
+  return btoa(binary);
+}
+
+function decodeWebhookSecret(secret: string): Uint8Array {
+  const raw = secret.startsWith("whsec_") ? secret.slice(6) : secret;
+  try {
+    const bin = atob(raw);
+    const out = new Uint8Array(bin.length);
+    for (let i = 0; i < bin.length; i++) out[i] = bin.charCodeAt(i);
+    return out;
+  } catch {
+    return new TextEncoder().encode(secret);
+  }
+}
+
+async function standardWebhookHeaders(secret: string, msgId: string, body: string) {
+  const timestamp = Math.floor(Date.now() / 1000).toString();
+  const keyBytes = decodeWebhookSecret(secret);
+  const key = await crypto.subtle.importKey(
+    "raw",
+    keyBytes,
+    { name: "HMAC", hash: "SHA-256" },
+    false,
+    ["sign"],
+  );
+  const sig = await crypto.subtle.sign("HMAC", key, new TextEncoder().encode(`${timestamp}.${body}`));
+  return {
+    "webhook-id": msgId,
+    "webhook-timestamp": timestamp,
+    "webhook-signature": `v1,${bytesToBase64(new Uint8Array(sig))}`,
+  };
+}
+
 async function persistJsonl(lead: StoredLead) {
   const fs = await import("node:fs/promises");
   const pathMod = await import("node:path");
@@ -128,13 +168,22 @@ async function forwardGoogleForm(lead: StoredLead) {
 async function forwardWebhook(lead: StoredLead) {
   const url = env("INTAKE_WEBHOOK_URL");
   if (!url) return;
+  const body = JSON.stringify(lead);
+  const headers: Record<string, string> = {
+    "content-type": "application/json",
+    accept: "application/json",
+  };
+  const secret = env("INTAKE_WEBHOOK_SECRET");
+  if (secret) {
+    Object.assign(headers, await standardWebhookHeaders(secret, `msg_${lead.id}`, body));
+  }
   const ac = new AbortController();
   const t = setTimeout(() => ac.abort(), 5000);
   try {
     const res = await fetch(url, {
       method: "POST",
-      headers: { "content-type": "application/json", accept: "application/json" },
-      body: JSON.stringify(lead),
+      headers,
+      body,
       signal: ac.signal,
     });
     if (!res.ok) console.error("intake webhook status", res.status);
