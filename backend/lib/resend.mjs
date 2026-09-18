@@ -35,7 +35,9 @@ function notifyTo(env) {
  * Optional ops email for a new lead. SSDI sending domain only — CaseClosedFL
  * Resend keys/domains are ignored. Failures are logged, never thrown.
  */
-export async function notifyIntakeEmail(lead, { env = process.env, fetch: fetchFn = globalThis.fetch } = {}) {
+export async function notifyIntakeEmail(lead, opts = {}) {
+  const env = opts.env ?? process.env;
+  const fetchFn = opts.fetch ?? globalThis.fetch;
   const key = ssdiOnlyValue(envTrim(env, "RESEND_API_KEY"));
   if (!key) return { ok: false, skipped: true, reason: "unwired" };
 
@@ -69,6 +71,11 @@ export async function notifyIntakeEmail(lead, { env = process.env, fetch: fetchF
           `TCPA: true`,
           `When: ${lead.receivedAt}`,
           `ID: ${lead.id}`,
+          `HubSpot contact: ${opts.hubspot?.contactId ?? ""}`,
+          `Validator: ${opts.validator?.status ?? opts.validator?.reason ?? "unwired"}`,
+          `Fraud signal: ${opts.validator?.fraudSignal ?? ""}`,
+          `Validator ID: ${opts.validator?.validationId ?? ""}`,
+          `Portal: ${opts.portal?.ok ? "ok" : opts.portal?.reason ?? "unwired"}`,
           "",
           lead.message ?? "",
           "",

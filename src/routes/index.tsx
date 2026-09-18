@@ -11,6 +11,7 @@ import {
 import { IntakeForm } from "@/components/forms/intake-form";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { Button } from "@/components/ui/button";
+import { ContactCtas } from "@/components/layout/contact-ctas";
 import { pageHead } from "@/lib/seo";
 import { FAQS, FIGURES_2026, SERVICES } from "@/lib/ssdi";
 
@@ -46,6 +47,9 @@ function Home() {
         <p className="mt-3 text-base font-bold uppercase tracking-[0.04em] text-navy sm:text-xl md:text-2xl">
           Our campaign helps you navigate the process.
         </p>
+        <div className="mt-6 flex justify-center">
+          <ContactCtas className="justify-center" />
+        </div>
       </section>
 
       <section className="bg-card px-4 py-10">

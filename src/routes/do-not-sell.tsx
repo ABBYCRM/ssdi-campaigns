@@ -21,6 +21,7 @@ function Page() {
         kicker="Your privacy choices"
         title="Do not sell or share"
         lede="We do not sell personal information for money. Some laws still treat lead referrals or advertising as a “sale” or “share.” Use this page to opt out."
+        cta={false}
       />
       <article className="container-page max-w-3xl space-y-4 py-14 text-sm leading-relaxed text-muted">
         <p>

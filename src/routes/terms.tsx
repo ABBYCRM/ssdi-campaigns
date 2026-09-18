@@ -16,7 +16,12 @@ export const Route = createFileRoute("/terms")({
 function Page() {
   return (
     <main id="main">
-      <PageHero kicker="Legal" title="Terms of use" lede="Effective September 16, 2026. By using this site you agree to these terms." />
+      <PageHero
+        kicker="Legal"
+        title="Terms of use"
+        lede="Effective September 16, 2026. By using this site you agree to these terms."
+        cta={false}
+      />
       <article className="container-page max-w-3xl space-y-5 py-14 text-sm leading-relaxed text-muted">
         <p>
           The site is operated by {SITE.legalName} for educational and campaign-intake purposes. It does not create a

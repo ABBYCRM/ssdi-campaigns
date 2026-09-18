@@ -1,9 +1,10 @@
 /**
  * SSDI Campaigns intake API.
  *
- * POST /intake — HubSpot-primary lead persist (Sheets backup/failover).
+ * POST /intake — HubSpot-primary lead persist (Sheets backup/failover),
+ *   then SSDI-Validator /v1/validations, HubSpot NOTE, SSDI-portal desk, Resend.
  * POST /api/vapi/inbound — public SSDI Vapi webhook (also /webhooks/vapi).
- * GET  /health — crm wired/unwired from HUBSPOT_ACCESS_TOKEN.
+ * GET  /health — crm / sheets / validator / portal / email / vapi wiring.
  *
  * Independent of CaseClosedFL. Do not set CaseClosedFL Resend keys, domains,
  * or Vapi assistant IDs on this service.

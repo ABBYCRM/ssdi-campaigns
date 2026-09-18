@@ -23,6 +23,7 @@ function Page() {
         kicker="Legal"
         title="Privacy policy (50-state)"
         lede="Effective September 16, 2026. This policy explains how SSDI Campaigns collects, uses, shares, and protects personal information, including health-related disability data, from residents of every U.S. state and the District of Columbia."
+        cta={false}
       />
       <article className="container-page max-w-3xl space-y-8 py-14 text-sm leading-relaxed text-muted">
         <p>

@@ -16,7 +16,12 @@ export const Route = createFileRoute("/sms-terms")({
 function Page() {
   return (
     <main id="main">
-      <PageHero kicker="TCPA" title="SMS terms" lede="Applies if you opt in to text messages from SSDI Campaigns." />
+      <PageHero
+        kicker="TCPA"
+        title="SMS terms"
+        lede="Applies if you opt in to text messages from SSDI Campaigns."
+        cta={false}
+      />
       <article className="container-page max-w-3xl space-y-4 py-14 text-sm leading-relaxed text-muted">
         <p>
           Program: campaign follow-up about SSDI screening, appointments, and document reminders. Frequency: varies,

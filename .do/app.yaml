@@ -35,14 +35,18 @@ services:
       # SSDI Campaigns only. Never reuse CaseClosedFL HubSpot tokens, Resend
       # keys, sending domains, or Vapi assistant IDs. Bind these secrets in
       # the App Platform dashboard — do not commit values:
-      #   HUBSPOT_ACCESS_TOKEN          (primary CRM; SSDI private app)
+      #   HUBSPOT_ACCESS_TOKEN          (primary CRM; SSDI private app — never reuse another portal)
       #   GOOGLE_SHEETS_SPREADSHEET_ID  (backup / failover only)
       #   GOOGLE_SHEETS_RANGE           (default Leads!A1)
       #   GOOGLE_SHEETS_CLIENT_EMAIL
       #   GOOGLE_SHEETS_PRIVATE_KEY
       #   GOOGLE_SHEETS_SERVICE_ACCOUNT_JSON
+      #   SSDI_VALIDATOR_URL            (ABBYCRM/SSDI-Validator origin; POST /v1/validations)
+      #   SSDI_VALIDATOR_TOKEN          (ssdi_live_… scoped token)
+      #   SSDI_PORTAL_URL               (ABBYCRM/SSDI-portal origin; POST /api/webhooks/intake)
+      #   SSDI_PORTAL_WEBHOOK_SECRET    (x-webhook-secret)
       #   RESEND_API_KEY                (ssdicampaigns.com Resend project — verify domain)
-      #   VITE_PUBLIC_PHONE=+15616520362  (SSDI Vapi inbound; never +15615661360)
+      #   VITE_PUBLIC_PHONE=+15616520362
       #   INBOUND_PHONE_NUMBER=+15616520362
       #   VAPI_WEBHOOK_SECRET
       #   VAPI_ASSISTANT_ID=c0f5dd63-3c51-4eb6-9f62-8a6e2391c954

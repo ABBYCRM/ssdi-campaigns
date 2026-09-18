@@ -1,8 +1,10 @@
-import { createRootRoute, HeadContent, Outlet, Scripts } from "@tanstack/react-router";
+import { createRootRoute, HeadContent, Outlet, Scripts, useRouterState } from "@tanstack/react-router";
 import { AuthProvider } from "@/lib/auth/provider";
 import { PreviewHostBridge } from "@/components/preview-host-bridge";
 import { CookieBanner } from "@/components/layout/cookie-banner";
+import { CtaBand } from "@/components/layout/cta-band";
 import { LiveChat } from "@/components/layout/live-chat";
+import { StickyMobileCta } from "@/components/layout/sticky-mobile-cta";
 import { SiteFooter } from "@/components/layout/site-footer";
 import { SiteHeader } from "@/components/layout/site-header";
 import { JsonLd } from "@/components/seo/json-ld";
@@ -10,6 +12,23 @@ import { SITE } from "@/lib/site";
 import appCss from "../styles.css?url";
 
 const APP_NAME = SITE.name;
+
+const LEGAL_PATHS = new Set([
+  "/privacy",
+  "/terms",
+  "/disclaimer",
+  "/sms-terms",
+  "/cookies",
+  "/accessibility",
+  "/do-not-sell",
+  "/privacy-request",
+]);
+
+function ContentCtaSlot() {
+  const pathname = useRouterState({ select: (s) => s.location.pathname });
+  if (LEGAL_PATHS.has(pathname) || pathname === "/contact") return null;
+  return <CtaBand />;
+}
 
 export const Route = createRootRoute({
   head: () => ({
@@ -38,7 +57,7 @@ export const Route = createRootRoute({
       <head>
         <HeadContent />
       </head>
-      <body className="flex min-h-dvh flex-col bg-paper text-ink antialiased">
+      <body className="flex min-h-dvh flex-col bg-paper pb-16 text-ink antialiased lg:pb-0">
         <PreviewHostBridge />
         <AuthProvider>
           <a
@@ -50,9 +69,11 @@ export const Route = createRootRoute({
           <JsonLd />
           <SiteHeader />
           <Outlet />
+          <ContentCtaSlot />
           <SiteFooter />
           <CookieBanner />
           <LiveChat />
+          <StickyMobileCta />
         </AuthProvider>
         <Scripts />
       </body>

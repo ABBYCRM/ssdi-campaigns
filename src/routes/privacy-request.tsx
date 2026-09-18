@@ -30,6 +30,7 @@ function Page() {
           kicker="Privacy"
           title="Request logged"
           lede="This form is not yet wired to a case system. Email us at the privacy address if you need a faster human response."
+          cta={false}
         />
         <p className="container-page max-w-xl py-14 text-sm text-muted">
           Email {SITE.privacyEmail}. We will verify your identity and respond within 45 days.
@@ -44,6 +45,7 @@ function Page() {
         kicker="Privacy"
         title="Consumer privacy request"
         lede="Available to residents of every U.S. state. We will not discriminate against you for exercising a right."
+        cta={false}
       />
       <form
         className="container-page my-14 grid max-w-xl gap-4"

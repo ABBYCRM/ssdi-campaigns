@@ -48,7 +48,7 @@ function jsonResponse(status, body) {
 
 function hubspotFetch({ existingId = null, failWrite = false } = {}) {
   return mockFetch(async (url, init) => {
-    if (url.endsWith("/crm/v3/properties/contacts") && init.method === "POST") {
+    if (url.includes("/crm/v3/properties/") && init.method === "POST") {
       return jsonResponse(201, { name: "ok" });
     }
     if (url.includes("/crm/v3/objects/contacts/search")) {
@@ -58,6 +58,35 @@ function hubspotFetch({ existingId = null, failWrite = false } = {}) {
     }
     if (url.includes("/crm/v3/objects/contacts") && failWrite) {
       return jsonResponse(500, { message: "hubspot down" });
+    }
+    if (url.includes("/crm/v3/objects/notes") && init.method === "POST") {
+      return jsonResponse(201, { id: "note_1" });
+    }
+    if (url.includes("/crm/v3/pipelines/deals") && init.method === "POST") {
+      return jsonResponse(201, {
+        id: "pipe_ssdi",
+        label: "SSDI Campaigns",
+        stages: [
+          { id: "st_new", label: "New" },
+          { id: "st_validating", label: "Validating" },
+          { id: "st_validated", label: "Validated" },
+          { id: "st_incomplete", label: "Incomplete" },
+          { id: "st_contradicted", label: "Contradicted" },
+          { id: "st_follow_up", label: "Follow-up" },
+        ],
+      });
+    }
+    if (url.includes("/crm/v3/pipelines/deals")) {
+      return jsonResponse(200, { results: [] });
+    }
+    if (url.includes("/crm/v3/objects/deals/search")) {
+      return jsonResponse(200, { results: [] });
+    }
+    if (url.includes("/crm/v3/objects/deals") && init.method === "PATCH") {
+      return jsonResponse(200, { id: "deal_1" });
+    }
+    if (url.includes("/crm/v3/objects/deals") && init.method === "POST") {
+      return jsonResponse(201, { id: "deal_1" });
     }
     if (url.includes("/crm/v3/objects/contacts") && init.method === "PATCH") {
       return jsonResponse(200, { id: existingId || "upd" });
@@ -85,7 +114,7 @@ function sheetsEnv(over = {}) {
   };
 }
 
-function crmFetch({ hubspot, sheetsOk = true } = {}) {
+function crmFetch({ hubspot, sheetsOk = true, validator, portal } = {}) {
   const hs = hubspotFetch(hubspot);
   return mockFetch(async (url, init, calls) => {
     if (url.startsWith("https://api.hubapi.com")) {
@@ -100,6 +129,24 @@ function crmFetch({ hubspot, sheetsOk = true } = {}) {
     }
     if (url === "https://api.resend.com/emails") {
       return jsonResponse(200, { id: "email_1" });
+    }
+    if (url.includes("/v1/validations")) {
+      if (validator?.fail) return jsonResponse(503, { error: "SOURCE_UNAVAILABLE" });
+      return jsonResponse(200, {
+        validation_id: "val_1",
+        lead_id: "camp_1",
+        status: validator?.status || "VALIDATED",
+        reason: validator?.reason || null,
+        dimensions: { fraud_overall: { verdict: validator?.fraud || "PASS" } },
+        staff_verdict: { level: validator?.fraud || "GOOD", headline: "Looks clean" },
+        human_note: "SSDI Campaigns Validation — VALIDATED",
+        hubspot_note: "<h3>SSDI Campaigns Validation</h3><p>VALIDATED</p>",
+        missing: [],
+      });
+    }
+    if (url.includes("/api/webhooks/intake")) {
+      if (portal?.fail) return jsonResponse(500, { error: "portal_down" });
+      return jsonResponse(202, { ok: true, id: "portal_1" });
     }
     return jsonResponse(404, { message: "unmocked " + url });
   });
@@ -159,6 +206,10 @@ describe("HubSpot primary persist", () => {
     assert.equal(body.properties.ssdi_tcpa_consent, "true");
     assert.equal(body.properties.ssdi_campaign_source, "site");
     assert.equal(body.properties.hs_lead_status, "NEW");
+    assert.equal(body.properties.ssdi_lead_stage, "NEW");
+    assert.equal(body.properties.ssdi_inbound_phone, "+15616520362");
+    assert.ok(fetchFn.calls.some((c) => c.url.includes("/crm/v3/objects/notes")));
+    assert.ok(fetchFn.calls.some((c) => c.url.includes("/crm/v3/objects/deals") && c.init.method === "POST"));
   });
 
   it("updates an existing contact found by email", async () => {
@@ -260,7 +311,21 @@ describe("health", () => {
     assert.equal(both.sheets, "backup");
     assert.equal(both.email, "wired");
     assert.equal(both.vapi, "wired");
+    assert.equal(both.validator, "unwired");
+    assert.equal(both.portal, "unwired");
     assert.equal(both.brand, "ssdi-campaigns");
+    assert.equal(
+      healthStatus({
+        SSDI_VALIDATOR_URL: "https://validator.ssdicampaigns.example",
+        SSDI_VALIDATOR_TOKEN: "ssdi_live_test",
+        SSDI_PORTAL_URL: "https://portal.ssdicampaigns.example",
+      }).validator,
+      "wired",
+    );
+    assert.equal(
+      healthStatus({ SSDI_PORTAL_URL: "https://portal.ssdicampaigns.example" }).portal,
+      "wired",
+    );
   });
 });
 
@@ -336,6 +401,110 @@ describe("Vapi webhook mapping", () => {
   it("rejects a bad webhook secret", () => {
     const check = verifyVapiSecret({ "x-vapi-secret": "nope" }, { VAPI_WEBHOOK_SECRET: "ssdi-secret" });
     assert.equal(check.ok, false);
+  });
+});
+
+describe("SSDI-Validator after intake", () => {
+  const validatorEnv = {
+    HUBSPOT_ACCESS_TOKEN: "pat-ssdi-test",
+    SSDI_VALIDATOR_URL: "https://validator.ssdicampaigns.example",
+    SSDI_VALIDATOR_TOKEN: "ssdi_live_testtoken",
+  };
+
+  it("skips validator when URL/token are unset", async () => {
+    const fetchFn = hubspotFetch();
+    const result = await persistIntake(leadPayload(), {
+      env: { HUBSPOT_ACCESS_TOKEN: "pat-ssdi-test" },
+      fetch: fetchFn,
+    });
+    assert.equal(result.validator.skipped, true);
+    assert.equal(result.validator.reason, "unwired");
+    assert.equal(
+      fetchFn.calls.some((c) => c.url.includes("/v1/validations")),
+      false,
+    );
+  });
+
+  it("POSTs /v1/validations and attaches status + note to HubSpot", async () => {
+    const fetchFn = crmFetch({ validator: { status: "VALIDATED", fraud: "PASS" } });
+    const result = await persistIntake(leadPayload(), { env: validatorEnv, fetch: fetchFn });
+    assert.equal(result.ok, true);
+    assert.match(result.forwardedTo, /validator/);
+    assert.equal(result.validator.ok, true);
+    assert.equal(result.validator.status, "VALIDATED");
+    assert.equal(result.validator.validationId, "val_1");
+    assert.equal(result.validator.fraudSignal, "PASS");
+
+    const valCall = fetchFn.calls.find((c) => c.url.endsWith("/v1/validations") && c.init.method === "POST");
+    assert.ok(valCall);
+    assert.match(valCall.init.headers.authorization, /^Bearer ssdi_live_/);
+    const valBody = JSON.parse(valCall.init.body);
+    assert.equal(valBody.name, "Ada Lovelace");
+    assert.equal(valBody.phone, "4155550100");
+    assert.equal(valBody.tcpa, true);
+    assert.equal(valBody.source, "web");
+    assert.ok(valBody.lead_id);
+
+    const statusPatch = fetchFn.calls.find((c) => {
+      if (!c.url.includes("/crm/v3/objects/contacts/") || c.init.method !== "PATCH") return false;
+      const props = JSON.parse(c.init.body).properties || {};
+      return props.ssdi_validator_status === "VALIDATED";
+    });
+    assert.ok(statusPatch);
+    const patchProps = JSON.parse(statusPatch.init.body).properties;
+    assert.equal(patchProps.ssdi_lead_stage, "VALIDATED");
+    assert.equal(patchProps.ssdi_fraud_signal, "PASS");
+    assert.equal(patchProps.ssdi_validator_id, "val_1");
+
+    const notes = fetchFn.calls.filter((c) => c.url.includes("/crm/v3/objects/notes") && c.init.method === "POST");
+    assert.ok(notes.length >= 2);
+    assert.ok(notes.some((c) => String(c.init.body).includes("Qualified Educational Screening Intake")));
+    assert.ok(notes.some((c) => String(c.init.body).includes("Validation")));
+  });
+
+  it("maps INCOMPLETE when the validator is down", async () => {
+    const fetchFn = crmFetch({ validator: { fail: true } });
+    const result = await persistIntake(leadPayload(), { env: validatorEnv, fetch: fetchFn });
+    assert.equal(result.ok, true);
+    assert.equal(result.hubspot.ok, true);
+    assert.equal(result.validator.ok, false);
+    assert.equal(result.validator.status, "INCOMPLETE");
+  });
+});
+
+describe("SSDI-portal desk", () => {
+  it("skips portal when SSDI_PORTAL_URL is unset", async () => {
+    const fetchFn = hubspotFetch();
+    const result = await persistIntake(leadPayload(), {
+      env: { HUBSPOT_ACCESS_TOKEN: "pat-ssdi-test" },
+      fetch: fetchFn,
+    });
+    assert.equal(result.portal.skipped, true);
+    assert.equal(
+      fetchFn.calls.some((c) => c.url.includes("/api/webhooks/intake")),
+      false,
+    );
+  });
+
+  it("POSTs /api/webhooks/intake with x-webhook-secret", async () => {
+    const fetchFn = crmFetch();
+    const result = await persistIntake(leadPayload(), {
+      env: {
+        HUBSPOT_ACCESS_TOKEN: "pat-ssdi-test",
+        SSDI_PORTAL_URL: "https://portal.ssdicampaigns.example",
+        SSDI_PORTAL_WEBHOOK_SECRET: "portal-secret",
+      },
+      fetch: fetchFn,
+    });
+    assert.equal(result.portal.ok, true);
+    assert.match(result.forwardedTo, /portal/);
+    const call = fetchFn.calls.find((c) => c.url.endsWith("/api/webhooks/intake"));
+    assert.ok(call);
+    assert.equal(call.init.headers["x-webhook-secret"], "portal-secret");
+    const body = JSON.parse(call.init.body);
+    assert.equal(body.name, "Ada Lovelace");
+    assert.equal(body.source, "web");
+    assert.equal(body.tcpa, true);
   });
 });
 

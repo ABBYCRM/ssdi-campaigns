@@ -20,6 +20,7 @@ function Page() {
         kicker="Access"
         title="Accessibility statement"
         lede="People visiting a disability-benefits site should not have to fight the interface."
+        cta={false}
       />
       <article className="container-page max-w-3xl space-y-4 py-14 text-sm leading-relaxed text-muted">
         <p>

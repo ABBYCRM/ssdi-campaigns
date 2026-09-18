@@ -5,7 +5,7 @@ import { Logo } from "@/components/brand/logo";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
 import { CallLink } from "@/components/layout/call-link";
-import { NAV } from "@/lib/site";
+import { NAV, SITE } from "@/lib/site";
 
 export function SiteHeader() {
   const [open, setOpen] = React.useState(false);
@@ -31,7 +31,7 @@ export function SiteHeader() {
         </nav>
 
         <div className="hidden items-center gap-3 lg:flex">
-          <Button asChild variant="coral" size="sm" className="whitespace-nowrap">
+          <Button asChild variant="coral" size="sm" className="min-h-11 whitespace-nowrap px-5">
             <Link to="/contact">Free Consultation</Link>
           </Button>
           <CallLink className="whitespace-nowrap text-sm font-extrabold tracking-tight text-navy" />
@@ -68,12 +68,18 @@ export function SiteHeader() {
               ))}
             </nav>
             <div className="mt-auto flex flex-col gap-2 border-t border-border pt-6">
-              <Button asChild variant="coral">
+              <Button asChild variant="coral" className="min-h-11">
                 <Link to="/contact" onClick={() => setOpen(false)}>
                   Free Consultation
                 </Link>
               </Button>
-              <CallLink className="justify-center text-sm font-bold text-navy" />
+              <CallLink className="min-h-11 justify-center text-sm font-bold text-navy" />
+              <a
+                href={`mailto:${SITE.email}`}
+                className="inline-flex min-h-11 items-center justify-center text-sm font-semibold text-navy"
+              >
+                {SITE.email}
+              </a>
             </div>
           </SheetContent>
         </Sheet>

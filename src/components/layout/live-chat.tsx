@@ -10,7 +10,7 @@ export function LiveChat() {
       <button
         type="button"
         onClick={() => setOpen(true)}
-        className="fixed bottom-5 right-5 z-40 inline-flex h-12 items-center gap-2 rounded-full bg-coral px-5 text-sm font-bold text-white shadow-lift"
+        className="fixed bottom-20 right-4 z-40 inline-flex h-12 min-h-11 items-center gap-2 rounded-full bg-navy px-5 text-sm font-bold text-white shadow-lift lg:bottom-5 lg:right-5"
         aria-haspopup="dialog"
         aria-expanded={open}
       >
