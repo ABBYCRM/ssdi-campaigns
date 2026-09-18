@@ -3,7 +3,17 @@ import { generateKeyPairSync } from "node:crypto";
 import { once } from "node:events";
 import { afterEach, describe, it } from "node:test";
 import { containsForbiddenBrand, DEFAULT_RESEND_FROM, DEFAULT_RESEND_REPLY_TO, SSDI_VAPI_ASSISTANT_ID, ssdiOnlyValue } from "./lib/brand.mjs";
-import { CASECLOSEDFL_HUBSPOT_PORTAL_ID, isHubSpotWired, resetHubSpotPropertyCache } from "./lib/hubspot.mjs";
+import {
+  ABBYCRM_HUBSPOT_PORTAL_ID,
+  CASECLOSEDFL_HUBSPOT_PORTAL_ID,
+  HUBSPOT_CUSTOM_PROPERTIES,
+  contactProperties,
+  hubspotToken,
+  isHubSpotWired,
+  isMvaIntakePropertyName,
+  isPlaceholderHubSpotToken,
+  resetHubSpotPropertyCache,
+} from "./lib/hubspot.mjs";
 import { healthStatus, persistIntake } from "./lib/persist.mjs";
 import { resendFromEmail, resendReplyTo } from "./lib/resend.mjs";
 import { extractVapiLead, verifyVapiSecret } from "./lib/vapi.mjs";
@@ -46,10 +56,10 @@ function jsonResponse(status, body) {
   });
 }
 
-function hubspotFetch({ existingId = null, failWrite = false } = {}) {
+function hubspotFetch({ existingId = null, failWrite = false, portalId = 555001 } = {}) {
   return mockFetch(async (url, init) => {
     if (url.includes("/integrations/v1/me")) {
-      return jsonResponse(200, { portalId: 555001 });
+      return jsonResponse(200, { portalId });
     }
     if (url.includes("/crm/v3/properties/contacts/groups")) {
       return jsonResponse(200, { name: "ssdi_campaigns_intake" });
@@ -169,6 +179,7 @@ describe("brand isolation", () => {
     assert.equal(containsForbiddenBrand(DEFAULT_RESEND_REPLY_TO), false);
     assert.equal(containsForbiddenBrand("noreply@caseclosedfl.com"), true);
     assert.equal(ssdiOnlyValue("SSDI Campaigns <hello@caseclosedfl.com>"), undefined);
+    assert.equal(ssdiOnlyValue("re_caseclosedfl_domain_key"), undefined);
     assert.equal(resendFromEmail({ RESEND_FROM_EMAIL: "CaseClosedFL <a@caseclosedfl.com>" }), DEFAULT_RESEND_FROM);
     assert.equal(resendReplyTo({ RESEND_REPLY_TO: "intake@caseclosedfl.com" }), DEFAULT_RESEND_REPLY_TO);
   });
@@ -247,22 +258,71 @@ describe("HubSpot primary persist", () => {
     );
   });
 
-  it("refuses the CaseClosedFL HubSpot portal", async () => {
-    assert.equal(CASECLOSEDFL_HUBSPOT_PORTAL_ID, "247081451");
+  it("allows AbbyCRM portal 247081451 for an SSDI private-app token", async () => {
+    assert.equal(ABBYCRM_HUBSPOT_PORTAL_ID, "247081451");
+    assert.equal(CASECLOSEDFL_HUBSPOT_PORTAL_ID, ABBYCRM_HUBSPOT_PORTAL_ID);
+    assert.equal(isHubSpotWired({ HUBSPOT_ACCESS_TOKEN: "pat-ssdi-test" }), true);
     assert.equal(
-      isHubSpotWired({ HUBSPOT_ACCESS_TOKEN: "pat-ssdi-test", HUBSPOT_PORTAL_ID: CASECLOSEDFL_HUBSPOT_PORTAL_ID }),
-      false,
+      isHubSpotWired({ HUBSPOT_ACCESS_TOKEN: "pat-ssdi-test", HUBSPOT_PORTAL_ID: ABBYCRM_HUBSPOT_PORTAL_ID }),
+      true,
     );
-    const fetchFn = hubspotFetch();
+
+    const withConfiguredPortal = hubspotFetch({ portalId: Number(ABBYCRM_HUBSPOT_PORTAL_ID) });
+    const configured = await persistIntake(leadPayload(), {
+      env: { HUBSPOT_ACCESS_TOKEN: "pat-ssdi-test", HUBSPOT_PORTAL_ID: ABBYCRM_HUBSPOT_PORTAL_ID },
+      fetch: withConfiguredPortal,
+    });
+    assert.equal(configured.hubspot.ok, true);
+    assert.equal(configured.hubspot.portalId, ABBYCRM_HUBSPOT_PORTAL_ID);
+    assert.ok(
+      withConfiguredPortal.calls.some((c) => c.url.endsWith("/crm/v3/objects/contacts") && c.init.method === "POST"),
+    );
+    assert.ok(withConfiguredPortal.calls.some((c) => c.url.includes("/crm/v3/properties/contacts") && c.init.method === "POST"));
+    assert.ok(withConfiguredPortal.calls.some((c) => c.url.includes("/crm/v3/pipelines/deals")));
+
+    const unsetPortal = hubspotFetch({ portalId: Number(ABBYCRM_HUBSPOT_PORTAL_ID) });
+    const fromMe = await persistIntake(leadPayload(), {
+      env: { HUBSPOT_ACCESS_TOKEN: "pat-ssdi-test" },
+      fetch: unsetPortal,
+    });
+    assert.equal(fromMe.hubspot.ok, true);
+    assert.equal(fromMe.hubspot.portalId, ABBYCRM_HUBSPOT_PORTAL_ID);
+  });
+
+  it("refuses CaseClosedFL HubSpot token placeholders", async () => {
+    assert.equal(isPlaceholderHubSpotToken("__HUBSPOT_ACCESS_TOKEN__"), true);
+    assert.equal(isPlaceholderHubSpotToken("__CASECLOSEDFL_HUBSPOT_ACCESS_TOKEN__"), true);
+    assert.equal(hubspotToken({ HUBSPOT_ACCESS_TOKEN: "__HUBSPOT_ACCESS_TOKEN__" }), undefined);
+    assert.equal(hubspotToken({ HUBSPOT_ACCESS_TOKEN: "__CASECLOSEDFL_HUBSPOT_TOKEN__" }), undefined);
+    assert.equal(hubspotToken({ HUBSPOT_ACCESS_TOKEN: "pat-na1-caseclosedfl-secret" }), undefined);
+    assert.equal(isHubSpotWired({ HUBSPOT_ACCESS_TOKEN: "__HUBSPOT_ACCESS_TOKEN__", HUBSPOT_PORTAL_ID: "247081451" }), false);
+    assert.equal(isHubSpotWired({ HUBSPOT_ACCESS_TOKEN: "pat-caseclosedfl", HUBSPOT_PORTAL_ID: ABBYCRM_HUBSPOT_PORTAL_ID }), false);
+
+    const fetchFn = hubspotFetch({ portalId: Number(ABBYCRM_HUBSPOT_PORTAL_ID) });
     const result = await persistIntake(leadPayload(), {
-      env: { HUBSPOT_ACCESS_TOKEN: "pat-ssdi-test", HUBSPOT_PORTAL_ID: CASECLOSEDFL_HUBSPOT_PORTAL_ID },
+      env: { HUBSPOT_ACCESS_TOKEN: "__HUBSPOT_ACCESS_TOKEN__", HUBSPOT_PORTAL_ID: ABBYCRM_HUBSPOT_PORTAL_ID },
       fetch: fetchFn,
     });
-    assert.equal(result.hubspot.ok, false);
+    assert.equal(result.hubspot.wired, false);
     assert.equal(
-      fetchFn.calls.some((c) => c.url.endsWith("/crm/v3/objects/contacts") && c.init.method === "POST"),
+      fetchFn.calls.some((c) => c.url.startsWith("https://api.hubapi.com")),
       false,
     );
+  });
+
+  it("auto-creates only ssdi_* properties, never MVA intake_* accident fields", () => {
+    for (const prop of HUBSPOT_CUSTOM_PROPERTIES) {
+      assert.match(prop.name, /^ssdi_/);
+      assert.equal(isMvaIntakePropertyName(prop.name), false);
+    }
+    const props = contactProperties(leadPayload());
+    for (const key of Object.keys(props)) {
+      assert.equal(isMvaIntakePropertyName(key), false);
+    }
+    assert.equal("intake_accident_date" in props, false);
+    assert.equal("intake_case_type" in props, false);
+    assert.ok(props.ssdi_disability_type);
+    assert.ok(props.ssdi_tcpa_consent);
   });
 
   it("submits the optional HubSpot form after CRM upsert", async () => {
@@ -358,7 +418,7 @@ describe("health", () => {
     assert.equal(healthStatus({ HUBSPOT_ACCESS_TOKEN: "__HUBSPOT_ACCESS_TOKEN__" }).crm, "unwired");
     assert.equal(
       healthStatus({ HUBSPOT_ACCESS_TOKEN: "pat-ssdi", HUBSPOT_PORTAL_ID: "247081451" }).crm,
-      "unwired",
+      "wired",
     );
     assert.deepEqual(healthStatus({ HUBSPOT_ACCESS_TOKEN: "pat-ssdi" }).crm, "wired");
     const both = healthStatus({

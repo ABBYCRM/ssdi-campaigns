@@ -43,9 +43,9 @@ site form + Vapi (+15616520362)
 
 Disability category and free-text notes stay on the CRM record. Do not send health narratives to advertising properties.
 
-## HubSpot private app (SSDI portal — first-class)
+## HubSpot private app (SSDI Campaigns — first-class)
 
-Create a **new** private app in the SSDI HubSpot portal:
+Create a **new** private app named **SSDI Campaigns**. Preferred: a separate SSDI portal. Same AbbyCRM portal `247081451` is OK with this dedicated app (`ssdi_*` / SSDI Campaigns pipeline only — never MVA `intake_*` accident fields):
 
 | Scope | Why |
 | --- | --- |
@@ -55,7 +55,7 @@ Create a **new** private app in the SSDI HubSpot portal:
 | `crm.objects.deals.read` + `write` | Pipeline deals |
 | `crm.schemas.deals.write` | Create the **SSDI Campaigns** deal pipeline once |
 
-Set `HUBSPOT_ACCESS_TOKEN` in App Platform. **Never commit it. Never reuse a CaseClosedFL token or portal `247081451`.** Step-by-step: [`docs/HUBSPOT.md`](../docs/HUBSPOT.md).
+Set `HUBSPOT_ACCESS_TOKEN` in App Platform. **Never commit it. Never reuse a CaseClosedFL token or a `__HUBSPOT_ACCESS_TOKEN__` placeholder.** Portal `247081451` is allowed for this SSDI app. Step-by-step: [`docs/HUBSPOT.md`](../docs/HUBSPOT.md).
 
 ### Contact properties this API ensures
 

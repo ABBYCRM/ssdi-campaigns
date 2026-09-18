@@ -76,7 +76,7 @@ If those env vars are empty, `/intake` still succeeds to HubSpot/Sheets and `GET
 
 Leads POST to `/intake` (standalone `backend/server.mjs`, also used in-process by the site when `HUBSPOT_ACCESS_TOKEN` is set on the web service).
 
-1. **HubSpot is primary — first-class, not a stub.** Create a **new** private app in the **SSDI** HubSpot portal. Server-side create-or-update is the form equivalent (no HubSpot marketing-form embed on the site). Full property map, NOTES, and deal pipeline: [`docs/HUBSPOT.md`](docs/HUBSPOT.md). Never reuse a CaseClosedFL token or portal `247081451`.
+1. **HubSpot is primary — first-class, not a stub.** Create a **new** private app named **SSDI Campaigns**. Preferred: a separate SSDI portal. Same AbbyCRM portal `247081451` is OK with this dedicated app (`ssdi_*` properties / SSDI Campaigns pipeline only — never MVA `intake_*` accident fields). Never reuse a CaseClosedFL token or `__HUBSPOT_ACCESS_TOKEN__` placeholder. Server-side create-or-update is the form equivalent (no HubSpot marketing-form embed on the site). Full property map, NOTES, and deal pipeline: [`docs/HUBSPOT.md`](docs/HUBSPOT.md).
 2. **Google Sheets is backup / failover only.** Set `GOOGLE_SHEETS_SPREADSHEET_ID` plus a service account. Sheets runs after a successful HubSpot write, or when HubSpot is unwired/unavailable.
 3. **TCPA is fail-closed** (`tcpa === true` required).
 4. **SSDI-Validator** after a successful persist: `POST {SSDI_VALIDATOR_URL}/v1/validations`. Result `VALIDATED` / `INCOMPLETE` / `CONTRADICTED` is PATCHed onto the contact and written as a HubSpot NOTE.

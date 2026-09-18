@@ -3,7 +3,9 @@ App: ssdi-campaigns (id fbb96140-d784-4008-87b4-9e7418318f2b)
 Domains: ssdicampaigns.com, www.ssdicampaigns.com
 
 This app is an independent SSDI campaign. Do **not** attach CaseClosedFL domains,
-Resend keys, HubSpot tokens, Vapi assistants, or phone numbers (`+15615661360`).
+Resend keys (`noreply@caseclosedfl.com`, caseclosedfl.com domain keys), Vapi
+assistants, or phone numbers (`+15615661360`). Do **not** paste a CaseClosedFL
+HubSpot private-app token or a `__HUBSPOT_ACCESS_TOKEN__` placeholder.
 
 Public contact:
 - Phone: +1 (561) 652-0362 (`tel:+15616520362`)
@@ -11,8 +13,8 @@ Public contact:
 
 Bind secrets in the App Platform dashboard (see `.do/app.yaml`):
 
-- `HUBSPOT_ACCESS_TOKEN` — SSDI HubSpot private app (primary CRM). Bind this **before or immediately after** the first production deploy so `/intake` is not unwired.
-- `HUBSPOT_PORTAL_ID` — SSDI portal numeric id only (never `247081451`)
+- `HUBSPOT_ACCESS_TOKEN` — dedicated **SSDI Campaigns** private app (primary CRM). Bind this **before or immediately after** the first production deploy so `/intake` is not unwired. Never a CaseClosedFL token.
+- `HUBSPOT_PORTAL_ID` — optional. **Preferred:** a separate SSDI portal. **Same portal is OK:** AbbyCRM `247081451` with the SSDI private app (`ssdi_*` properties / SSDI Campaigns pipeline only — never MVA `intake_*` accident fields).
 - `GOOGLE_SHEETS_*` — optional backup / failover only
 - `RESEND_API_KEY` — SSDI Resend project for ssdicampaigns.com
 - `RESEND_FROM_EMAIL` — `SSDI Campaigns <noreply@ssdicampaigns.com>`
