@@ -23,6 +23,7 @@ import { Route as DoNotSellRouteImport } from './routes/do-not-sell'
 import { Route as EligibilityRouteImport } from './routes/eligibility'
 import { Route as FaqRouteImport } from './routes/faq'
 import { Route as HearingsRouteImport } from './routes/hearings'
+import { Route as IntakeRouteImport } from './routes/intake'
 import { Route as PrivacyRouteImport } from './routes/privacy'
 import { Route as PrivacyRequestRouteImport } from './routes/privacy-request'
 import { Route as ResourcesRouteImport } from './routes/resources'
@@ -33,6 +34,8 @@ import { Route as StatesRouteImport } from './routes/states'
 import { Route as TermsRouteImport } from './routes/terms'
 import { Route as WhatIsSsdiRouteImport } from './routes/what-is-ssdi'
 import { Route as WorkCreditsRouteImport } from './routes/work-credits'
+import { Route as ApiHealthRouteImport } from './routes/api.health'
+import { Route as ApiIntakeRouteImport } from './routes/api.intake'
 import { Route as SsdiStateRouteImport } from './routes/ssdi.$state'
 import { Route as ApiVapiInboundRouteImport } from './routes/api.vapi.inbound'
 
@@ -106,6 +109,11 @@ const HearingsRoute = HearingsRouteImport.update({
   path: '/hearings',
   getParentRoute: () => rootRouteImport,
 } as any)
+const IntakeRoute = IntakeRouteImport.update({
+  id: '/intake',
+  path: '/intake',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const PrivacyRoute = PrivacyRouteImport.update({
   id: '/privacy',
   path: '/privacy',
@@ -156,6 +164,16 @@ const WorkCreditsRoute = WorkCreditsRouteImport.update({
   path: '/work-credits',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiHealthRoute = ApiHealthRouteImport.update({
+  id: '/api/health',
+  path: '/api/health',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiIntakeRoute = ApiIntakeRouteImport.update({
+  id: '/api/intake',
+  path: '/api/intake',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const SsdiStateRoute = SsdiStateRouteImport.update({
   id: '/ssdi/$state',
   path: '/ssdi/$state',
@@ -182,6 +200,7 @@ export interface FileRoutesByFullPath {
   '/eligibility': typeof EligibilityRoute
   '/faq': typeof FaqRoute
   '/hearings': typeof HearingsRoute
+  '/intake': typeof IntakeRoute
   '/privacy': typeof PrivacyRoute
   '/privacy-request': typeof PrivacyRequestRoute
   '/resources': typeof ResourcesRoute
@@ -192,6 +211,8 @@ export interface FileRoutesByFullPath {
   '/terms': typeof TermsRoute
   '/what-is-ssdi': typeof WhatIsSsdiRoute
   '/work-credits': typeof WorkCreditsRoute
+  '/api/health': typeof ApiHealthRoute
+  '/api/intake': typeof ApiIntakeRoute
   '/ssdi/$state': typeof SsdiStateRoute
   '/api/vapi/inbound': typeof ApiVapiInboundRoute
 }
@@ -210,6 +231,7 @@ export interface FileRoutesByTo {
   '/eligibility': typeof EligibilityRoute
   '/faq': typeof FaqRoute
   '/hearings': typeof HearingsRoute
+  '/intake': typeof IntakeRoute
   '/privacy': typeof PrivacyRoute
   '/privacy-request': typeof PrivacyRequestRoute
   '/resources': typeof ResourcesRoute
@@ -220,6 +242,8 @@ export interface FileRoutesByTo {
   '/terms': typeof TermsRoute
   '/what-is-ssdi': typeof WhatIsSsdiRoute
   '/work-credits': typeof WorkCreditsRoute
+  '/api/health': typeof ApiHealthRoute
+  '/api/intake': typeof ApiIntakeRoute
   '/ssdi/$state': typeof SsdiStateRoute
   '/api/vapi/inbound': typeof ApiVapiInboundRoute
 }
@@ -239,6 +263,7 @@ export interface FileRoutesById {
   '/eligibility': typeof EligibilityRoute
   '/faq': typeof FaqRoute
   '/hearings': typeof HearingsRoute
+  '/intake': typeof IntakeRoute
   '/privacy': typeof PrivacyRoute
   '/privacy-request': typeof PrivacyRequestRoute
   '/resources': typeof ResourcesRoute
@@ -249,6 +274,8 @@ export interface FileRoutesById {
   '/terms': typeof TermsRoute
   '/what-is-ssdi': typeof WhatIsSsdiRoute
   '/work-credits': typeof WorkCreditsRoute
+  '/api/health': typeof ApiHealthRoute
+  '/api/intake': typeof ApiIntakeRoute
   '/ssdi/$state': typeof SsdiStateRoute
   '/api/vapi/inbound': typeof ApiVapiInboundRoute
 }
@@ -269,6 +296,7 @@ export interface FileRouteTypes {
     | '/eligibility'
     | '/faq'
     | '/hearings'
+    | '/intake'
     | '/privacy'
     | '/privacy-request'
     | '/resources'
@@ -279,6 +307,8 @@ export interface FileRouteTypes {
     | '/terms'
     | '/what-is-ssdi'
     | '/work-credits'
+    | '/api/health'
+    | '/api/intake'
     | '/ssdi/$state'
     | '/api/vapi/inbound'
   fileRoutesByTo: FileRoutesByTo
@@ -297,6 +327,7 @@ export interface FileRouteTypes {
     | '/eligibility'
     | '/faq'
     | '/hearings'
+    | '/intake'
     | '/privacy'
     | '/privacy-request'
     | '/resources'
@@ -307,6 +338,8 @@ export interface FileRouteTypes {
     | '/terms'
     | '/what-is-ssdi'
     | '/work-credits'
+    | '/api/health'
+    | '/api/intake'
     | '/ssdi/$state'
     | '/api/vapi/inbound'
   id:
@@ -325,6 +358,7 @@ export interface FileRouteTypes {
     | '/eligibility'
     | '/faq'
     | '/hearings'
+    | '/intake'
     | '/privacy'
     | '/privacy-request'
     | '/resources'
@@ -335,6 +369,8 @@ export interface FileRouteTypes {
     | '/terms'
     | '/what-is-ssdi'
     | '/work-credits'
+    | '/api/health'
+    | '/api/intake'
     | '/ssdi/$state'
     | '/api/vapi/inbound'
   fileRoutesById: FileRoutesById
@@ -354,6 +390,7 @@ export interface RootRouteChildren {
   EligibilityRoute: typeof EligibilityRoute
   FaqRoute: typeof FaqRoute
   HearingsRoute: typeof HearingsRoute
+  IntakeRoute: typeof IntakeRoute
   PrivacyRoute: typeof PrivacyRoute
   PrivacyRequestRoute: typeof PrivacyRequestRoute
   ResourcesRoute: typeof ResourcesRoute
@@ -364,6 +401,8 @@ export interface RootRouteChildren {
   TermsRoute: typeof TermsRoute
   WhatIsSsdiRoute: typeof WhatIsSsdiRoute
   WorkCreditsRoute: typeof WorkCreditsRoute
+  ApiHealthRoute: typeof ApiHealthRoute
+  ApiIntakeRoute: typeof ApiIntakeRoute
   SsdiStateRoute: typeof SsdiStateRoute
   ApiVapiInboundRoute: typeof ApiVapiInboundRoute
 }
@@ -468,6 +507,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof HearingsRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/intake': {
+      id: '/intake'
+      path: '/intake'
+      fullPath: '/intake'
+      preLoaderRoute: typeof IntakeRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/privacy': {
       id: '/privacy'
       path: '/privacy'
@@ -538,6 +584,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof WorkCreditsRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/health': {
+      id: '/api/health'
+      path: '/api/health'
+      fullPath: '/api/health'
+      preLoaderRoute: typeof ApiHealthRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/intake': {
+      id: '/api/intake'
+      path: '/api/intake'
+      fullPath: '/api/intake'
+      preLoaderRoute: typeof ApiIntakeRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/ssdi/$state': {
       id: '/ssdi/$state'
       path: '/ssdi/$state'
@@ -570,6 +630,7 @@ const rootRouteChildren: RootRouteChildren = {
   EligibilityRoute: EligibilityRoute,
   FaqRoute: FaqRoute,
   HearingsRoute: HearingsRoute,
+  IntakeRoute: IntakeRoute,
   PrivacyRoute: PrivacyRoute,
   PrivacyRequestRoute: PrivacyRequestRoute,
   ResourcesRoute: ResourcesRoute,
@@ -580,18 +641,11 @@ const rootRouteChildren: RootRouteChildren = {
   TermsRoute: TermsRoute,
   WhatIsSsdiRoute: WhatIsSsdiRoute,
   WorkCreditsRoute: WorkCreditsRoute,
+  ApiHealthRoute: ApiHealthRoute,
+  ApiIntakeRoute: ApiIntakeRoute,
   SsdiStateRoute: SsdiStateRoute,
   ApiVapiInboundRoute: ApiVapiInboundRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-import type { getRouter } from './router.tsx'
-import type { createStart } from '@tanstack/react-start'
-declare module '@tanstack/react-start' {
-  interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
-  }
-}
