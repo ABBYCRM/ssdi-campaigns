@@ -1,5 +1,6 @@
 import { Link } from "@tanstack/react-router";
 import { Button } from "@/components/ui/button";
+import { ContactCtas } from "@/components/layout/contact-ctas";
 
 export function NotFound() {
   return (
@@ -7,7 +8,10 @@ export function NotFound() {
       <p className="eyebrow">404</p>
       <h1 className="mt-2 text-3xl font-extrabold text-navy">Page not found</h1>
       <p className="mt-3 max-w-md text-muted">That URL is not part of this campaign site.</p>
-      <Button asChild variant="coral" className="mt-6">
+      <div className="mt-6 flex justify-center">
+        <ContactCtas className="justify-center" />
+      </div>
+      <Button asChild variant="outline" className="mt-4 min-h-11">
         <Link to="/">Back home</Link>
       </Button>
     </main>

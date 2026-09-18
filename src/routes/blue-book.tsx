@@ -1,4 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { InlineCta } from "@/components/layout/inline-cta";
 import { PageHero } from "@/components/layout/page-hero";
 import { pageHead } from "@/lib/seo";
 import { BLUE_BOOK } from "@/lib/ssdi";
@@ -30,6 +31,9 @@ function Page() {
             <p className="mt-2 text-sm text-muted">{item.examples}</p>
           </article>
         ))}
+      </div>
+      <div className="container-page pb-10">
+        <InlineCta title="Wondering if your condition is listed?" />
       </div>
       <p className="container-page max-w-3xl pb-16 text-sm text-muted">
         Childhood claims use Part B of the listings. Meeting a listing is one path — many awards are decided on residual

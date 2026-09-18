@@ -12,6 +12,16 @@ import { grokPwaPlugin } from "./scripts/grok-pwa-plugin.mjs";
 import { appEnvPlugin } from "./scripts/app-env-plugin.mjs";
 import { isMigrationFile } from "./scripts/migration-plan.mjs";
 
+// Click-to-call: VITE_PUBLIC_PHONE (build) or INBOUND_PHONE_NUMBER (same SSDI Vapi
+// number). Never default CaseClosedFL +15615661360.
+{
+  const inbound = String(process.env.INBOUND_PHONE_NUMBER ?? "").trim();
+  const publicPhone = String(process.env.VITE_PUBLIC_PHONE ?? "").trim();
+  if (!publicPhone && inbound) {
+    process.env.VITE_PUBLIC_PHONE = inbound;
+  }
+}
+
 /** The files `src/lib/db.ts` globs — same directory, same non-recursive scope. */
 function hasGlobbedMigrations(root: string): boolean {
   try {

@@ -1,4 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { InlineCta } from "@/components/layout/inline-cta";
 import { PageHero } from "@/components/layout/page-hero";
 import { pageHead } from "@/lib/seo";
 
@@ -49,6 +50,9 @@ function Page() {
               ))}
             </tbody>
           </table>
+        </div>
+        <div className="mt-8">
+          <InlineCta title="Need help telling SSDI from SSI?" />
         </div>
         <p className="mt-6 text-sm leading-relaxed text-muted">
           Some people receive both (“concurrent” benefits) if their SSDI check is low and they still meet SSI resource

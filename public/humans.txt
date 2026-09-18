@@ -1,6 +1,6 @@
 /* TEAM */
 Campaign: SSDI Campaigns
-Contact: info@ssdi-campaign-help.org
+Contact: Intake@abbycrm.com
 From: United States
 
 /* SITE */

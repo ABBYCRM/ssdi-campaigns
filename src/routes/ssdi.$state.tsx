@@ -1,5 +1,6 @@
 import { createFileRoute, Link, notFound } from "@tanstack/react-router";
 import { IntakeForm } from "@/components/forms/intake-form";
+import { InlineCta } from "@/components/layout/inline-cta";
 import { PageHero } from "@/components/layout/page-hero";
 import { pageHead } from "@/lib/seo";
 import { getState } from "@/lib/states";
@@ -46,6 +47,7 @@ function StatePage() {
             <li>Five-month waiting period and 24-month Medicare clock (with statutory exceptions).</li>
             <li>60-day appeal deadlines.</li>
           </ul>
+          <InlineCta title={`Screen an SSDI claim from ${state.name}`} />
           <h2 className="text-2xl font-extrabold text-navy">What does change</h2>
           <p>
             DDS staffing, consultative-exam vendors, hearing-office wait times, and which local clinics SSA already knows.

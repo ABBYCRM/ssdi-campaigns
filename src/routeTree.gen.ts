@@ -34,6 +34,7 @@ import { Route as TermsRouteImport } from './routes/terms'
 import { Route as WhatIsSsdiRouteImport } from './routes/what-is-ssdi'
 import { Route as WorkCreditsRouteImport } from './routes/work-credits'
 import { Route as SsdiStateRouteImport } from './routes/ssdi.$state'
+import { Route as ApiVapiInboundRouteImport } from './routes/api.vapi.inbound'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -160,6 +161,11 @@ const SsdiStateRoute = SsdiStateRouteImport.update({
   path: '/ssdi/$state',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiVapiInboundRoute = ApiVapiInboundRouteImport.update({
+  id: '/api/vapi/inbound',
+  path: '/api/vapi/inbound',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -187,6 +193,7 @@ export interface FileRoutesByFullPath {
   '/what-is-ssdi': typeof WhatIsSsdiRoute
   '/work-credits': typeof WorkCreditsRoute
   '/ssdi/$state': typeof SsdiStateRoute
+  '/api/vapi/inbound': typeof ApiVapiInboundRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -214,6 +221,7 @@ export interface FileRoutesByTo {
   '/what-is-ssdi': typeof WhatIsSsdiRoute
   '/work-credits': typeof WorkCreditsRoute
   '/ssdi/$state': typeof SsdiStateRoute
+  '/api/vapi/inbound': typeof ApiVapiInboundRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -242,6 +250,7 @@ export interface FileRoutesById {
   '/what-is-ssdi': typeof WhatIsSsdiRoute
   '/work-credits': typeof WorkCreditsRoute
   '/ssdi/$state': typeof SsdiStateRoute
+  '/api/vapi/inbound': typeof ApiVapiInboundRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -271,6 +280,7 @@ export interface FileRouteTypes {
     | '/what-is-ssdi'
     | '/work-credits'
     | '/ssdi/$state'
+    | '/api/vapi/inbound'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -298,6 +308,7 @@ export interface FileRouteTypes {
     | '/what-is-ssdi'
     | '/work-credits'
     | '/ssdi/$state'
+    | '/api/vapi/inbound'
   id:
     | '__root__'
     | '/'
@@ -325,6 +336,7 @@ export interface FileRouteTypes {
     | '/what-is-ssdi'
     | '/work-credits'
     | '/ssdi/$state'
+    | '/api/vapi/inbound'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -353,6 +365,7 @@ export interface RootRouteChildren {
   WhatIsSsdiRoute: typeof WhatIsSsdiRoute
   WorkCreditsRoute: typeof WorkCreditsRoute
   SsdiStateRoute: typeof SsdiStateRoute
+  ApiVapiInboundRoute: typeof ApiVapiInboundRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -532,6 +545,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof SsdiStateRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/vapi/inbound': {
+      id: '/api/vapi/inbound'
+      path: '/api/vapi/inbound'
+      fullPath: '/api/vapi/inbound'
+      preLoaderRoute: typeof ApiVapiInboundRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -561,6 +581,7 @@ const rootRouteChildren: RootRouteChildren = {
   WhatIsSsdiRoute: WhatIsSsdiRoute,
   WorkCreditsRoute: WorkCreditsRoute,
   SsdiStateRoute: SsdiStateRoute,
+  ApiVapiInboundRoute: ApiVapiInboundRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

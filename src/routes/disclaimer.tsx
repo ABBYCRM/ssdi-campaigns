@@ -1,4 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { ContactLine } from "@/components/layout/contact-ctas";
 import { PageHero } from "@/components/layout/page-hero";
 import { pageHead } from "@/lib/seo";
 import { SSA_DISCLAIMER } from "@/lib/site";
@@ -16,7 +17,12 @@ export const Route = createFileRoute("/disclaimer")({
 function Page() {
   return (
     <main id="main">
-      <PageHero kicker="Legal" title="Disclaimer" lede="Please read this before using the site or submitting a form." />
+      <PageHero
+        kicker="Legal"
+        title="Disclaimer"
+        lede="Please read this before using the site or submitting a form."
+        cta="quiet"
+      />
       <article className="container-page max-w-3xl space-y-4 py-14 text-sm leading-relaxed text-muted">
         <p className="rounded-lg border border-border bg-sky p-4 font-medium text-navy">{SSA_DISCLAIMER}</p>
         <p>
@@ -33,6 +39,7 @@ function Page() {
           Nothing on this site is legal, medical, or tax advice. Past results of other claimants are not yours. State DDS
           names are used descriptively.
         </p>
+        <ContactLine className="border-t border-border pt-6" />
       </article>
     </main>
   );

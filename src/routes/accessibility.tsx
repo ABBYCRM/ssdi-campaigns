@@ -1,4 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { ContactLine } from "@/components/layout/contact-ctas";
 import { PageHero } from "@/components/layout/page-hero";
 import { pageHead } from "@/lib/seo";
 import { SITE } from "@/lib/site";
@@ -20,17 +21,19 @@ function Page() {
         kicker="Access"
         title="Accessibility statement"
         lede="People visiting a disability-benefits site should not have to fight the interface."
+        cta="quiet"
       />
       <article className="container-page max-w-3xl space-y-4 py-14 text-sm leading-relaxed text-muted">
         <p>
           We aim to conform to WCAG 2.2 Level AA: semantic headings, skip link, visible focus, form labels, 4.5:1 text
           contrast, keyboard access to navigation and the accordion, and respect for prefers-reduced-motion. Alternative
-          contact: {SITE.phoneDisplay} and {SITE.email}.
+          contact: {SITE.phonePhrase} and {SITE.email}.
         </p>
         <p>
           If you encounter a barrier, email {SITE.email} with the page URL and a description. We will work to fix it. This
           statement does not limit rights under the ADA, Section 504, or state disability-rights laws.
         </p>
+        <ContactLine className="border-t border-border pt-6" />
       </article>
     </main>
   );

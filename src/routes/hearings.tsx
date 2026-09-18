@@ -1,4 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
+import { InlineCta } from "@/components/layout/inline-cta";
 import { PageHero } from "@/components/layout/page-hero";
 import { pageHead } from "@/lib/seo";
 
@@ -27,6 +28,7 @@ function Page() {
           expert. You (or your representative) can question those experts. New evidence generally must be submitted at
           least five business days before the hearing unless an exception applies.
         </p>
+        <InlineCta title="Heading toward a hearing?" />
         <h2 className="text-2xl font-extrabold text-navy">Who may represent you</h2>
         <p>
           Under 20 CFR § 404.1705 you may appoint an attorney in good standing or a qualified non-attorney representative.

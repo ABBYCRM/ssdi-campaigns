@@ -1,4 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { InlineCta } from "@/components/layout/inline-cta";
 import { PageHero } from "@/components/layout/page-hero";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { pageHead } from "@/lib/seo";
@@ -32,6 +33,7 @@ function Page() {
             </AccordionItem>
           ))}
         </Accordion>
+        <InlineCta className="mt-10" title="Still have a question about your claim?" />
       </div>
     </main>
   );

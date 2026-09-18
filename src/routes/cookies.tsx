@@ -1,4 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
+import { ContactLine } from "@/components/layout/contact-ctas";
 import { PageHero } from "@/components/layout/page-hero";
 import { pageHead } from "@/lib/seo";
 
@@ -15,7 +16,12 @@ export const Route = createFileRoute("/cookies")({
 function Page() {
   return (
     <main id="main">
-      <PageHero kicker="Legal" title="Cookie policy" lede="We keep cookies to a minimum." />
+      <PageHero
+        kicker="Legal"
+        title="Cookie policy"
+        lede="We keep cookies to a minimum."
+        cta="quiet"
+      />
       <article className="container-page max-w-3xl space-y-4 py-14 text-sm leading-relaxed text-muted">
         <p>
           <strong className="text-navy">Strictly necessary:</strong> session, CSRF, load balancing, cookie-consent storage,
@@ -33,6 +39,7 @@ function Page() {
           </Link>
           .
         </p>
+        <ContactLine className="border-t border-border pt-6" />
       </article>
     </main>
   );

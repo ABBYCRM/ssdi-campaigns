@@ -1,5 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import type { ReactNode } from "react";
+import { ContactLine } from "@/components/layout/contact-ctas";
 import { PageHero } from "@/components/layout/page-hero";
 import { pageHead } from "@/lib/seo";
 import { STATE_PRIVACY } from "@/lib/privacy-states";
@@ -23,11 +24,12 @@ function Page() {
         kicker="Legal"
         title="Privacy policy (50-state)"
         lede="Effective September 16, 2026. This policy explains how SSDI Campaigns collects, uses, shares, and protects personal information, including health-related disability data, from residents of every U.S. state and the District of Columbia."
+        cta="quiet"
       />
       <article className="container-page max-w-3xl space-y-8 py-14 text-sm leading-relaxed text-muted">
         <p>
           Operator: {SITE.legalName} (“we,” “us”). Contact: {SITE.email}. Privacy requests: {SITE.privacyEmail}. Phone:{" "}
-          {SITE.phoneDisplay}. Website: {SITE.domain}.
+          {SITE.phonePhrase}. Website: {SITE.domain}.
         </p>
 
         <Section title="1. Who we are — and who we are not">
@@ -169,6 +171,7 @@ function Page() {
           This addendum is educational compliance mapping, not a guarantee that every statutory threshold is triggered for
           our operation. When a law does not yet apply, we still offer access, deletion, and opt-out.
         </p>
+        <ContactLine className="border-t border-border pt-6" />
       </article>
     </main>
   );

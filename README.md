@@ -4,7 +4,7 @@ Independent Social Security Disability Insurance education and intake site. Help
 
 **Not affiliated with, endorsed by, or authorized by the U.S. Social Security Administration.**
 
-Live domain (planned): [ssdicampaigns.com](https://ssdicampaigns.com)
+Live domain: [ssdicampaigns.com](https://ssdicampaigns.com)
 
 ## What’s in this repo
 
@@ -13,7 +13,7 @@ Live domain (planned): [ssdicampaigns.com](https://ssdicampaigns.com)
 - SEO: JSON-LD, sitemap, robots, `llms.txt` / `ai.txt`
 - Legal pages: privacy, terms, disclaimer, SMS terms, cookies, accessibility, do-not-sell, privacy request
 - DigitalOcean App Platform spec (`.do/app.yaml`) + production `Dockerfile`
-- Optional HubSpot intake stub in `backend/` (not wired until a private-app token is set)
+- Intake API in `backend/` — HubSpot-primary CRM, optional Google Sheets backup, SSDI-Validator, SSDI-portal desk, SSDI-only Resend, Vapi webhook
 
 ## Stack
 
@@ -33,13 +33,61 @@ npm run build
 npm run typecheck
 ```
 
+## Lead flow (SSDI Campaigns only)
+
+```text
+ssdicampaigns.com form  ─┐
+                         ├─► POST /intake  (TCPA fail-closed)
+Vapi +15616520362        ─┘       │
+     webhook                      │
+     https://ssdicampaigns.com/api/vapi/inbound
+                                  ▼
+                         HubSpot (PRIMARY)
+                           contact upsert + intake NOTE
+                           deal on "SSDI Campaigns" pipeline (New)
+                           Sheets backup / failover
+                                  ▼
+                         SSDI-Validator  POST /v1/validations
+                           (SSDI_VALIDATOR_URL + Bearer SSDI_VALIDATOR_TOKEN)
+                                  ▼
+                         HubSpot attach
+                           ssdi_validator_status / ssdi_fraud_signal
+                           validation NOTE
+                           deal stage → Validated | Incomplete | Contradicted
+                                  ▼
+                         SSDI-portal desk  POST /api/webhooks/intake
+                           (SSDI_PORTAL_URL + x-webhook-secret)
+                                  ▼
+                         Resend
+                           From  SSDI Campaigns <noreply@ssdicampaigns.com>
+                           Reply-To  Intake@abbycrm.com
+```
+
+Sibling services (built in parallel; this repo stubs until they are live):
+
+| Service | Repo | This app calls | Env |
+| --- | --- | --- | --- |
+| Validator | `ABBYCRM/SSDI-Validator` | `POST /v1/validations` | `SSDI_VALIDATOR_URL`, `SSDI_VALIDATOR_TOKEN` (`ssdi_live_…`) |
+| Ops desk | `ABBYCRM/SSDI-portal` | `POST /api/webhooks/intake` | `SSDI_PORTAL_URL`, `SSDI_PORTAL_WEBHOOK_SECRET` |
+
+If those env vars are empty, `/intake` still succeeds to HubSpot/Sheets and `GET /health` reports `validator` / `portal` as `unwired`.
+
 ## Intake / CRM
 
-The public form currently validates on the server and returns success without persisting records. To wire HubSpot:
+Leads POST to `/intake` (standalone `backend/server.mjs`, also used in-process by the site when `HUBSPOT_ACCESS_TOKEN` is set on the web service).
 
-1. Create a HubSpot private app with `crm.objects.contacts.write`
-2. Set `HUBSPOT_ACCESS_TOKEN` (never commit it)
-3. See `backend/README.md` for the field map and TCPA retention notes
+1. **HubSpot is primary — first-class, not a stub.** Create a **new** private app in the **SSDI** HubSpot portal. Server-side create-or-update is the form equivalent (no HubSpot marketing-form embed on the site). Full property map, NOTES, and deal pipeline: [`docs/HUBSPOT.md`](docs/HUBSPOT.md). Never reuse a CaseClosedFL token or portal `247081451`.
+2. **Google Sheets is backup / failover only.** Set `GOOGLE_SHEETS_SPREADSHEET_ID` plus a service account. Sheets runs after a successful HubSpot write, or when HubSpot is unwired/unavailable.
+3. **TCPA is fail-closed** (`tcpa === true` required).
+4. **SSDI-Validator** after a successful persist: `POST {SSDI_VALIDATOR_URL}/v1/validations`. Result `VALIDATED` / `INCOMPLETE` / `CONTRADICTED` is PATCHed onto the contact and written as a HubSpot NOTE.
+5. **SSDI-portal desk** after validator: `POST {SSDI_PORTAL_URL}/api/webhooks/intake`.
+6. **Resend is SSDI-domain only.** From `SSDI Campaigns <noreply@ssdicampaigns.com>`. Reply-To `Intake@abbycrm.com`. Verify **ssdicampaigns.com** in the SSDI Resend project (Domains → DNS SPF/DKIM → status Verified) before sending.
+7. **Vapi.** Public webhook: `POST https://ssdicampaigns.com/api/vapi/inbound` (aliases `/webhooks/vapi`). Assistant id `c0f5dd63-3c51-4eb6-9f62-8a6e2391c954`. Optional `VAPI_WEBHOOK_SECRET`. Same persist path as the site form.
+8. **Public phone / email.** Click-to-call is **+1 (561) 652-0362** (`VITE_PUBLIC_PHONE` / `INBOUND_PHONE_NUMBER` default `+15616520362`). Contact email is **Intake@abbycrm.com**.
+
+`GET /health` reports `crm`, `sheets`, `validator`, `portal`, `email`, `vapi` as `wired` / `unwired` (sheets reports `backup` when configured).
+
+Field map, HubSpot private-app scopes, TCPA retention, and env details: [`backend/README.md`](backend/README.md). Example env file: [`.env.example`](.env.example).
 
 Do not send health narratives to advertising properties.
 

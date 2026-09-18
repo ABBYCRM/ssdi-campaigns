@@ -1,4 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
+import { InlineCta } from "@/components/layout/inline-cta";
 import { PageHero } from "@/components/layout/page-hero";
 import { pageHead } from "@/lib/seo";
 import { FIGURES_2026 } from "@/lib/ssdi";
@@ -38,6 +39,7 @@ function Page() {
           Your benefit starts from your Average Indexed Monthly Earnings and Primary Insurance Amount — the same family of
           formulas used for retirement. It is not a flat national amount and it is not means-tested the way SSI is.
         </p>
+        <InlineCta title="See if a campaign screening is worth it" />
         <h2 className="text-2xl font-extrabold text-navy">Waiting period and Medicare</h2>
         <p>
           Benefits generally begin after five full calendar months from the established onset date (ALS is excepted). SSA

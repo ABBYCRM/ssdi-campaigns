@@ -1,4 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
+import { InlineCta } from "@/components/layout/inline-cta";
 import { PageHero } from "@/components/layout/page-hero";
 import { pageHead } from "@/lib/seo";
 import { APPEAL_LEVELS, FIGURES_2026 } from "@/lib/ssdi";
@@ -31,6 +32,9 @@ function Page() {
             <p className="mt-3 text-sm leading-relaxed text-muted">{lvl.body}</p>
           </article>
         ))}
+      </div>
+      <div className="container-page pb-10">
+        <InlineCta title="Denied and facing a deadline?" />
       </div>
       <p className="container-page max-w-3xl pb-16 text-sm text-muted">
         You can appeal a denial through SSA’s four-level process. This campaign can help you understand the record and

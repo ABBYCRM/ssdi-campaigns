@@ -1,4 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
+import { ContactLine } from "@/components/layout/contact-ctas";
 import { PageHero } from "@/components/layout/page-hero";
 import { Button } from "@/components/ui/button";
 import { pageHead } from "@/lib/seo";
@@ -21,6 +22,7 @@ function Page() {
         kicker="Your privacy choices"
         title="Do not sell or share"
         lede="We do not sell personal information for money. Some laws still treat lead referrals or advertising as a “sale” or “share.” Use this page to opt out."
+        cta="quiet"
       />
       <article className="container-page max-w-3xl space-y-4 py-14 text-sm leading-relaxed text-muted">
         <p>
@@ -38,6 +40,7 @@ function Page() {
         <Button asChild variant="teal">
           <Link to="/privacy-request">File a privacy request</Link>
         </Button>
+        <ContactLine className="border-t border-border pt-6" />
       </article>
     </main>
   );

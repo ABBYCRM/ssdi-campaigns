@@ -1,4 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
+import { InlineCta } from "@/components/layout/inline-cta";
 import { PageHero } from "@/components/layout/page-hero";
 import { pageHead } from "@/lib/seo";
 
@@ -31,6 +32,7 @@ function Page() {
           <li>SSA finds you can still do past work or other work in the national economy.</li>
           <li>Failure to follow prescribed treatment without good cause, or failure to cooperate.</li>
         </ul>
+        <InlineCta title="Just got a denial notice?" />
         <p>
           Read the notice. Technical denials (insured status, SGA) are different from medical denials. Do not file a brand
           new application if you are still inside the appeal window — you can lose your protective filing date.
