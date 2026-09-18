@@ -1,7 +1,16 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { Banknote, Check, ClipboardList, Megaphone, Puzzle, Stethoscope } from "lucide-react";
+import type { ReactNode } from "react";
+import {
+  Banknote,
+  BriefcaseMedical,
+  Check,
+  ClipboardList,
+  Megaphone,
+  Puzzle,
+} from "lucide-react";
 import { IntakeForm } from "@/components/forms/intake-form";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
+import { Button } from "@/components/ui/button";
 import { pageHead } from "@/lib/seo";
 import { FAQS, FIGURES_2026, SERVICES } from "@/lib/ssdi";
 
@@ -18,117 +27,161 @@ export const Route = createFileRoute("/")({
 
 function Home() {
   return (
-    <main id="main" className="bg-paper">
-      <section className="relative overflow-hidden" aria-label="Campaign hero">
+    <main id="main">
+      <section className="relative overflow-hidden bg-sky" aria-label="Campaign hero">
         <img
           src="/images/hero.jpg"
-          alt="Happy Badger standing on a tropical beach, pointing toward SSDI eligibility"
-          className="h-[20rem] w-full object-cover object-[62%_42%] sm:h-[24rem] md:h-[30rem] lg:h-[32rem]"
-          width={1600}
-          height={900}
+          alt="A couple meeting with an SSDI campaign advisor in front of a city skyline"
+          className="mx-auto h-auto w-full max-w-5xl object-contain object-bottom"
+          width={1792}
+          height={1008}
         />
-        <h1 className="pointer-events-none absolute inset-y-0 left-0 z-[1] flex w-[58%] items-center justify-center px-4 text-center font-display text-[1.7rem] font-semibold uppercase leading-[1.1] tracking-wide text-navy drop-shadow-[0_2px_0_rgb(255_248_238_/_0.75)] sm:w-[54%] sm:text-4xl md:text-5xl lg:text-[3.35rem]">
-          SSDI Benefits:
-          <br />
-          Are You Eligible?
-        </h1>
       </section>
 
-      <section className="relative px-4 pb-8 pt-8 md:pb-12">
-        <div className="container-page grid gap-4 md:grid-cols-3">
-          <article className="rounded-[1.75rem] bg-teal p-6 text-card shadow-soft">
-            <div className="mb-3 flex items-center gap-3">
-              <span className="grid size-12 place-items-center rounded-2xl bg-card/20">
-                <Banknote className="size-7" />
-              </span>
-              <h2 className="font-display text-xl font-semibold uppercase tracking-wide">What is SSDI?</h2>
-            </div>
-            <ul className="space-y-1.5 text-sm font-semibold leading-snug">
-              <li>• Monthly Payments</li>
-              <li>• Federal Program</li>
-              <li>• Based on Work History</li>
-            </ul>
-          </article>
+      <section className="bg-card px-4 pb-4 pt-8 text-center md:pt-10">
+        <h1 className="text-[1.65rem] font-extrabold leading-[1.15] tracking-tight sm:text-4xl md:text-5xl">
+          <span className="text-red">SSDI Benefits:</span>{" "}
+          <span className="text-navy">Are You Eligible?</span>
+        </h1>
+        <p className="mt-3 text-base font-bold uppercase tracking-[0.04em] text-navy sm:text-xl md:text-2xl">
+          Our campaign helps you navigate the process.
+        </p>
+      </section>
 
-          <article className="rounded-[1.75rem] bg-coral p-6 text-card shadow-soft">
+      <section className="bg-card px-4 py-10">
+        <div className="container-page grid gap-10 lg:grid-cols-3">
+          <div>
             <div className="mb-3 flex items-center gap-3">
-              <span className="grid size-12 place-items-center rounded-2xl bg-card/20">
-                <Stethoscope className="size-7" />
-              </span>
-              <span className="grid size-12 place-items-center rounded-2xl bg-card/20">
-                <Megaphone className="size-7" />
-              </span>
+              <IconBubble>
+                <Banknote className="size-6 text-teal" />
+              </IconBubble>
+              <IconBubble>
+                <BriefcaseMedical className="size-6 text-red" />
+              </IconBubble>
+              <h2 className="text-2xl font-extrabold tracking-tight text-navy">What is SSDI?</h2>
             </div>
-            <ul className="space-y-1.5 text-sm font-bold leading-snug">
-              <li>
-                • Help with <span className="uppercase">Applications</span>
-              </li>
-              <li>
-                • Support with <span className="uppercase">Appeals</span>
-              </li>
-              <li>
-                • Understand <span className="uppercase">Denials</span>
-              </li>
-              <li>
-                • Guidance on <span className="uppercase">Medical Proof</span>
-              </li>
+            <ul className="ml-1 list-disc space-y-1.5 pl-5 text-ink">
+              <li>Monthly payments</li>
+              <li>Federal insurance program</li>
+              <li>Based on your work history</li>
             </ul>
-          </article>
+            <p className="mt-4 text-sm leading-relaxed text-muted">
+              In 2026 you earn one work credit per ${FIGURES_2026.workCredit.toLocaleString()} in covered earnings (max four
+              per year). Average disabled-worker benefit: about ${FIGURES_2026.avgWorkerBenefit.toLocaleString()}/month.
+            </p>
+            <Link to="/what-is-ssdi" className="mt-3 inline-block text-sm font-semibold text-teal-dark hover:underline">
+              Learn how SSDI works
+            </Link>
+          </div>
 
-          <article className="rounded-[1.75rem] border border-line bg-gold p-6 text-navy shadow-soft">
+          <div>
             <div className="mb-3 flex items-center gap-3">
-              <h2 className="font-display text-xl font-semibold uppercase tracking-wide">Why a campaign?</h2>
-              <Puzzle className="size-8 shrink-0 text-coral" />
+              <IconBubble>
+                <Megaphone className="size-6 text-coral" />
+              </IconBubble>
+              <IconBubble>
+                <Puzzle className="size-6 text-navy" />
+              </IconBubble>
+              <h2 className="text-2xl font-extrabold tracking-tight text-navy">Why a campaign?</h2>
             </div>
-            <ul className="space-y-1.5 text-sm font-bold">
+            <ul className="ml-1 list-disc space-y-1.5 pl-5 text-ink">
+              <li>Help with applications</li>
+              <li>Support with appeals</li>
+              <li>Understand denials</li>
+              <li>Guidance on medical proof</li>
+            </ul>
+            <p className="mt-4 text-sm leading-relaxed text-muted">
+              Most initial claims are denied. A campaign exists to explain the federal rules, organize evidence, and connect
+              you with qualified representatives when a hearing is the next step.
+            </p>
+          </div>
+
+          <div>
+            <div className="mb-3 flex items-center gap-3">
+              <IconBubble>
+                <ClipboardList className="size-6 text-navy" />
+              </IconBubble>
+              <h2 className="text-2xl font-extrabold tracking-tight text-navy">Common campaign services</h2>
+            </div>
+            <ul className="space-y-2">
               {SERVICES.map((s) => (
-                <li key={s.title} className="flex items-start gap-2">
-                  <Check className="mt-0.5 size-4 shrink-0 text-teal-dark" strokeWidth={3} />
-                  {s.title}
+                <li key={s.title} className="flex items-start gap-2 text-ink">
+                  <Check className="mt-0.5 size-5 shrink-0 text-teal" strokeWidth={3} />
+                  <span>{s.title}</span>
                 </li>
               ))}
             </ul>
-          </article>
-        </div>
-        <div className="container-page mt-2 flex flex-col items-center md:mt-[-2.5rem] md:flex-row md:items-end md:justify-end">
-          <div className="mb-1 hidden items-center gap-2 text-navy md:mb-8 md:mr-[-1rem] md:flex">
-            <ClipboardList className="size-6 text-teal-dark" />
-            <p className="font-display text-lg font-semibold uppercase tracking-wide">Common campaign services:</p>
+            <Link to="/services" className="mt-4 inline-block text-sm font-semibold text-teal-dark hover:underline">
+              See how we help
+            </Link>
           </div>
-          <img
-            src="/images/badger-relax.webp"
-            alt="Happy Badger relaxing on a beach towel"
-            className="w-64 drop-shadow-md sm:w-80 md:w-[22rem]"
-            width={800}
-            height={450}
-          />
         </div>
       </section>
 
-      <section className="px-4 py-6" aria-labelledby="eligibility-form">
+      <section className="border-y border-border bg-sky py-8" aria-labelledby="eligibility-form">
         <div className="container-page">
-          <div className="flex flex-col items-center gap-4 lg:flex-row lg:items-start">
-            <h2 id="eligibility-form" className="shrink-0 font-display text-xl font-semibold text-navy lg:pt-2">
-              Eligibility Check Form
-            </h2>
-            <div className="w-full flex-1">
+          <div className="flex flex-col gap-6 lg:flex-row lg:items-start lg:justify-between">
+            <div className="lg:max-w-xs">
+              <h2 id="eligibility-form" className="text-xl font-extrabold text-navy">
+                Eligibility check form
+              </h2>
+              <p className="mt-2 text-sm text-muted">
+                Screening only — this is not a government application. Submit the form or call us for a free consultation.
+              </p>
+            </div>
+            <div className="flex-1">
               <IntakeForm compact source="home-bar" />
             </div>
           </div>
         </div>
       </section>
 
-      <section className="bg-sky/50 py-12">
-        <div className="container-page grid gap-6 md:grid-cols-3">
+      <section className="bg-card py-14">
+        <div className="container-page grid gap-10 md:grid-cols-3">
           <Stat value={`${FIGURES_2026.disabledWorkersMillions}M`} label="Disabled workers receiving SSDI (Jan 2026)" />
           <Stat value={`$${FIGURES_2026.sgaNonBlind.toLocaleString()}`} label="2026 monthly SGA limit (non-blind)" />
           <Stat value={`${FIGURES_2026.waitingMonths} months`} label="Statutory waiting period before SSDI payments" />
         </div>
+        <p className="container-page mt-6 text-center text-xs text-muted">
+          Figures compiled from SSA publications and the Congressional Research Service snapshot for January 2026. They are
+          educational, not a prediction of your benefit.
+        </p>
       </section>
 
-      <section className="py-14">
+      <section className="border-t border-border bg-paper py-16">
+        <div className="container-page grid gap-10 lg:grid-cols-2">
+          <div>
+            <p className="eyebrow">Official path</p>
+            <h2 className="mt-2 text-3xl font-extrabold tracking-tight text-navy">SSA decides every claim</h2>
+            <p className="mt-4 text-muted leading-relaxed">
+              Disability Determination Services in your state reviews medical evidence using SSA’s five-step sequential
+              evaluation. We do not issue benefits, guarantee approval, or replace SSA. Social Security Act § 1140 prohibits
+              implying a government endorsement — we don’t.
+            </p>
+            <div className="mt-6 flex flex-wrap gap-3">
+              <Button asChild variant="coral">
+                <Link to="/eligibility">Check eligibility rules</Link>
+              </Button>
+              <Button asChild variant="outline">
+                <Link to="/application">How to apply</Link>
+              </Button>
+            </div>
+          </div>
+          <div className="overflow-hidden rounded-xl border border-border bg-card shadow-soft">
+            <img
+              src="/images/consult.jpg"
+              alt="Advisor reviewing disability paperwork with a couple at a table"
+              className="h-64 w-full object-cover"
+              width={1792}
+              height={1008}
+            />
+          </div>
+        </div>
+      </section>
+
+      <section className="bg-card py-16">
         <div className="container-page max-w-3xl">
-          <h2 className="font-display text-3xl font-semibold tracking-tight text-navy">Frequently asked questions</h2>
+          <h2 className="text-3xl font-extrabold tracking-tight text-navy">Frequently asked questions</h2>
           <Accordion type="single" collapsible className="mt-6" defaultValue="item-0">
             {FAQS.slice(0, 6).map((item, i) => (
               <AccordionItem key={item.q} value={`item-${i}`}>
@@ -146,10 +199,14 @@ function Home() {
   );
 }
 
+function IconBubble({ children }: { children: ReactNode }) {
+  return <span className="grid size-11 place-items-center rounded-xl bg-sky text-navy">{children}</span>;
+}
+
 function Stat({ value, label }: { value: string; label: string }) {
   return (
-    <div className="rounded-3xl border border-border bg-card p-6 text-center shadow-soft">
-      <p className="font-display text-3xl font-semibold text-navy">{value}</p>
+    <div className="rounded-xl border border-border bg-sky/60 p-6 text-center">
+      <p className="text-3xl font-extrabold text-navy">{value}</p>
       <p className="mt-2 text-sm text-muted">{label}</p>
     </div>
   );
