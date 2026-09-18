@@ -10,7 +10,7 @@ export function LiveChat() {
       <button
         type="button"
         onClick={() => setOpen(true)}
-        className="fixed bottom-20 right-4 z-40 inline-flex h-12 min-h-11 items-center gap-2 rounded-full bg-navy px-5 text-sm font-bold text-white shadow-lift lg:bottom-5 lg:right-5"
+        className="fixed bottom-[calc(8.75rem+env(safe-area-inset-bottom))] right-4 z-30 inline-flex h-12 min-h-11 items-center gap-2 rounded-full bg-navy px-5 text-sm font-bold text-white shadow-lift lg:bottom-5 lg:right-5"
         aria-haspopup="dialog"
         aria-expanded={open}
       >
@@ -18,11 +18,11 @@ export function LiveChat() {
         Live Chat
       </button>
       {open ? (
-        <div className="fixed inset-0 z-50 flex items-end justify-end bg-navy-deep/40 p-4 sm:p-6" role="dialog" aria-label="Live chat">
-          <div className="relative w-full max-w-md rounded-xl bg-card p-5 shadow-lift">
+        <div className="fixed inset-0 z-50 flex items-end justify-end bg-navy-deep/40 p-4 pb-28 sm:p-6 lg:pb-6" role="dialog" aria-label="Live chat">
+          <div className="relative max-h-[min(36rem,calc(100dvh-8rem))] w-full max-w-md overflow-y-auto rounded-xl bg-card p-5 shadow-lift">
             <button
               type="button"
-              className="absolute right-3 top-3 grid size-9 place-items-center rounded-full hover:bg-sky"
+              className="absolute right-3 top-3 grid size-11 place-items-center rounded-full hover:bg-sky"
               onClick={() => setOpen(false)}
               aria-label="Close chat"
             >

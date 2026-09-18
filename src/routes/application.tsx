@@ -1,4 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
+import { InlineCta } from "@/components/layout/inline-cta";
 import { PageHero } from "@/components/layout/page-hero";
 import { pageHead } from "@/lib/seo";
 import { FIGURES_2026 } from "@/lib/ssdi";
@@ -41,6 +42,7 @@ function Page() {
             matters more than a label.
           </li>
         </ol>
+        <InlineCta title="Want help getting the file ready?" />
         <p>
           Mid-2026 initial decisions averaged about {FIGURES_2026.initialDecisionDays} days. That is not a deadline and not a
           guarantee. After you apply, respond to SSA and DDS requests quickly — silence is a common reason for denial.

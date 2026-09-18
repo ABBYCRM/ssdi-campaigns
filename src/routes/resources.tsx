@@ -26,7 +26,7 @@ function Page() {
           <Link
             key={l.to}
             to={l.to}
-            className="rounded-xl border border-border bg-card px-5 py-6 font-semibold text-navy hover:border-teal hover:bg-sky"
+            className="inline-flex min-h-11 items-center rounded-xl border border-border bg-card px-5 py-6 font-semibold text-navy hover:border-teal hover:bg-sky"
           >
             {l.label}
           </Link>

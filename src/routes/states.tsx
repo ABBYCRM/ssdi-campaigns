@@ -28,7 +28,7 @@ function Page() {
             key={s.slug}
             to="/ssdi/$state"
             params={{ state: s.slug }}
-            className="rounded-md border border-border bg-card px-3 py-3 text-sm font-semibold text-navy hover:border-teal hover:bg-sky"
+            className="inline-flex min-h-11 items-center rounded-md border border-border bg-card px-3 py-3 text-sm font-semibold text-navy hover:border-teal hover:bg-sky"
           >
             {s.name}
           </Link>

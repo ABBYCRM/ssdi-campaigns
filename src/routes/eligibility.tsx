@@ -1,5 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { IntakeForm } from "@/components/forms/intake-form";
+import { InlineCta } from "@/components/layout/inline-cta";
 import { PageHero } from "@/components/layout/page-hero";
 import { Button } from "@/components/ui/button";
 import { pageHead } from "@/lib/seo";
@@ -70,6 +71,8 @@ function EligibilityPage() {
             </p>
           </section>
 
+          <InlineCta title="Want a screening against these rules?" />
+
           <section>
             <h2 className="text-2xl font-extrabold text-navy">The medical standard</h2>
             <p className="mt-3 text-muted leading-relaxed">
@@ -100,11 +103,11 @@ function EligibilityPage() {
               computed from your lifetime earnings record. You can request a screening from this campaign even if you later
               file on your own.
             </p>
-            <div className="mt-6 flex flex-wrap gap-3">
-              <Button asChild variant="coral">
+            <div className="mt-6 flex flex-col gap-3 sm:flex-row sm:flex-wrap">
+              <Button asChild variant="coral" className="min-h-11">
                 <Link to="/contact">Request a free screening</Link>
               </Button>
-              <Button asChild variant="outline">
+              <Button asChild variant="outline" className="min-h-11">
                 <Link to="/work-credits">Work-credit guide</Link>
               </Button>
             </div>

@@ -89,7 +89,7 @@ export function IntakeForm({ compact, source = "site", className }: Props) {
   return (
     <form onSubmit={onSubmit} className={cn("grid gap-3", className)} noValidate>
       <input type="text" name="company" className="hidden" tabIndex={-1} autoComplete="off" aria-hidden="true" />
-      <div className={cn("grid gap-3", compact ? "md:grid-cols-4" : "sm:grid-cols-2")}>
+      <div className="grid gap-3 sm:grid-cols-2">
         <Field label="Name" htmlFor={`${source}-name`}>
           <Input id={`${source}-name`} name="name" autoComplete="name" required placeholder="Full name" />
         </Field>
@@ -141,8 +141,8 @@ export function IntakeForm({ compact, source = "site", className }: Props) {
         </Field>
       ) : null}
 
-      <label className="flex items-start gap-3 text-xs leading-relaxed text-muted">
-        <Checkbox checked={sensitiveHealth} onCheckedChange={(v) => setSensitiveHealth(v === true)} className="mt-0.5" />
+      <label className="flex min-h-11 items-start gap-3 text-xs leading-relaxed text-muted">
+        <Checkbox checked={sensitiveHealth} onCheckedChange={(v) => setSensitiveHealth(v === true)} className="mt-0.5 size-6" />
         <span>
           I understand this form collects health-related information (disability type) so we can screen SSDI eligibility. Read the{" "}
           <Link to="/privacy" className="font-semibold text-navy underline">
@@ -151,8 +151,8 @@ export function IntakeForm({ compact, source = "site", className }: Props) {
           .
         </span>
       </label>
-      <label className="flex items-start gap-3 text-xs leading-relaxed text-muted">
-        <Checkbox checked={tcpa} onCheckedChange={(v) => setTcpa(v === true)} className="mt-0.5" />
+      <label className="flex min-h-11 items-start gap-3 text-xs leading-relaxed text-muted">
+        <Checkbox checked={tcpa} onCheckedChange={(v) => setTcpa(v === true)} className="mt-0.5 size-6" />
         <span>{TCPA_CONSENT}</span>
       </label>
 

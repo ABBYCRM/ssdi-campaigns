@@ -1,4 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { InlineCta } from "@/components/layout/inline-cta";
 import { PageHero } from "@/components/layout/page-hero";
 import { pageHead } from "@/lib/seo";
 import { FIGURES_2026, WORK_CREDIT_TABLE } from "@/lib/ssdi";
@@ -50,6 +51,7 @@ function Page() {
             </tbody>
           </table>
         </div>
+        <InlineCta title="Not sure if you are still insured?" />
         <p>
           Credits are earned through covered wages or self-employment. Your date last insured is the last day you still
           meet the recent-work test.

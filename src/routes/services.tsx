@@ -1,4 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
+import { InlineCta } from "@/components/layout/inline-cta";
 import { PageHero } from "@/components/layout/page-hero";
 import { Button } from "@/components/ui/button";
 import { pageHead } from "@/lib/seo";
@@ -32,6 +33,9 @@ function ServicesPage() {
           </article>
         ))}
       </div>
+      <div className="container-page pb-6">
+        <InlineCta title="Ready for a free campaign screening?" />
+      </div>
       <section className="container-page max-w-3xl pb-16">
         <h2 className="text-2xl font-extrabold text-navy">Fees and representation</h2>
         <p className="mt-3 text-muted leading-relaxed">
@@ -44,11 +48,11 @@ function ServicesPage() {
           Social Security Act § 1140 requires us to say, clearly: this campaign is independent. We do not issue benefits
           or replace SSA. Completing this screening is free and never required to pursue a claim.
         </p>
-        <div className="mt-6 flex flex-wrap gap-3">
-          <Button asChild variant="coral">
+        <div className="mt-6 flex flex-col gap-3 sm:flex-row sm:flex-wrap">
+          <Button asChild variant="coral" className="min-h-11">
             <Link to="/contact">Start a free consultation</Link>
           </Button>
-          <Button asChild variant="outline">
+          <Button asChild variant="outline" className="min-h-11">
             <Link to="/hearings">About hearings</Link>
           </Button>
         </div>

@@ -57,7 +57,7 @@ export const Route = createRootRoute({
       <head>
         <HeadContent />
       </head>
-      <body className="flex min-h-dvh flex-col bg-paper pb-16 text-ink antialiased lg:pb-0">
+      <body className="flex min-h-dvh flex-col overflow-x-hidden bg-paper pb-[calc(7.5rem+env(safe-area-inset-bottom))] text-ink antialiased lg:pb-0">
         <PreviewHostBridge />
         <AuthProvider>
           <a

@@ -12,6 +12,7 @@ import { IntakeForm } from "@/components/forms/intake-form";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { Button } from "@/components/ui/button";
 import { ContactCtas } from "@/components/layout/contact-ctas";
+import { InlineCta } from "@/components/layout/inline-cta";
 import { pageHead } from "@/lib/seo";
 import { FAQS, FIGURES_2026, SERVICES } from "@/lib/ssdi";
 
@@ -33,7 +34,7 @@ function Home() {
         <img
           src="/images/hero.jpg"
           alt="A couple meeting with an SSDI campaign advisor in front of a city skyline"
-          className="mx-auto h-auto w-full max-w-5xl object-contain object-bottom"
+          className="mx-auto h-[14rem] w-full max-w-5xl object-cover object-bottom sm:h-[20rem] md:h-[26rem] lg:h-[32rem]"
           width={1792}
           height={1008}
         />
@@ -52,8 +53,8 @@ function Home() {
         </div>
       </section>
 
-      <section className="bg-card px-4 py-10">
-        <div className="container-page grid gap-10 lg:grid-cols-3">
+      <section className="bg-card px-4 py-10 md:py-14">
+        <div className="container-page grid gap-10 md:grid-cols-2 lg:grid-cols-3">
           <div>
             <div className="mb-3 flex items-center gap-3">
               <IconBubble>
@@ -120,9 +121,12 @@ function Home() {
             </Link>
           </div>
         </div>
+        <div className="container-page mt-10">
+          <InlineCta title="Not sure where to start?" />
+        </div>
       </section>
 
-      <section className="border-y border-border bg-sky py-8" aria-labelledby="eligibility-form">
+      <section className="border-y border-border bg-sky py-8 md:py-10" aria-labelledby="eligibility-form">
         <div className="container-page">
           <div className="flex flex-col gap-6 lg:flex-row lg:items-start lg:justify-between">
             <div className="lg:max-w-xs">
@@ -162,11 +166,11 @@ function Home() {
               evaluation. We do not issue benefits, guarantee approval, or replace SSA. Social Security Act § 1140 prohibits
               implying a government endorsement — we don’t.
             </p>
-            <div className="mt-6 flex flex-wrap gap-3">
-              <Button asChild variant="coral">
+            <div className="mt-6 flex flex-col gap-3 sm:flex-row sm:flex-wrap">
+              <Button asChild variant="coral" className="min-h-11">
                 <Link to="/eligibility">Check eligibility rules</Link>
               </Button>
-              <Button asChild variant="outline">
+              <Button asChild variant="outline" className="min-h-11">
                 <Link to="/application">How to apply</Link>
               </Button>
             </div>
@@ -175,7 +179,7 @@ function Home() {
             <img
               src="/images/consult.jpg"
               alt="Advisor reviewing disability paperwork with a couple at a table"
-              className="h-64 w-full object-cover"
+              className="h-52 w-full object-cover sm:h-64 md:h-72"
               width={1792}
               height={1008}
             />

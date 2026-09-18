@@ -1,4 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
+import { ContactLine } from "@/components/layout/contact-ctas";
 import { PageHero } from "@/components/layout/page-hero";
 import { pageHead } from "@/lib/seo";
 import { SITE } from "@/lib/site";
@@ -20,7 +21,7 @@ function Page() {
         kicker="Legal"
         title="Terms of use"
         lede="Effective September 16, 2026. By using this site you agree to these terms."
-        cta={false}
+        cta="quiet"
       />
       <article className="container-page max-w-3xl space-y-5 py-14 text-sm leading-relaxed text-muted">
         <p>
@@ -50,6 +51,7 @@ function Page() {
           <Link to="/privacy" className="font-semibold text-navy underline">Privacy Policy</Link>, and{" "}
           <Link to="/sms-terms" className="font-semibold text-navy underline">SMS Terms</Link>.
         </p>
+        <ContactLine className="border-t border-border pt-6" />
       </article>
     </main>
   );

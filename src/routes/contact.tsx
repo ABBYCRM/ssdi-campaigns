@@ -76,7 +76,7 @@ function Card({
       <p className="mt-2 font-semibold text-navy">{body}</p>
     </>
   );
-  const cls = "block rounded-xl border border-border bg-card p-5";
+  const cls = "block min-h-11 rounded-xl border border-border bg-card p-5";
   return href ? (
     <a className={cls} href={href}>
       {inner}
