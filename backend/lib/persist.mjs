@@ -200,6 +200,7 @@ export async function persistIntake(payload, deps = {}) {
       dealId: hubspot.deal?.dealId,
       noteId: hubspot.note?.noteId,
       reason: hubspot.reason,
+      portalId: hubspot.portalId,
     },
     sheets: {
       ok: sheets.ok === true,

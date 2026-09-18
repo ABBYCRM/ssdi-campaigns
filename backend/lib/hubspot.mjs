@@ -3,8 +3,22 @@ import { envTrim, ssdiOnlyValue } from "./brand.mjs";
 const HUBSPOT_API = "https://api.hubapi.com";
 const HSFORMS_API = "https://api.hsforms.com";
 
-/** CaseClosedFL production HubSpot portal. SSDI must never write here. */
-export const CASECLOSEDFL_HUBSPOT_PORTAL_ID = "247081451";
+/**
+ * AbbyCRM HubSpot portal (CaseClosedFL MVA also lives here). SSDI Campaigns
+ * may write here when using a dedicated **SSDI Campaigns** private app —
+ * isolation is by app token + `ssdi_*` properties / SSDI Campaigns pipeline,
+ * not by portal id. Preferred: a separate SSDI portal when one is available.
+ */
+export const ABBYCRM_HUBSPOT_PORTAL_ID = "247081451";
+/** Historical alias for the AbbyCRM portal id. Not a runtime blocklist. */
+export const CASECLOSEDFL_HUBSPOT_PORTAL_ID = ABBYCRM_HUBSPOT_PORTAL_ID;
+
+/** Hard-coded token placeholders (including CaseClosedFL) — treat as unwired. */
+const HUBSPOT_TOKEN_PLACEHOLDERS = new Set([
+  "__HUBSPOT_ACCESS_TOKEN__",
+  "__CASECLOSEDFL_HUBSPOT_ACCESS_TOKEN__",
+  "__CASECLOSEDFL_HUBSPOT_TOKEN__",
+]);
 
 /** Dedicated Key-card group (mirrors the CaseClosedFL intake-group pattern, SSDI-only). */
 export const SSDI_INTAKE_PROPERTY_GROUP = "ssdi_campaigns_intake";
@@ -182,9 +196,16 @@ export const HUBSPOT_DEAL_PROPERTIES = [
   },
 ];
 
+export function isPlaceholderHubSpotToken(value) {
+  const raw = String(value || "").trim();
+  if (!raw) return false;
+  if (HUBSPOT_TOKEN_PLACEHOLDERS.has(raw)) return true;
+  return raw.startsWith("__") && raw.endsWith("__");
+}
+
 export function hubspotToken(env = process.env) {
   const raw = ssdiOnlyValue(envTrim(env, "HUBSPOT_ACCESS_TOKEN"));
-  if (!raw || raw === "__HUBSPOT_ACCESS_TOKEN__" || raw.startsWith("__")) return undefined;
+  if (!raw || isPlaceholderHubSpotToken(raw)) return undefined;
   return raw;
 }
 
@@ -192,14 +213,13 @@ export function configuredHubSpotPortalId(env = process.env) {
   return envTrim(env, "HUBSPOT_PORTAL_ID");
 }
 
-export function isForbiddenHubSpotPortal(portalId) {
-  return String(portalId || "").trim() === CASECLOSEDFL_HUBSPOT_PORTAL_ID;
+/** MVA accident fields. SSDI Campaigns never writes `intake_*` properties. */
+export function isMvaIntakePropertyName(name) {
+  return String(name || "").startsWith("intake_");
 }
 
 export function isHubSpotWired(env = process.env) {
-  if (!hubspotToken(env)) return false;
-  if (isForbiddenHubSpotPortal(configuredHubSpotPortalId(env))) return false;
-  return true;
+  return Boolean(hubspotToken(env));
 }
 
 export function hubspotFormId(env = process.env) {
@@ -257,6 +277,11 @@ function customProperties(lead, extra = {}) {
 export function contactProperties(lead, { includeCustom = true, extra = {} } = {}) {
   const props = { ...standardProperties(lead) };
   if (includeCustom) Object.assign(props, customProperties(lead, extra));
+  for (const key of Object.keys(props)) {
+    if (isMvaIntakePropertyName(key)) {
+      throw new Error(`hubspot blocked: MVA property ${key} is not allowed on SSDI Campaigns`);
+    }
+  }
   return props;
 }
 
@@ -324,22 +349,15 @@ async function ensureCustomProperties(fetchFn, token) {
 }
 
 /**
- * Identify the HubSpot portal behind the token. Blocks the CaseClosedFL portal.
+ * Identify the HubSpot portal behind the token.
+ * AbbyCRM portal 247081451 is allowed for a dedicated SSDI Campaigns private app.
  */
 export async function resolveHubSpotIdentity(fetchFn, token, env = process.env) {
   if (identityCache) return identityCache;
   const configured = configuredHubSpotPortalId(env);
-  if (isForbiddenHubSpotPortal(configured)) {
-    identityCache = { ok: false, forbidden: true, portalId: configured, reason: "forbidden_portal" };
-    return identityCache;
-  }
   try {
     const me = await hsJson(fetchFn, token, "/integrations/v1/me");
     const portalId = me.json?.portalId != null ? String(me.json.portalId) : configured || null;
-    if (isForbiddenHubSpotPortal(portalId)) {
-      identityCache = { ok: false, forbidden: true, portalId, reason: "forbidden_portal" };
-      return identityCache;
-    }
     identityCache = { ok: me.ok || Boolean(portalId), forbidden: false, portalId };
     return identityCache;
   } catch (err) {
@@ -699,9 +717,6 @@ export async function submitHubSpotForm(lead, { env = process.env, fetch: fetchF
   if (!token || !formId || !pid) {
     return { ok: false, skipped: true, reason: !formId ? "no_form_id" : "unwired" };
   }
-  if (isForbiddenHubSpotPortal(pid)) {
-    return { ok: false, skipped: true, reason: "forbidden_portal" };
-  }
   const url = `${HSFORMS_API}/submissions/v3/integration/secure/submit/${encodeURIComponent(pid)}/${encodeURIComponent(formId)}`;
   const payload = {
     fields: formFieldsFromLead(lead),
@@ -742,22 +757,20 @@ export async function submitHubSpotForm(lead, { env = process.env, fetch: fetchF
  * Create or update a HubSpot contact from the site form or Vapi.
  * First-class CRM write: custom ssdi_* properties, intake NOTE, SSDI Campaigns
  * deal pipeline. Optional Forms v3 submit when HUBSPOT_FORM_ID is set.
- * Never writes to the CaseClosedFL portal.
+ * Writes `ssdi_*` properties and the SSDI Campaigns pipeline only — never MVA
+ * `intake_*` accident fields. Same AbbyCRM portal is allowed with a dedicated
+ * SSDI private app; CaseClosedFL token placeholders stay unwired.
  */
 export async function upsertHubSpotContact(lead, { env = process.env, fetch: fetchFn = globalThis.fetch, extra = {} } = {}) {
   const token = hubspotToken(env);
   if (!token) {
     return { ok: false, skipped: true, reason: "unwired" };
   }
-  if (isForbiddenHubSpotPortal(configuredHubSpotPortalId(env))) {
-    console.error("hubspot blocked: CaseClosedFL portal id is not allowed on SSDI Campaigns");
-    return { ok: false, skipped: true, reason: "forbidden_portal" };
-  }
 
   const identity = await resolveHubSpotIdentity(fetchFn, token, env);
   if (identity.forbidden) {
-    console.error("hubspot blocked: token belongs to the CaseClosedFL portal");
-    return { ok: false, skipped: true, reason: "forbidden_portal", portalId: identity.portalId };
+    console.error("hubspot blocked: CaseClosedFL token is not allowed on SSDI Campaigns");
+    return { ok: false, skipped: true, reason: "forbidden_token", portalId: identity.portalId };
   }
 
   await ensureCustomProperties(fetchFn, token);

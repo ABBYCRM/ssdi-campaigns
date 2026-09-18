@@ -35,8 +35,8 @@ services:
       # SSDI Campaigns only. Never reuse CaseClosedFL HubSpot tokens, Resend
       # keys, sending domains, or Vapi assistant IDs. Bind these secrets in
       # the App Platform dashboard — do not commit values:
-      #   HUBSPOT_ACCESS_TOKEN          (primary CRM; SSDI private app — NEVER a CaseClosedFL token)
-      #   HUBSPOT_PORTAL_ID             (SSDI portal id; never 247081451)
+      #   HUBSPOT_ACCESS_TOKEN          (primary CRM; SSDI Campaigns private app — NEVER a CaseClosedFL token)
+      #   HUBSPOT_PORTAL_ID             (optional; preferred separate SSDI portal; 247081451 OK with SSDI app)
       #   HUBSPOT_FORM_ID               (optional SSDI form GUID; CRM upsert still runs)
       #   GOOGLE_SHEETS_SPREADSHEET_ID  (backup / failover only)
       #   GOOGLE_SHEETS_RANGE           (default Leads!A1)

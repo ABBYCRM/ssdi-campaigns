@@ -2,13 +2,15 @@
 
 HubSpot is the **primary CRM** for SSDI Campaigns. This is a full create-or-update integration (contacts, custom properties, intake + validation NOTES, deal pipeline), not a stub. Google Sheets stays backup / failover only.
 
-**Never reuse a CaseClosedFL HubSpot private-app token or portal.** Create a **new** private app in the **SSDI** HubSpot account.
+**Never reuse a CaseClosedFL HubSpot private-app token.** Isolation is by **app + property namespace**, not portal id.
 
-Blocked portal id (do not set `HUBSPOT_PORTAL_ID` to this; tokens that resolve here are refused at runtime): `247081451`.
+**Preferred:** a separate SSDI HubSpot portal. **Same portal is OK** when a second portal is not available: create a dedicated **SSDI Campaigns** private app on the existing AbbyCRM HubSpot account (portal `247081451`) with only `ssdi_*` properties and the **SSDI Campaigns** pipeline — never MVA `intake_*` accident fields.
+
+Runtime still refuses CaseClosedFL inbound phone `+15615661360`, CaseClosedFL Resend identities (`noreply@caseclosedfl.com`, caseclosedfl.com domain keys), and hard-coded HubSpot token placeholders (`__HUBSPOT_ACCESS_TOKEN__`, CaseClosedFL `__…__` tokens). Portal `247081451` is **not** refused.
 
 ## Create the SSDI private app
 
-1. HubSpot → Settings → Integrations → Private Apps → **Create a private app** in the SSDI portal.
+1. HubSpot → Settings → Integrations → Private Apps → **Create a private app** named **SSDI Campaigns** (new app, even if this is the AbbyCRM portal).
 2. Scopes:
 
 | Scope | Why |
@@ -21,8 +23,8 @@ Blocked portal id (do not set `HUBSPOT_PORTAL_ID` to this; tokens that resolve h
 | `crm.schemas.deals.write` | Create the pipeline once |
 | `forms` (optional) | Server-side Forms v3 submit when `HUBSPOT_FORM_ID` is set |
 
-3. Copy the token into App Platform as `HUBSPOT_ACCESS_TOKEN`. Never commit it. Never paste a token from another campaign.
-4. Optional: `HUBSPOT_PORTAL_ID` (SSDI portal numeric id — **not** `247081451`).
+3. Copy the token into App Platform as `HUBSPOT_ACCESS_TOKEN`. Never commit it. Never paste the CaseClosedFL private-app token or a `__HUBSPOT_ACCESS_TOKEN__` placeholder.
+4. Optional: `HUBSPOT_PORTAL_ID`. Preferred: a dedicated SSDI portal. Unset, or `247081451` for the AbbyCRM account with the SSDI private app, are both allowed.
 5. Optional: `HUBSPOT_FORM_ID` — GUID of an SSDI HubSpot form named **SSDI Campaigns Intake**. If unset, the site form still maps through the CRM API (the server-side form equivalent). Set this only if you want HubSpot form-submission analytics too.
 
 ## What `/intake` writes
@@ -66,7 +68,9 @@ There is **no HubSpot form embed** on ssdicampaigns.com (TCPA must stay fail-clo
 
 ## Isolation checklist
 
-- New SSDI private app; new SSDI portal (or a dedicated SSDI account).
-- Token is **not** the CaseClosedFL token.
-- `HUBSPOT_PORTAL_ID` is **not** `247081451`.
-- No CaseClosedFL property names (`intake_accident_date`, `intake_case_type`, …) on SSDI contacts.
+- Dedicated **SSDI Campaigns** private app (different app from CaseClosedFL). Preferred: separate portal. Same AbbyCRM portal `247081451` is OK with this app.
+- Token is **not** the CaseClosedFL token and **not** a `__HUBSPOT_ACCESS_TOKEN__` / CaseClosedFL placeholder.
+- `HUBSPOT_PORTAL_ID` may be unset or `247081451` for SSDI; runtime does not refuse that portal.
+- Auto-create **only** `ssdi_*` properties (group `ssdi_campaigns_intake`) and the **SSDI Campaigns** deal pipeline.
+- Never write MVA / CaseClosedFL property names (`intake_accident_date`, `intake_case_type`, …).
+- Still refuse CaseClosedFL inbound `+15615661360` and Resend identities (`noreply@caseclosedfl.com`, caseclosedfl.com keys).
