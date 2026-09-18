@@ -1,6 +1,6 @@
 import * as React from "react";
 import { Link } from "@tanstack/react-router";
-import { Menu } from "lucide-react";
+import { Menu, Phone } from "lucide-react";
 import { Logo } from "@/components/brand/logo";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
@@ -10,8 +10,8 @@ export function SiteHeader() {
   const [open, setOpen] = React.useState(false);
 
   return (
-    <header className="sticky top-0 z-40 border-b border-border/70 bg-paper/95 backdrop-blur-sm">
-      <div className="container-page flex h-[4.25rem] items-center justify-between gap-3">
+    <header className="sticky top-0 z-40 border-b border-border/80 bg-card/95 backdrop-blur-sm">
+      <div className="container-page flex h-16 items-center justify-between gap-3">
         <Link to="/" className="min-w-0 shrink-0" aria-label="SSDI Campaigns home">
           <Logo />
         </Link>
@@ -21,8 +21,8 @@ export function SiteHeader() {
             <Link
               key={item.to}
               to={item.to}
-              className="whitespace-nowrap rounded-full px-3 py-2 text-[0.78rem] font-extrabold uppercase tracking-[0.14em] text-navy/80 transition-colors hover:bg-gold hover:text-navy"
-              activeProps={{ className: "text-coral" }}
+              className="whitespace-nowrap rounded-md px-2.5 py-2 text-[0.72rem] font-bold uppercase tracking-[0.12em] text-navy/80 transition-colors hover:bg-sky hover:text-navy"
+              activeProps={{ className: "text-red" }}
             >
               {item.label}
             </Link>
@@ -30,13 +30,14 @@ export function SiteHeader() {
         </nav>
 
         <div className="hidden items-center gap-3 lg:flex">
-          <Button asChild variant="coral" size="sm" className="whitespace-nowrap px-5 font-extrabold uppercase tracking-wide">
+          <Button asChild variant="coral" size="sm" className="whitespace-nowrap">
             <Link to="/contact">Free Consultation</Link>
           </Button>
           <a
             href={`tel:${SITE.phoneTel}`}
-            className="whitespace-nowrap font-display text-base font-semibold tracking-tight text-navy"
+            className="flex items-center gap-1.5 whitespace-nowrap text-sm font-extrabold tracking-tight text-navy"
           >
+            <Phone className="size-4 text-teal" />
             {SITE.phoneDisplay}
           </a>
         </div>
@@ -51,7 +52,7 @@ export function SiteHeader() {
               <Menu className="size-5" />
             </button>
           </SheetTrigger>
-          <SheetContent side="right" className="flex w-80 flex-col bg-paper">
+          <SheetContent side="right" className="flex w-80 flex-col">
             <SheetHeader>
               <SheetTitle asChild>
                 <Link to="/" onClick={() => setOpen(false)}>
@@ -65,7 +66,7 @@ export function SiteHeader() {
                   key={item.to}
                   to={item.to}
                   onClick={() => setOpen(false)}
-                  className="rounded-full px-3 py-3 text-sm font-extrabold uppercase tracking-wide text-navy hover:bg-gold"
+                  className="rounded-md px-3 py-3 text-sm font-semibold uppercase tracking-wide text-navy hover:bg-sky"
                 >
                   {item.label}
                 </Link>
