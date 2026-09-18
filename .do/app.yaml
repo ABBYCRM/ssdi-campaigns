@@ -56,6 +56,10 @@ services:
         type: SECRET
         scope: RUN_TIME
         value: ""
+      - key: HUBSPOT_ACCESS_TOKEN
+        type: SECRET
+        scope: RUN_TIME
+        value: ""
       - key: RESEND_FROM_EMAIL
         value: "SSDI Campaigns <noreply@ssdicampaigns.com>"
         scope: RUN_TIME

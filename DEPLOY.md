@@ -11,7 +11,8 @@ Public contact:
 
 Bind secrets in the App Platform dashboard (see `.do/app.yaml`):
 
-- `HUBSPOT_ACCESS_TOKEN` — SSDI HubSpot private app (primary CRM)
+- `HUBSPOT_ACCESS_TOKEN` — SSDI HubSpot private app (primary CRM). Bind this **before or immediately after** the first production deploy so `/intake` is not unwired.
+- `HUBSPOT_PORTAL_ID` — SSDI portal numeric id only (never `247081451`)
 - `GOOGLE_SHEETS_*` — optional backup / failover only
 - `RESEND_API_KEY` — SSDI Resend project for ssdicampaigns.com
 - `RESEND_FROM_EMAIL` — `SSDI Campaigns <noreply@ssdicampaigns.com>`
