@@ -24,6 +24,7 @@ import { Route as EligibilityRouteImport } from './routes/eligibility'
 import { Route as FaqRouteImport } from './routes/faq'
 import { Route as HearingsRouteImport } from './routes/hearings'
 import { Route as IntakeRouteImport } from './routes/intake'
+import { Route as MoreInfoRouteImport } from './routes/more-info'
 import { Route as PrivacyRouteImport } from './routes/privacy'
 import { Route as PrivacyRequestRouteImport } from './routes/privacy-request'
 import { Route as ResourcesRouteImport } from './routes/resources'
@@ -114,6 +115,11 @@ const IntakeRoute = IntakeRouteImport.update({
   path: '/intake',
   getParentRoute: () => rootRouteImport,
 } as any)
+const MoreInfoRoute = MoreInfoRouteImport.update({
+  id: '/more-info',
+  path: '/more-info',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const PrivacyRoute = PrivacyRouteImport.update({
   id: '/privacy',
   path: '/privacy',
@@ -201,6 +207,7 @@ export interface FileRoutesByFullPath {
   '/faq': typeof FaqRoute
   '/hearings': typeof HearingsRoute
   '/intake': typeof IntakeRoute
+  '/more-info': typeof MoreInfoRoute
   '/privacy': typeof PrivacyRoute
   '/privacy-request': typeof PrivacyRequestRoute
   '/resources': typeof ResourcesRoute
@@ -232,6 +239,7 @@ export interface FileRoutesByTo {
   '/faq': typeof FaqRoute
   '/hearings': typeof HearingsRoute
   '/intake': typeof IntakeRoute
+  '/more-info': typeof MoreInfoRoute
   '/privacy': typeof PrivacyRoute
   '/privacy-request': typeof PrivacyRequestRoute
   '/resources': typeof ResourcesRoute
@@ -264,6 +272,7 @@ export interface FileRoutesById {
   '/faq': typeof FaqRoute
   '/hearings': typeof HearingsRoute
   '/intake': typeof IntakeRoute
+  '/more-info': typeof MoreInfoRoute
   '/privacy': typeof PrivacyRoute
   '/privacy-request': typeof PrivacyRequestRoute
   '/resources': typeof ResourcesRoute
@@ -297,6 +306,7 @@ export interface FileRouteTypes {
     | '/faq'
     | '/hearings'
     | '/intake'
+    | '/more-info'
     | '/privacy'
     | '/privacy-request'
     | '/resources'
@@ -328,6 +338,7 @@ export interface FileRouteTypes {
     | '/faq'
     | '/hearings'
     | '/intake'
+    | '/more-info'
     | '/privacy'
     | '/privacy-request'
     | '/resources'
@@ -359,6 +370,7 @@ export interface FileRouteTypes {
     | '/faq'
     | '/hearings'
     | '/intake'
+    | '/more-info'
     | '/privacy'
     | '/privacy-request'
     | '/resources'
@@ -391,6 +403,7 @@ export interface RootRouteChildren {
   FaqRoute: typeof FaqRoute
   HearingsRoute: typeof HearingsRoute
   IntakeRoute: typeof IntakeRoute
+  MoreInfoRoute: typeof MoreInfoRoute
   PrivacyRoute: typeof PrivacyRoute
   PrivacyRequestRoute: typeof PrivacyRequestRoute
   ResourcesRoute: typeof ResourcesRoute
@@ -514,6 +527,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IntakeRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/more-info': {
+      id: '/more-info'
+      path: '/more-info'
+      fullPath: '/more-info'
+      preLoaderRoute: typeof MoreInfoRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/privacy': {
       id: '/privacy'
       path: '/privacy'
@@ -631,6 +651,7 @@ const rootRouteChildren: RootRouteChildren = {
   FaqRoute: FaqRoute,
   HearingsRoute: HearingsRoute,
   IntakeRoute: IntakeRoute,
+  MoreInfoRoute: MoreInfoRoute,
   PrivacyRoute: PrivacyRoute,
   PrivacyRequestRoute: PrivacyRequestRoute,
   ResourcesRoute: ResourcesRoute,

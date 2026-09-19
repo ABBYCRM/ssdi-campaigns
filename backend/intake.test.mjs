@@ -15,6 +15,9 @@ import {
   resetHubSpotPropertyCache,
 } from "./lib/hubspot.mjs";
 import { healthStatus, persistIntake } from "./lib/persist.mjs";
+import { emailLeadMoreInfo, moreInfoUrl } from "./lib/resend.mjs";
+import { evaluateIntakeGate, toValidatorPayload } from "./lib/validator.mjs";
+import { toLead, validateIntake } from "./lib/validate.mjs";
 import { resendFromEmail, resendReplyTo } from "./lib/resend.mjs";
 import { extractVapiLead, verifyVapiSecret } from "./lib/vapi.mjs";
 import { createIntakeServer } from "./server.mjs";
@@ -724,5 +727,145 @@ describe("HTTP server", () => {
       assert.equal(body.via, "vapi");
       assert.equal(body.forwardedTo, "hubspot");
     });
+  });
+});
+
+describe("qualification field mapping", () => {
+  it("validateIntake + toLead persist optional qual fields", () => {
+    const validated = validateIntake(
+      leadPayload({
+        durationLikely12Months: false,
+        workingAboveSga: "yes",
+        workCreditsLikely: "unsure",
+        esignConsent: true,
+      }),
+    );
+    assert.equal(validated.ok, true);
+    const lead = toLead(validated.data);
+    assert.equal(lead.durationLikely12Months, false);
+    assert.equal(lead.workingAboveSga, "yes");
+    assert.equal(lead.workCreditsLikely, "unsure");
+    assert.equal(lead.esignConsent, true);
+  });
+
+  it("toValidatorPayload maps duration/SGA into validator Lead shape", () => {
+    const short = toValidatorPayload(
+      toLead(
+        validateIntake(leadPayload({ durationLikely12Months: false, workingAboveSga: "yes", message: "help" })).data,
+      ),
+    );
+    assert.equal(short.durationMonths, 1);
+    assert.equal(short.expectedDurationMonths, 1);
+    assert.equal(short.workStatus, "WORKING_ABOVE_SGA");
+    assert.ok(short.monthlyEarningsUsd > 1690);
+    assert.match(String(short.message), /above SGA/i);
+  });
+});
+
+describe("screening gate (Vapi speak — HubSpot still kept)", () => {
+  it("rejects clear duration fail locally even if validator unwired", () => {
+    const lead = toLead(validateIntake(leadPayload({ durationLikely12Months: false })).data);
+    const gate = evaluateIntakeGate(lead, { skipped: true, reason: "unwired" });
+    assert.equal(gate.rejected, true);
+    assert.equal(gate.reason, "DURATION_NOT_MET");
+  });
+
+  it("does not auto-reject soft INCOMPLETE / missing duration", () => {
+    const lead = toLead(validateIntake(leadPayload()).data);
+    const gate = evaluateIntakeGate(lead, {
+      ok: true,
+      status: "INCOMPLETE",
+      reason: "DURATION_NOT_ESTABLISHED",
+      fraudSignal: "PASS",
+    });
+    assert.equal(gate.rejected, false);
+  });
+
+  it("persistIntake keeps HubSpot on duration hard-fail and returns rejected for Vapi", async () => {
+    const fetchFn = crmFetch({
+      validator: { status: "CONTRADICTED", reason: "DURATION_NOT_MET", fraud: "PASS" },
+    });
+    const result = await persistIntake(leadPayload({ durationLikely12Months: false }), {
+      env: {
+        HUBSPOT_ACCESS_TOKEN: "pat-ssdi-test",
+        SSDI_VALIDATOR_URL: "https://validator.ssdicampaigns.example",
+        SSDI_VALIDATOR_TOKEN: "ssdi_live_testtoken",
+      },
+      fetch: fetchFn,
+    });
+    assert.equal(result.ok, true);
+    assert.equal(result.hubspot.ok, true);
+    assert.equal(result.rejected, true);
+    assert.equal(result.accepted, false);
+    const valCall = fetchFn.calls.find((c) => c.url.endsWith("/v1/validations"));
+    assert.ok(valCall);
+    assert.equal(JSON.parse(valCall.init.body).durationMonths, 1);
+  });
+
+  it("extractVapiLead forwards qualification tool args", () => {
+    const extracted = extractVapiLead({
+      message: {
+        type: "tool-calls",
+        call: { assistantId: "c0f5dd63-3c51-4eb6-9f62-8a6e2391c954", customer: { number: "4155550100" } },
+        toolCalls: [
+          {
+            function: {
+              name: "submit_ssdi_lead",
+              arguments: {
+                name: "Ada Lovelace",
+                phone: "4155550100",
+                disabilityType: "Neurological (MS, epilepsy, Parkinson's, migraine)",
+                state: "CA",
+                tcpa: true,
+                source: "vapi-ssdi",
+                durationLikely12Months: false,
+                workingAboveSga: "no",
+                workCreditsLikely: "yes",
+                esignConsent: true,
+              },
+            },
+          },
+        ],
+      },
+    });
+    assert.equal(extracted.payload.durationLikely12Months, false);
+    assert.equal(extracted.payload.workingAboveSga, "no");
+    assert.equal(extracted.payload.esignConsent, true);
+  });
+});
+
+describe("lead more-info Resend", () => {
+  it("builds public more-info URL", () => {
+    assert.equal(moreInfoUrl({}), "https://ssdicampaigns.com/more-info");
+    assert.match(moreInfoUrl({}, "abc-123"), /ref=abc-123/);
+  });
+
+  it("emails the lead when email is present", async () => {
+    const calls = [];
+    const fetchFn = async (url, init = {}) => {
+      calls.push({ url: String(url), init });
+      return new Response(JSON.stringify({ id: "re_lead_1" }), {
+        status: 200,
+        headers: { "content-type": "application/json" },
+      });
+    };
+    const result = await emailLeadMoreInfo(
+      { id: "lead_1", name: "Ada Lovelace", email: "ada@example.com", phone: "4155550100" },
+      { env: { RESEND_API_KEY: "re_ssdi_test", RESEND_FROM_EMAIL: "SSDI Campaigns <noreply@ssdicampaigns.com>" }, fetch: fetchFn },
+    );
+    assert.equal(result.ok, true);
+    const body = JSON.parse(calls[0].init.body);
+    assert.deepEqual(body.to, ["ada@example.com"]);
+    assert.match(body.from, /noreply@ssdicampaigns\.com/);
+    assert.equal(body.reply_to, "Intake@abbycrm.com");
+    assert.match(body.text, /more-info/);
+  });
+
+  it("skips lead email when address missing", async () => {
+    const result = await emailLeadMoreInfo(
+      { id: "lead_1", name: "Ada", phone: "4155550100" },
+      { env: { RESEND_API_KEY: "re_ssdi_test" }, fetch: async () => new Response("{}") },
+    );
+    assert.equal(result.skipped, true);
   });
 });
