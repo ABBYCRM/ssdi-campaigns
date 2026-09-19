@@ -428,7 +428,7 @@ describe("health", () => {
       VAPI_ASSISTANT_ID: "asst_ssdi",
     });
     assert.equal(both.crm, "wired");
-    assert.equal(both.sheets, "backup");
+    assert.equal(both.sheets, "wired");
     assert.equal(both.email, "wired");
     assert.equal(both.vapi, "wired");
     assert.equal(both.validator, "unwired");

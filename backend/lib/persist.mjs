@@ -23,7 +23,7 @@ export function healthStatus(env = process.env) {
   return {
     ok: true,
     crm: isHubSpotWired(env) ? "wired" : "unwired",
-    sheets: isSheetsConfigured(env) ? "backup" : "unwired",
+    sheets: isSheetsConfigured(env) ? "wired" : "unwired",
     validator: isValidatorWired(env) ? "wired" : "unwired",
     portal: isPortalWired(env) ? "wired" : "unwired",
     email: envTrim(env, "RESEND_API_KEY") ? "wired" : "unwired",
