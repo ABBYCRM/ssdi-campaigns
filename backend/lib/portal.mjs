@@ -60,8 +60,13 @@ export async function submitPortalLead(lead, extra = {}, { env = process.env, fe
   };
   if (secret) headers["x-webhook-secret"] = secret;
 
+  const timeoutMs = (() => {
+    const raw = envTrim(env, "SSDI_PORTAL_TIMEOUT_MS");
+    const n = raw ? Number(raw) : 25000;
+    return Number.isFinite(n) && n >= 1000 ? Math.floor(n) : 25000;
+  })();
   const ac = new AbortController();
-  const t = setTimeout(() => ac.abort(), 8000);
+  const t = setTimeout(() => ac.abort(), timeoutMs);
   try {
     const res = await fetchFn(`${base}/api/webhooks/intake`, {
       method: "POST",
