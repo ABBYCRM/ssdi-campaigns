@@ -5,6 +5,11 @@ export const VALIDATOR_STATUSES = ["VALIDATED", "INCOMPLETE", "CONTRADICTED"];
 
 const DEFAULT_TIMEOUT_MS = 25_000;
 
+/** 2026 non-blind SGA ($1,690/mo). Used when intake asserts working above SGA. */
+export const SGA_NON_BLIND_MONTHLY_2026 = 1690;
+/** Claimed earnings just above SGA so evaluateSga returns ABOVE (educational screen). */
+export const CLAIMED_ABOVE_SGA_EARNINGS_USD = 2000;
+
 export function validatorUrl(env = process.env) {
   const raw = ssdiOnlyValue(envTrim(env, "SSDI_VALIDATOR_URL"));
   if (!raw) return undefined;
@@ -25,12 +30,20 @@ export function validatorSource(source) {
   return "web";
 }
 
+function appendMessage(base, extra) {
+  const a = String(base || "").trim();
+  const b = String(extra || "").trim();
+  if (!a) return b || undefined;
+  if (!b) return a;
+  return `${a}\n\n${b}`.slice(0, 8000);
+}
+
 /**
- * Campaigns intake JSON that SSDI-Validator's Lead preprocess accepts
- * (camelCase or nested). lead_id is required; state is preferred.
+ * Campaigns intake → SSDI-Validator Lead preprocess.
+ * Maps optional qualification fields so duration/SGA/claim-consistency engines fire.
  */
 export function toValidatorPayload(lead) {
-  return {
+  const payload = {
     lead_id: lead.id,
     name: lead.name,
     phone: lead.phone,
@@ -43,6 +56,119 @@ export function toValidatorPayload(lead) {
     sensitiveHealth: lead.sensitiveHealth === true,
     source: validatorSource(lead.source),
   };
+
+  if (lead.durationLikely12Months === false) {
+    payload.durationMonths = 1;
+    payload.expectedDurationMonths = 1;
+  } else if (lead.durationLikely12Months === true) {
+    payload.durationMonths = 12;
+    payload.expectedDurationMonths = 12;
+  }
+
+  if (lead.workingAboveSga === "yes") {
+    payload.workStatus = "WORKING_ABOVE_SGA";
+    payload.monthlyEarningsUsd = CLAIMED_ABOVE_SGA_EARNINGS_USD;
+    payload.message = appendMessage(
+      payload.message,
+      "Intake asserts working above SGA (claimed monthly earnings for educational screen). Claim consistency: caller reports substantial work activity while seeking disability screening.",
+    );
+  } else if (lead.workingAboveSga === "no") {
+    payload.workStatus = "NOT_WORKING";
+    payload.monthlyEarningsUsd = 0;
+  } else if (lead.workingAboveSga === "unsure") {
+    payload.workStatus = "WORKING_UNKNOWN";
+  }
+
+  if (lead.workCreditsLikely === "no") {
+    payload.message = appendMessage(
+      payload.message,
+      "Intake asserts work credits unlikely (educational screen — not an SSA earnings record).",
+    );
+  } else if (lead.workCreditsLikely === "yes") {
+    payload.message = appendMessage(payload.message, "Intake asserts work credits likely (self-report only).");
+  }
+
+  if (lead.esignConsent === false) {
+    payload.message = appendMessage(payload.message, "E-SIGN consent declined at intake.");
+  } else if (lead.esignConsent === true) {
+    payload.message = appendMessage(payload.message, "E-SIGN consent affirmed at intake.");
+  }
+
+  return payload;
+}
+
+/**
+ * Vapi/agent speech gate. Does NOT refuse HubSpot create — due diligence stamp only.
+ * Reject: clear duration fail, clear SGA over, CONTRADICTED (except soft MANUAL_REVIEW-only), HIGH_RISK.
+ * Keep: INCOMPLETE (missing duration), MANUAL_REVIEW without HIGH_RISK.
+ */
+export function evaluateIntakeGate(lead, validator) {
+  if (lead?.durationLikely12Months === false) {
+    return {
+      rejected: true,
+      reason: "DURATION_NOT_MET",
+      speak:
+        "Based on what you shared, this educational screening is not a fit and we cannot help at this time.",
+    };
+  }
+  if (lead?.workingAboveSga === "yes") {
+    return {
+      rejected: true,
+      reason: "SGA_EXCEEDED",
+      speak:
+        "Based on current work activity you described, this educational screening is not a fit and we cannot help at this time.",
+    };
+  }
+  if (lead?.esignConsent === false) {
+    return {
+      rejected: true,
+      reason: "ESIGN_DECLINED",
+      speak: "Without E-SIGN consent we cannot continue this screening. We cannot help at this time.",
+    };
+  }
+
+  if (!validator || validator.skipped === true) {
+    return { rejected: false };
+  }
+
+  const status = String(validator.status || "").toUpperCase();
+  const reason = String(validator.reason || "").toUpperCase();
+  const fraud = String(validator.fraudSignal || "").toUpperCase();
+
+  if (fraud.includes("HIGH_RISK")) {
+    return {
+      rejected: true,
+      reason: "HIGH_RISK",
+      speak: "We cannot help with this screening at this time.",
+    };
+  }
+
+  if (reason === "DURATION_NOT_MET" || reason === "SGA_EXCEEDED") {
+    return {
+      rejected: true,
+      reason,
+      speak:
+        "Based on what you shared, this educational screening is not a fit and we cannot help at this time.",
+    };
+  }
+
+  if (reason === "MANUAL_REVIEW_REQUIRED" || (fraud.includes("MANUAL_REVIEW") && !fraud.includes("HIGH_RISK"))) {
+    return {
+      rejected: false,
+      reviewRequired: true,
+      reason: reason || "MANUAL_REVIEW_REQUIRED",
+    };
+  }
+
+  if (status === "CONTRADICTED") {
+    return {
+      rejected: true,
+      reason: reason || "CONTRADICTED",
+      speak: "We cannot help with this screening at this time.",
+    };
+  }
+
+  return { rejected: false };
 }
 
 function asStatus(value) {
@@ -103,11 +229,6 @@ function timeoutMs(env) {
   return Number.isFinite(n) && n >= 1000 ? n : DEFAULT_TIMEOUT_MS;
 }
 
-/**
- * POST /v1/validations on SSDI-Validator.
- * Stub: returns skipped when SSDI_VALIDATOR_URL or SSDI_VALIDATOR_TOKEN is unset.
- * Failures never throw — intake already succeeded.
- */
 export async function submitValidation(lead, { env = process.env, fetch: fetchFn = globalThis.fetch } = {}) {
   const base = validatorUrl(env);
   const token = validatorToken(env);

@@ -36,6 +36,9 @@ export function toPortalPayload(lead, extra = {}) {
     validatorId: extra.validatorId ?? null,
     fraudSignal: extra.fraudSignal ?? null,
     hubspotContactId: extra.hubspotContactId ?? null,
+    rejected: extra.rejected === true,
+    rejectReason: extra.rejectReason ?? null,
+    reviewRequired: extra.reviewRequired === true,
   };
 }
 

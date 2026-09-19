@@ -7,7 +7,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
-import { DISABILITY_OPTIONS, intakeSchema } from "@/lib/form-schema";
+import { DISABILITY_OPTIONS, fullIntakeSchema, intakeSchema } from "@/lib/form-schema";
 import { US_STATES } from "@/lib/states";
 import { SITE, TCPA_CONSENT } from "@/lib/site";
 import { CallLink } from "@/components/layout/call-link";
@@ -28,6 +28,7 @@ export function IntakeForm({ compact, source = "site", className }: Props) {
   const [state, setState] = React.useState("");
   const [tcpa, setTcpa] = React.useState(false);
   const [sensitiveHealth, setSensitiveHealth] = React.useState(false);
+  const [submittedEmail, setSubmittedEmail] = React.useState(false);
 
   async function onSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -46,7 +47,8 @@ export function IntakeForm({ compact, source = "site", className }: Props) {
       source,
       hp: String(fd.get("company") ?? ""),
     };
-    const parsed = intakeSchema.safeParse(raw);
+    const schema = compact ? intakeSchema : fullIntakeSchema;
+    const parsed = schema.safeParse(raw);
     if (!parsed.success) {
       const first = parsed.error.issues[0]?.message ?? "Please check the form.";
       setError(first);
@@ -55,7 +57,10 @@ export function IntakeForm({ compact, source = "site", className }: Props) {
     setPending(true);
     try {
       const res = await submitIntake({ data: parsed.data });
-      if (res.ok) setDone(true);
+      if (res.ok) {
+        setSubmittedEmail(Boolean(String(raw.email || "").trim()));
+        setDone(true);
+      }
       else setError("We could not send this right now. Please call us.");
     } catch {
       setError("We could not send this right now. Please call us.");
@@ -71,15 +76,26 @@ export function IntakeForm({ compact, source = "site", className }: Props) {
           <CheckCircle2 className="size-6" />
         </span>
         <h3 className="text-lg font-bold text-navy">Request received</h3>
-        <p className="max-w-md text-sm text-muted">
-          Thanks. A campaign specialist will follow up at the number you provided.
+                <p className="max-w-md text-sm text-muted">
+          {submittedEmail ? (
+            <>
+              Thank you. We received your educational screening request. You will get an email shortly with a link (and you
+              can reply to that message) to share a few more details — duration, work notes, prior denials, or anything else
+              that helps our team.
+            </>
+          ) : (
+            <>
+              Thank you. We received your educational screening request. Next time you can add an email so we can send a
+              secure link for extra details. A specialist may still follow up by phone.
+            </>
+          )}
           {SITE.phoneProvisioned ? (
             <>
               {" "}
-              You can also call <CallLink className="font-semibold text-navy" icon={false} />.
+              You can always call <CallLink className="font-semibold text-navy" icon={false} />.
             </>
           ) : (
-            <> You can also use the contact form if you need to reach us.</>
+            <> You can also reach us through the contact form if you need anything.</>
           )}
         </p>
       </div>
@@ -91,14 +107,21 @@ export function IntakeForm({ compact, source = "site", className }: Props) {
       <input type="text" name="company" className="hidden" tabIndex={-1} autoComplete="off" aria-hidden="true" />
       <div className="grid gap-3 sm:grid-cols-2">
         <Field label="Name" htmlFor={`${source}-name`}>
-          <Input id={`${source}-name`} name="name" autoComplete="name" required placeholder="Full name" />
+          <Input id={`${source}-name`} name="name" autoComplete="name" required placeholder="Your full name" />
         </Field>
         <Field label="Phone" htmlFor={`${source}-phone`}>
-          <Input id={`${source}-phone`} name="phone" type="tel" autoComplete="tel" required placeholder="(555) 555-5555" />
+          <Input id={`${source}-phone`} name="phone" type="tel" autoComplete="tel" required placeholder="(561) 555-0100" />
         </Field>
         {!compact ? (
-          <Field label="Email (optional)" htmlFor={`${source}-email`}>
-            <Input id={`${source}-email`} name="email" type="email" autoComplete="email" placeholder="you@email.com" />
+          <Field label="Email" htmlFor={`${source}-email`}>
+            <Input
+              id={`${source}-email`}
+              name="email"
+              type="email"
+              autoComplete="email"
+              required
+              placeholder="name@email.com"
+            />
           </Field>
         ) : null}
         <Field label="Disability type" htmlFor={`${source}-dtype`}>
@@ -137,7 +160,7 @@ export function IntakeForm({ compact, source = "site", className }: Props) {
       </div>
       {!compact ? (
         <Field label="Anything else we should know? (optional)" htmlFor={`${source}-msg`}>
-          <Textarea id={`${source}-msg`} name="message" rows={4} placeholder="Work history, denials, upcoming hearing…" />
+          <Textarea id={`${source}-msg`} name="message" rows={4} placeholder="How long has this lasted? Any prior denials or hearings?" />
         </Field>
       ) : null}
 
@@ -163,7 +186,7 @@ export function IntakeForm({ compact, source = "site", className }: Props) {
       ) : null}
 
       <Button type="submit" variant="teal" size="lg" disabled={pending} className={compact ? "md:w-auto" : "w-full sm:w-auto"}>
-        {pending ? "Sending…" : "Submit your case"}
+        {pending ? "Sending…" : "Start my screening"}
       </Button>
       <p className="text-[0.7rem] leading-relaxed text-muted">
         Not a government agency. Applying at SSA is free. Consent is not required to obtain information — you may{" "}

@@ -5,10 +5,10 @@ import {
   upsertHubSpotContact,
 } from "./hubspot.mjs";
 import { isPortalWired, submitPortalLead } from "./portal.mjs";
-import { notifyIntakeEmail } from "./resend.mjs";
+import { emailLeadMoreInfo, notifyIntakeEmail } from "./resend.mjs";
 import { appendGoogleSheet, isSheetsConfigured } from "./sheets.mjs";
 import { toLead, validateIntake } from "./validate.mjs";
-import { isValidatorWired, submitValidation } from "./validator.mjs";
+import { evaluateIntakeGate, isValidatorWired, submitValidation } from "./validator.mjs";
 
 function forwardedTo({ hubspot, sheets, validator, portal }) {
   const parts = [];
@@ -59,16 +59,8 @@ function summarizePortal(portal, wired) {
 }
 
 /**
- * Persist a validated lead.
- *
- * Flow (SSDI Campaigns only):
- *   site form + Vapi → TCPA validate → HubSpot primary (+ Sheets backup)
- *   → SSDI-Validator POST /v1/validations → HubSpot properties + NOTE
- *   → SSDI-portal desk → Resend
- *
- * HubSpot is PRIMARY when HUBSPOT_ACCESS_TOKEN is set.
- * Google Sheets (GOOGLE_SHEETS_*) is BACKUP/FAILOVER only.
- * Validator/portal are stubs when SSDI_VALIDATOR_URL / SSDI_PORTAL_URL are unset.
+ * HubSpot-first due diligence. Screening gate may set rejected=true for Vapi
+ * speech; CRM create is not refused.
  */
 export async function persistIntake(payload, deps = {}) {
   const env = deps.env ?? process.env;
@@ -105,6 +97,8 @@ export async function persistIntake(payload, deps = {}) {
 
   let validator = { ok: false, skipped: true, reason: "not_persisted", status: null };
   let portal = { ok: false, skipped: true, reason: "not_persisted" };
+  let leadEmail = { ok: false, skipped: true, reason: "not_persisted" };
+  let gate = { rejected: false };
 
   if (persisted) {
     if (hubspotOk && hubspot.contactId && isValidatorWired(env)) {
@@ -116,20 +110,38 @@ export async function persistIntake(payload, deps = {}) {
     }
 
     validator = await submitValidation(lead, { env, fetch: fetchFn });
+    gate = evaluateIntakeGate(lead, validator);
 
-    if (hubspotOk && hubspot.contactId && validator.skipped !== true) {
-      await attachValidatorToHubSpot(lead, hubspot.contactId, validator, { env, fetch: fetchFn }).catch((err) => {
-        console.error("hubspot validator attach failed", err);
-      });
+    if (hubspotOk && hubspot.contactId) {
+      const attachPayload =
+        gate.rejected && (validator.skipped === true || !validator.status)
+          ? {
+              ok: true,
+              status: "CONTRADICTED",
+              reason: gate.reason,
+              fraudSignal: validator.fraudSignal,
+              validationId: validator.validationId,
+            }
+          : validator.skipped === true
+            ? null
+            : validator;
+      if (attachPayload) {
+        await attachValidatorToHubSpot(lead, hubspot.contactId, attachPayload, { env, fetch: fetchFn }).catch((err) => {
+          console.error("hubspot validator attach failed", err);
+        });
+      }
     }
 
     portal = await submitPortalLead(
       lead,
       {
-        validatorStatus: validator.status,
+        validatorStatus: gate.rejected ? "CONTRADICTED" : validator.status,
         validatorId: validator.validationId,
         fraudSignal: validator.fraudSignal,
         hubspotContactId: hubspot.contactId,
+        rejected: gate.rejected === true,
+        rejectReason: gate.reason || null,
+        reviewRequired: gate.reviewRequired === true,
       },
       { env, fetch: fetchFn },
     );
@@ -140,9 +152,19 @@ export async function persistIntake(payload, deps = {}) {
       validator,
       portal,
       hubspot,
-    }).catch((err) => {
-      console.error("intake email failed", err);
-    });
+      gate,
+    }).catch((err) => console.error("intake email failed", err));
+
+    if (lead.email && !gate.rejected) {
+      leadEmail = await emailLeadMoreInfo(lead, { env, fetch: fetchFn }).catch((err) => {
+        console.error("lead more-info email failed", err);
+        return { ok: false, error: "lead_email_failed" };
+      });
+    } else if (gate.rejected) {
+      leadEmail = { ok: false, skipped: true, reason: "screening_rejected" };
+    } else {
+      leadEmail = { ok: false, skipped: true, reason: "no_lead_email" };
+    }
   }
 
   if (hubspotWired && !hubspotOk && !sheets.ok) {
@@ -156,6 +178,8 @@ export async function persistIntake(payload, deps = {}) {
       sheets,
       validator: summarizeValidator(validator),
       portal: summarizePortal(portal, isPortalWired(env)),
+      accepted: false,
+      rejected: false,
     };
   }
 
@@ -185,12 +209,23 @@ export async function persistIntake(payload, deps = {}) {
       : portal.ok
         ? " Portal desk notified."
         : "";
+  const gateBit = gate.rejected
+    ? ` Screening rejected (${gate.reason}) — HubSpot kept for due diligence; Vapi should not promise follow-up.`
+    : gate.reviewRequired
+      ? " Screening flagged for manual review."
+      : "";
+  const leadBit = leadEmail.ok ? " Lead more-info email sent." : "";
 
   return {
     ok: true,
     status: 202,
     id: lead.id,
     receivedAt: lead.receivedAt,
+    accepted: gate.rejected !== true,
+    rejected: gate.rejected === true,
+    rejectReason: gate.reason || undefined,
+    reviewRequired: gate.reviewRequired === true,
+    speak: gate.speak || undefined,
     forwardedTo: forwardedTo({ hubspot, sheets, validator, portal }),
     hubspot: {
       ok: hubspotOk,
@@ -210,6 +245,11 @@ export async function persistIntake(payload, deps = {}) {
     },
     validator: summarizeValidator(validator),
     portal: summarizePortal(portal, isPortalWired(env)),
-    note: `${note}${validatorBit}${portalBit}`,
+    leadEmail: {
+      ok: leadEmail.ok === true,
+      skipped: leadEmail.skipped === true,
+      reason: leadEmail.reason || leadEmail.error,
+    },
+    note: `${note}${validatorBit}${portalBit}${gateBit}${leadBit}`,
   };
 }

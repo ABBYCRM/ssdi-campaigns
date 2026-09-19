@@ -95,20 +95,44 @@ export function extractVapiLead(body, env = process.env) {
   const messageText =
     structured.message || message.analysis?.summary || message.artifact?.transcript || "";
 
+  function optionalBool(v) {
+    if (v === true || v === "true" || v === 1 || v === "1") return true;
+    if (v === false || v === "false" || v === 0 || v === "0") return false;
+    return undefined;
+  }
+  function yesNoUnsure(v) {
+    if (v == null || v === "") return undefined;
+    const s = String(v).trim().toLowerCase();
+    if (["yes", "y", "true", "1"].includes(s)) return "yes";
+    if (["no", "n", "false", "0"].includes(s)) return "no";
+    if (["unsure", "unknown", "maybe", "not_sure", "not-sure"].includes(s)) return "unsure";
+    return undefined;
+  }
+
+  const payload = {
+    name,
+    phone,
+    email,
+    disabilityType,
+    state,
+    zip,
+    message: typeof messageText === "string" ? messageText.slice(0, 2000) : "",
+    tcpa: coerceTcpa(structured.tcpa),
+    sensitiveHealth: structured.sensitiveHealth === true || structured.sensitiveHealth === "true",
+    source,
+  };
+  const durationLikely12Months = optionalBool(structured.durationLikely12Months);
+  if (durationLikely12Months !== undefined) payload.durationLikely12Months = durationLikely12Months;
+  const workingAboveSga = yesNoUnsure(structured.workingAboveSga);
+  if (workingAboveSga !== undefined) payload.workingAboveSga = workingAboveSga;
+  const workCreditsLikely = yesNoUnsure(structured.workCreditsLikely);
+  if (workCreditsLikely !== undefined) payload.workCreditsLikely = workCreditsLikely;
+  const esignConsent = optionalBool(structured.esignConsent);
+  if (esignConsent !== undefined) payload.esignConsent = esignConsent;
+
   return {
     ok: true,
-    payload: {
-      name,
-      phone,
-      email,
-      disabilityType,
-      state,
-      zip,
-      message: typeof messageText === "string" ? messageText.slice(0, 2000) : "",
-      tcpa: coerceTcpa(structured.tcpa),
-      sensitiveHealth: structured.sensitiveHealth === true || structured.sensitiveHealth === "true",
-      source,
-    },
+    payload,
     assistantId: assistantId || null,
     eventType: type || "unknown",
   };
