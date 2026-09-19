@@ -16,6 +16,7 @@ import { Route as AppealsRouteImport } from './routes/appeals'
 import { Route as ApplicationRouteImport } from './routes/application'
 import { Route as BlueBookRouteImport } from './routes/blue-book'
 import { Route as ContactRouteImport } from './routes/contact'
+import { Route as ContinueRouteImport } from './routes/continue'
 import { Route as CookiesRouteImport } from './routes/cookies'
 import { Route as DenialsRouteImport } from './routes/denials'
 import { Route as DisclaimerRouteImport } from './routes/disclaimer'
@@ -35,6 +36,7 @@ import { Route as StatesRouteImport } from './routes/states'
 import { Route as TermsRouteImport } from './routes/terms'
 import { Route as WhatIsSsdiRouteImport } from './routes/what-is-ssdi'
 import { Route as WorkCreditsRouteImport } from './routes/work-credits'
+import { Route as ApiContinueRouteImport } from './routes/api.continue'
 import { Route as ApiHealthRouteImport } from './routes/api.health'
 import { Route as ApiIntakeRouteImport } from './routes/api.intake'
 import { Route as SsdiStateRouteImport } from './routes/ssdi.$state'
@@ -73,6 +75,11 @@ const BlueBookRoute = BlueBookRouteImport.update({
 const ContactRoute = ContactRouteImport.update({
   id: '/contact',
   path: '/contact',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ContinueRoute = ContinueRouteImport.update({
+  id: '/continue',
+  path: '/continue',
   getParentRoute: () => rootRouteImport,
 } as any)
 const CookiesRoute = CookiesRouteImport.update({
@@ -170,6 +177,11 @@ const WorkCreditsRoute = WorkCreditsRouteImport.update({
   path: '/work-credits',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiContinueRoute = ApiContinueRouteImport.update({
+  id: '/api/continue',
+  path: '/api/continue',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ApiHealthRoute = ApiHealthRouteImport.update({
   id: '/api/health',
   path: '/api/health',
@@ -199,6 +211,7 @@ export interface FileRoutesByFullPath {
   '/application': typeof ApplicationRoute
   '/blue-book': typeof BlueBookRoute
   '/contact': typeof ContactRoute
+  '/continue': typeof ContinueRoute
   '/cookies': typeof CookiesRoute
   '/denials': typeof DenialsRoute
   '/disclaimer': typeof DisclaimerRoute
@@ -218,6 +231,7 @@ export interface FileRoutesByFullPath {
   '/terms': typeof TermsRoute
   '/what-is-ssdi': typeof WhatIsSsdiRoute
   '/work-credits': typeof WorkCreditsRoute
+  '/api/continue': typeof ApiContinueRoute
   '/api/health': typeof ApiHealthRoute
   '/api/intake': typeof ApiIntakeRoute
   '/ssdi/$state': typeof SsdiStateRoute
@@ -231,6 +245,7 @@ export interface FileRoutesByTo {
   '/application': typeof ApplicationRoute
   '/blue-book': typeof BlueBookRoute
   '/contact': typeof ContactRoute
+  '/continue': typeof ContinueRoute
   '/cookies': typeof CookiesRoute
   '/denials': typeof DenialsRoute
   '/disclaimer': typeof DisclaimerRoute
@@ -250,6 +265,7 @@ export interface FileRoutesByTo {
   '/terms': typeof TermsRoute
   '/what-is-ssdi': typeof WhatIsSsdiRoute
   '/work-credits': typeof WorkCreditsRoute
+  '/api/continue': typeof ApiContinueRoute
   '/api/health': typeof ApiHealthRoute
   '/api/intake': typeof ApiIntakeRoute
   '/ssdi/$state': typeof SsdiStateRoute
@@ -264,6 +280,7 @@ export interface FileRoutesById {
   '/application': typeof ApplicationRoute
   '/blue-book': typeof BlueBookRoute
   '/contact': typeof ContactRoute
+  '/continue': typeof ContinueRoute
   '/cookies': typeof CookiesRoute
   '/denials': typeof DenialsRoute
   '/disclaimer': typeof DisclaimerRoute
@@ -283,6 +300,7 @@ export interface FileRoutesById {
   '/terms': typeof TermsRoute
   '/what-is-ssdi': typeof WhatIsSsdiRoute
   '/work-credits': typeof WorkCreditsRoute
+  '/api/continue': typeof ApiContinueRoute
   '/api/health': typeof ApiHealthRoute
   '/api/intake': typeof ApiIntakeRoute
   '/ssdi/$state': typeof SsdiStateRoute
@@ -298,6 +316,7 @@ export interface FileRouteTypes {
     | '/application'
     | '/blue-book'
     | '/contact'
+    | '/continue'
     | '/cookies'
     | '/denials'
     | '/disclaimer'
@@ -317,6 +336,7 @@ export interface FileRouteTypes {
     | '/terms'
     | '/what-is-ssdi'
     | '/work-credits'
+    | '/api/continue'
     | '/api/health'
     | '/api/intake'
     | '/ssdi/$state'
@@ -330,6 +350,7 @@ export interface FileRouteTypes {
     | '/application'
     | '/blue-book'
     | '/contact'
+    | '/continue'
     | '/cookies'
     | '/denials'
     | '/disclaimer'
@@ -349,6 +370,7 @@ export interface FileRouteTypes {
     | '/terms'
     | '/what-is-ssdi'
     | '/work-credits'
+    | '/api/continue'
     | '/api/health'
     | '/api/intake'
     | '/ssdi/$state'
@@ -362,6 +384,7 @@ export interface FileRouteTypes {
     | '/application'
     | '/blue-book'
     | '/contact'
+    | '/continue'
     | '/cookies'
     | '/denials'
     | '/disclaimer'
@@ -381,6 +404,7 @@ export interface FileRouteTypes {
     | '/terms'
     | '/what-is-ssdi'
     | '/work-credits'
+    | '/api/continue'
     | '/api/health'
     | '/api/intake'
     | '/ssdi/$state'
@@ -395,6 +419,7 @@ export interface RootRouteChildren {
   ApplicationRoute: typeof ApplicationRoute
   BlueBookRoute: typeof BlueBookRoute
   ContactRoute: typeof ContactRoute
+  ContinueRoute: typeof ContinueRoute
   CookiesRoute: typeof CookiesRoute
   DenialsRoute: typeof DenialsRoute
   DisclaimerRoute: typeof DisclaimerRoute
@@ -414,6 +439,7 @@ export interface RootRouteChildren {
   TermsRoute: typeof TermsRoute
   WhatIsSsdiRoute: typeof WhatIsSsdiRoute
   WorkCreditsRoute: typeof WorkCreditsRoute
+  ApiContinueRoute: typeof ApiContinueRoute
   ApiHealthRoute: typeof ApiHealthRoute
   ApiIntakeRoute: typeof ApiIntakeRoute
   SsdiStateRoute: typeof SsdiStateRoute
@@ -469,6 +495,13 @@ declare module '@tanstack/react-router' {
       path: '/contact'
       fullPath: '/contact'
       preLoaderRoute: typeof ContactRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/continue': {
+      id: '/continue'
+      path: '/continue'
+      fullPath: '/continue'
+      preLoaderRoute: typeof ContinueRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/cookies': {
@@ -604,6 +637,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof WorkCreditsRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/continue': {
+      id: '/api/continue'
+      path: '/api/continue'
+      fullPath: '/api/continue'
+      preLoaderRoute: typeof ApiContinueRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/health': {
       id: '/api/health'
       path: '/api/health'
@@ -643,6 +683,7 @@ const rootRouteChildren: RootRouteChildren = {
   ApplicationRoute: ApplicationRoute,
   BlueBookRoute: BlueBookRoute,
   ContactRoute: ContactRoute,
+  ContinueRoute: ContinueRoute,
   CookiesRoute: CookiesRoute,
   DenialsRoute: DenialsRoute,
   DisclaimerRoute: DisclaimerRoute,
@@ -662,6 +703,7 @@ const rootRouteChildren: RootRouteChildren = {
   TermsRoute: TermsRoute,
   WhatIsSsdiRoute: WhatIsSsdiRoute,
   WorkCreditsRoute: WorkCreditsRoute,
+  ApiContinueRoute: ApiContinueRoute,
   ApiHealthRoute: ApiHealthRoute,
   ApiIntakeRoute: ApiIntakeRoute,
   SsdiStateRoute: SsdiStateRoute,

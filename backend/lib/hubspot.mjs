@@ -511,6 +511,34 @@ export function validationNoteHtml(lead, result) {
   ].join("");
 }
 
+
+export async function searchContactByIntakeId(intakeId, { env = process.env, fetch: fetchFn = globalThis.fetch } = {}) {
+  const token = hubspotToken(env);
+  const id = String(intakeId || "").trim();
+  if (!token || !id) return { ok: false, skipped: true, reason: "unwired" };
+  try {
+    const res = await hsJson(fetchFn, token, "/crm/v3/objects/contacts/search", {
+      method: "POST",
+      body: {
+        filterGroups: [
+          { filters: [{ propertyName: "ssdi_intake_id", operator: "EQ", value: id }] },
+        ],
+        properties: ["email", "phone", "firstname", "lastname", "ssdi_intake_id"],
+        limit: 1,
+      },
+    });
+    if (!res.ok) {
+      return { ok: false, error: res.json?.message || `search_${res.status}` };
+    }
+    const contact = res.json?.results?.[0] || null;
+    if (!contact) return { ok: false, skipped: true, reason: "not_found" };
+    return { ok: true, contactId: contact.id, contact };
+  } catch (err) {
+    console.error("hubspot intake id search failed", err);
+    return { ok: false, error: "search_network" };
+  }
+}
+
 export async function createHubSpotNote(contactId, html, { env = process.env, fetch: fetchFn = globalThis.fetch } = {}) {
   const token = hubspotToken(env);
   if (!token || !contactId) return { ok: false, skipped: true, reason: "unwired" };
