@@ -836,8 +836,8 @@ describe("screening gate (Vapi speak — HubSpot still kept)", () => {
 
 describe("lead more-info Resend", () => {
   it("builds public more-info URL", () => {
-    assert.equal(moreInfoUrl({}), "https://ssdicampaigns.com/more-info");
-    assert.match(moreInfoUrl({}, "abc-123"), /ref=abc-123/);
+    assert.equal(moreInfoUrl({}), "https://ssdicampaigns.com/continue");
+    assert.match(moreInfoUrl({}, "abc-123"), /id=abc-123/);
   });
 
   it("emails the lead when email is present", async () => {
@@ -858,7 +858,7 @@ describe("lead more-info Resend", () => {
     assert.deepEqual(body.to, ["ada@example.com"]);
     assert.match(body.from, /noreply@ssdicampaigns\.com/);
     assert.equal(body.reply_to, "Intake@abbycrm.com");
-    assert.match(body.text, /more-info/);
+    assert.match(body.text, /continue/);
   });
 
   it("skips lead email when address missing", async () => {

@@ -41,9 +41,9 @@ function publicSiteUrl(env = process.env) {
 
 /** Lead more-info / continue path used in confirmation emails. */
 export function moreInfoUrl(env = process.env, leadId) {
-  const base = `${publicSiteUrl(env)}/more-info`;
+  const base = `${publicSiteUrl(env)}/continue`;
   if (!leadId) return base;
-  return `${base}?ref=${encodeURIComponent(String(leadId))}`;
+  return `${base}?id=${encodeURIComponent(String(leadId))}`;
 }
 
 async function sendResend({ env, fetchFn, to, subject, text, html }) {
