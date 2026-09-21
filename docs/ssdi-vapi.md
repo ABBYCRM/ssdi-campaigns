@@ -2,7 +2,8 @@
 
 Live assistant: **SSDI Campaigns Inbound Intake**  
 Assistant id: `c0f5dd63-3c51-4eb6-9f62-8a6e2391c954`  
-Phone: `+15616520362`  
+Phone: `+15614090180`  
+Phone id: `346242b3-ca91-4ae3-85bf-f3b9da6a23fe` (Vapi-native)  
 Server URL: `https://ssdicampaigns.com/api/vapi/inbound`
 
 ## Qualification script (one question at a time)

@@ -10,7 +10,7 @@ export function PageHero({
   kicker?: string;
   title: string;
   lede: string;
-  /** Full CTAs on content pages; quiet phone/email on legal; off only if explicitly false. */
+  /** Full CTAs on content pages; quiet call line on legal; off only if explicitly false. */
   cta?: boolean | "quiet";
 }) {
   return (

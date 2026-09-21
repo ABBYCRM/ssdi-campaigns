@@ -1,6 +1,7 @@
 import {
   DEFAULT_RESEND_FROM,
   DEFAULT_RESEND_REPLY_TO,
+  SSDI_INBOUND_E164,
   SSDI_SENDING_DOMAIN,
   containsForbiddenBrand,
   envTrim,
@@ -147,7 +148,7 @@ export async function emailLeadMoreInfo(lead, opts = {}) {
   const phone =
     envTrim(env, "INBOUND_PHONE_NUMBER") ||
     envTrim(env, "VITE_PUBLIC_PHONE") ||
-    "+1 (561) 652-0362";
+    SSDI_INBOUND_E164;
   const first = String(lead.name || "there").trim().split(/\s+/)[0] || "there";
 
   const text = [

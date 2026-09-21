@@ -48,8 +48,8 @@ services:
       #   SSDI_PORTAL_URL               (ABBYCRM/SSDI-portal origin; POST /api/webhooks/intake)
       #   SSDI_PORTAL_WEBHOOK_SECRET    (x-webhook-secret)
       #   RESEND_API_KEY                (ssdicampaigns.com Resend project — verify domain)
-      #   VITE_PUBLIC_PHONE=+15616520362
-      #   INBOUND_PHONE_NUMBER=+15616520362
+      #   VITE_PUBLIC_PHONE=+15614090180
+      #   INBOUND_PHONE_NUMBER=+15614090180
       #   VAPI_WEBHOOK_SECRET
       #   VAPI_ASSISTANT_ID=c0f5dd63-3c51-4eb6-9f62-8a6e2391c954
       - key: RESEND_API_KEY
@@ -68,10 +68,10 @@ services:
         scope: RUN_TIME
       # SSDI Vapi inbound (never CaseClosedFL +15615661360).
       - key: VITE_PUBLIC_PHONE
-        value: "+15616520362"
+        value: "+15614090180"
         scope: RUN_AND_BUILD_TIME
       - key: INBOUND_PHONE_NUMBER
-        value: "+15616520362"
+        value: "+15614090180"
         scope: RUN_AND_BUILD_TIME
       - key: VAPI_ASSISTANT_ID
         value: "c0f5dd63-3c51-4eb6-9f62-8a6e2391c954"

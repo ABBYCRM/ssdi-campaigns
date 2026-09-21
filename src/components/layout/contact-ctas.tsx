@@ -1,22 +1,20 @@
 import { Link } from "@tanstack/react-router";
-import { Mail, Phone } from "lucide-react";
+import { Phone } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { SITE } from "@/lib/site";
 import { getPublicPhone } from "@/lib/public-phone";
 import { cn } from "@/lib/utils";
 
 type Props = {
   className?: string;
   compact?: boolean;
-  showEmail?: boolean;
   /** Full-width stacked buttons below `sm`. */
   stackOnMobile?: boolean;
 };
 
 /**
- * Primary campaign CTAs: call +1 (561) 652-0362, start screening, email Intake@abbycrm.com.
+ * Primary campaign CTAs: call the provisioned SSDI number and start screening.
  */
-export function ContactCtas({ className, compact, showEmail = true, stackOnMobile = true }: Props) {
+export function ContactCtas({ className, compact, stackOnMobile = true }: Props) {
   const phone = getPublicPhone();
   const size = compact ? "default" : "lg";
   const btn = cn("min-h-11", stackOnMobile ? "w-full sm:w-auto" : "w-auto");
@@ -41,14 +39,6 @@ export function ContactCtas({ className, compact, showEmail = true, stackOnMobil
       <Button asChild variant="teal" size={size} className={cn(btn, "min-w-[10.5rem]")}>
         <Link to="/contact">Start screening</Link>
       </Button>
-      {showEmail ? (
-        <Button asChild variant="outline" size={size} className={cn(btn, "min-w-[10.5rem]")}>
-          <a href={`mailto:${SITE.email}`}>
-            <Mail className="size-4" />
-            <span className="truncate">{SITE.email}</span>
-          </a>
-        </Button>
-      ) : null}
     </div>
   );
 }
@@ -70,10 +60,6 @@ export function ContactLine({ className }: { className?: string }) {
       <Link to="/contact" className="font-bold underline-offset-2 hover:underline">
         Start screening
       </Link>
-      {" · "}
-      <a href={`mailto:${SITE.email}`} className="font-bold underline-offset-2 hover:underline">
-        {SITE.email}
-      </a>
     </p>
   );
 }

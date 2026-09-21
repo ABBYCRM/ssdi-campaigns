@@ -20,7 +20,7 @@ Intake JSON: `{ name, phone, email, disabilityType, state, zip, message, tcpa, s
 ## Persistence order
 
 ```text
-site form + Vapi (+15616520362)
+site form + Vapi (+15614090180)
         → POST /intake (or /api/vapi/inbound)
         → HubSpot primary (contact + intake NOTE + SSDI Campaigns deal)
         → Google Sheets backup / failover
@@ -73,7 +73,7 @@ Set `HUBSPOT_ACCESS_TOKEN` in App Platform. **Never commit it. Never reuse a Cas
 | `ssdi_fraud_signal` | validator `staff_verdict` / `fraud_overall` | Signal, not an accusation |
 | `ssdi_validator_id` / `ssdi_validator_reason` | validator | |
 | `ssdi_lead_stage` | pipeline mirror | Same enum as validator status |
-| `ssdi_inbound_phone` | constant | `+15616520362` |
+| `ssdi_inbound_phone` | constant | `+15614090180` |
 | `ssdi_message` | `message` | Truncated, CRM-only |
 
 ### Deal pipeline
@@ -128,10 +128,10 @@ Values containing other-campaign hostnames are ignored at runtime.
 
 ## Public click-to-call (SSDI Vapi number)
 
-Provisioned inbound: **+1 (561) 652-0362** (`+15616520362`). Env defaults in `.do/app.yaml`:
+Provisioned inbound: **+1 (561) 409-0180** (`+15614090180`). Env defaults in `.do/app.yaml`:
 
-- `VITE_PUBLIC_PHONE=+15616520362`
-- `INBOUND_PHONE_NUMBER=+15616520362`
+- `VITE_PUBLIC_PHONE=+15614090180`
+- `INBOUND_PHONE_NUMBER=+15614090180`
 
 The site also defaults to this number in code if env is empty.
 

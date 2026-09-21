@@ -7,7 +7,6 @@ import { Textarea } from "@/components/ui/textarea";
 import { CallLink } from "@/components/layout/call-link";
 import { continueSchema } from "@/lib/form-schema";
 import { pageHead } from "@/lib/seo";
-import { SITE } from "@/lib/site";
 
 export const Route = createFileRoute("/continue")({
   validateSearch: (search: Record<string, unknown>) => ({
@@ -85,11 +84,7 @@ function ContinuePage() {
         Social Security Administration.
       </p>
       <p className="mt-2 text-sm text-muted">
-        Prefer to talk? Call <CallLink className="font-semibold text-navy" icon={false} /> or email{" "}
-        <a className="font-semibold text-navy underline" href={`mailto:${SITE.email}`}>
-          {SITE.email}
-        </a>
-        .
+        Prefer to talk? Call <CallLink className="font-semibold text-navy" icon={false} />.
       </p>
 
       {!id ? (

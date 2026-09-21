@@ -9,8 +9,8 @@ export const DEFAULT_RESEND_FROM = `SSDI Campaigns <noreply@${SSDI_SENDING_DOMAI
 /** Luis-approved Reply-To / public contact email (not CaseClosedFL). */
 export const DEFAULT_RESEND_REPLY_TO = "Intake@abbycrm.com";
 
-/** SSDI Vapi inbound. Never CaseClosedFL +15615661360. */
-export const SSDI_INBOUND_E164 = "+15616520362";
+/** SSDI Vapi inbound (Vapi-native). Never CaseClosedFL +15615661360. */
+export const SSDI_INBOUND_E164 = "+15614090180";
 
 /** SSDI Vapi assistant (not CaseClosedFL). */
 export const SSDI_VAPI_ASSISTANT_ID = "c0f5dd63-3c51-4eb6-9f62-8a6e2391c954";

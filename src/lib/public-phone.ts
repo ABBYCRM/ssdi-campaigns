@@ -8,8 +8,8 @@
 /** CaseClosedFL inbound — rejected if it ever appears in env. */
 export const CASECLOSEDFL_INBOUND_DIGITS = "5615661360";
 
-/** Provisioned SSDI Vapi inbound (E.164). */
-export const SSDI_INBOUND_E164 = "+15616520362";
+/** Provisioned SSDI Vapi inbound (E.164). Vapi-native phone id 346242b3-ca91-4ae3-85bf-f3b9da6a23fe. */
+export const SSDI_INBOUND_E164 = "+15614090180";
 
 export type PublicPhone = {
   provisioned: boolean;
