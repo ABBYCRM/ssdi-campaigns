@@ -1,4 +1,4 @@
-import { contactPhonePhrase, getPublicPhone } from "./public-phone";
+import { contactPhonePhrase, getPublicPhone } from "./public-phone.ts";
 
 const publicPhone = getPublicPhone();
 
