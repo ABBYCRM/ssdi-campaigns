@@ -8,7 +8,7 @@ assistants, or phone numbers (`+15615661360`). Do **not** paste a CaseClosedFL
 HubSpot private-app token or a `__HUBSPOT_ACCESS_TOKEN__` placeholder.
 
 Public contact:
-- Phone: +1 (561) 652-0362 (`tel:+15616520362`)
+- Phone: +1 (561) 409-0180 (`tel:+15614090180`)
 - Email: Intake@abbycrm.com
 
 Bind secrets in the App Platform dashboard (see `.do/app.yaml`):
@@ -19,7 +19,7 @@ Bind secrets in the App Platform dashboard (see `.do/app.yaml`):
 - `RESEND_API_KEY` — SSDI Resend project for ssdicampaigns.com
 - `RESEND_FROM_EMAIL` — `SSDI Campaigns <noreply@ssdicampaigns.com>`
 - `RESEND_REPLY_TO` — `Intake@abbycrm.com`
-- `VITE_PUBLIC_PHONE` / `INBOUND_PHONE_NUMBER` — `+15616520362` (rebuild for VITE_*)
+- `VITE_PUBLIC_PHONE` / `INBOUND_PHONE_NUMBER` — `+15614090180` (rebuild for VITE_*)
 - `VAPI_ASSISTANT_ID` — `c0f5dd63-3c51-4eb6-9f62-8a6e2391c954`
 - `VAPI_WEBHOOK_SECRET` — optional
 

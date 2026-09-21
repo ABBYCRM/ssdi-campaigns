@@ -38,7 +38,7 @@ npm run typecheck
 ```text
 ssdicampaigns.com form  ─┐
                          ├─► POST /intake  (TCPA fail-closed)
-Vapi +15616520362        ─┘       │
+Vapi +15614090180        ─┘       │
      webhook                      │
      https://ssdicampaigns.com/api/vapi/inbound
                                   ▼
@@ -83,7 +83,7 @@ Leads POST to `/intake` (standalone `backend/server.mjs`, also used in-process b
 5. **SSDI-portal desk** after validator: `POST {SSDI_PORTAL_URL}/api/webhooks/intake`.
 6. **Resend is SSDI-domain only.** From `SSDI Campaigns <noreply@ssdicampaigns.com>`. Reply-To `Intake@abbycrm.com`. Verify **ssdicampaigns.com** in the SSDI Resend project (Domains → DNS SPF/DKIM → status Verified) before sending.
 7. **Vapi.** Public webhook: `POST https://ssdicampaigns.com/api/vapi/inbound` (aliases `/webhooks/vapi`). Assistant id `c0f5dd63-3c51-4eb6-9f62-8a6e2391c954`. Optional `VAPI_WEBHOOK_SECRET`. Same persist path as the site form.
-8. **Public phone / email.** Click-to-call is **+1 (561) 652-0362** (`VITE_PUBLIC_PHONE` / `INBOUND_PHONE_NUMBER` default `+15616520362`). Contact email is **Intake@abbycrm.com**.
+8. **Public phone / email.** Click-to-call is **+1 (561) 409-0180** (`VITE_PUBLIC_PHONE` / `INBOUND_PHONE_NUMBER` default `+15614090180`). Contact email is **Intake@abbycrm.com**.
 
 `GET /health` reports `crm`, `sheets`, `validator`, `portal`, `email`, `vapi` as `wired` / `unwired` (sheets reports `backup` when configured).
 

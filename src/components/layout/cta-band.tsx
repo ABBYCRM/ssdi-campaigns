@@ -1,9 +1,10 @@
 import { ContactCtas } from "@/components/layout/contact-ctas";
+import { contactPhonePhrase } from "@/lib/public-phone";
 import { SITE } from "@/lib/site";
 
 export function CtaBand({
   title = "Ready to check SSDI eligibility?",
-  lede = "Call +1 (561) 652-0362, start a screening, or email Intake@abbycrm.com. This is not SSA and not a promise of benefits.",
+  lede = `Call ${contactPhonePhrase()} or start a screening. This is not SSA and not a promise of benefits.`,
 }: {
   title?: string;
   lede?: string;

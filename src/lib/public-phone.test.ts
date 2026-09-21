@@ -12,10 +12,10 @@ import {
 describe("public inbound phone", () => {
   it("defaults to the provisioned SSDI Vapi number", () => {
     const phone = resolvePublicPhone({});
-    assert.equal(SSDI_INBOUND_E164, "+15616520362");
+    assert.equal(SSDI_INBOUND_E164, "+15614090180");
     assert.equal(phone.provisioned, true);
-    assert.equal(phone.tel, "+15616520362");
-    assert.equal(phone.display, "+1 (561) 652-0362");
+    assert.equal(phone.tel, "+15614090180");
+    assert.equal(phone.display, "+1 (561) 409-0180");
   });
 
   it("reads VITE_PUBLIC_PHONE first, then INBOUND_PHONE_NUMBER", () => {
@@ -48,7 +48,7 @@ describe("public inbound phone", () => {
     assert.equal(toTelHref("4155550199"), "+14155550199");
     assert.equal(toTelHref("+14155550199"), "+14155550199");
     assert.equal(formatUsDisplay("4155550199"), "+1 (415) 555-0199");
-    assert.equal(formatUsDisplay("+15616520362"), "+1 (561) 652-0362");
+    assert.equal(formatUsDisplay("+15614090180"), "+1 (561) 409-0180");
   });
 });
 

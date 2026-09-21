@@ -5,14 +5,14 @@ import { IntakeForm } from "@/components/forms/intake-form";
 import { PageHero } from "@/components/layout/page-hero";
 import { pageHead } from "@/lib/seo";
 import { SITE } from "@/lib/site";
-import { getPublicPhone } from "@/lib/public-phone";
+import { contactPhonePhrase, getPublicPhone } from "@/lib/public-phone";
 
 export const Route = createFileRoute("/contact")({
   head: () =>
     pageHead({
       title: "Free SSDI Consultation",
       description:
-        "Request a free SSDI eligibility screening. Call +1 (561) 652-0362 or email Intake@abbycrm.com. Independent campaign — not affiliated with SSA.",
+        `Request a free SSDI eligibility screening. Call ${contactPhonePhrase()}. Independent campaign — not affiliated with SSA.`,
       path: "/contact",
     }),
   component: ContactPage,

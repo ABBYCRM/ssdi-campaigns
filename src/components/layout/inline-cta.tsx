@@ -1,10 +1,11 @@
 import { ContactCtas } from "@/components/layout/contact-ctas";
+import { contactPhonePhrase } from "@/lib/public-phone";
 import { cn } from "@/lib/utils";
 
 /** Mid-article CTA strip — same visual language as heroes and the end band. */
 export function InlineCta({
   title = "Talk with a campaign specialist",
-  lede = "Call +1 (561) 652-0362, start a screening, or email Intake@abbycrm.com. Independent campaign — not SSA.",
+  lede = `Call ${contactPhonePhrase()} or start a screening. Independent campaign — not SSA.`,
   className,
 }: {
   title?: string;

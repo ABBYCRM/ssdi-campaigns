@@ -44,7 +44,7 @@ Site form and Vapi (`https://ssdicampaigns.com/api/vapi/inbound`) share this map
 | `source` | `ssdi_campaign_source` + `ssdi_source` |
 | `message` | `ssdi_message` (truncated, CRM-only) |
 | lead id | `ssdi_intake_id` |
-| — | `ssdi_inbound_phone` = `+15616520362` |
+| — | `ssdi_inbound_phone` = `+15614090180` |
 | validator | `ssdi_validator_status`, `ssdi_fraud_signal`, `ssdi_validator_id`, `ssdi_validator_reason`, `ssdi_lead_stage` |
 
 Properties live in the **SSDI Campaigns Intake** group (`ssdi_campaigns_intake`). They are created automatically on first successful write when the private app has schema scope.

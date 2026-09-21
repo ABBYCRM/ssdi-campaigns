@@ -1,10 +1,10 @@
 import * as React from "react";
 import { Link } from "@tanstack/react-router";
-import { Mail, Menu, Phone } from "lucide-react";
+import { Menu, Phone } from "lucide-react";
 import { Logo } from "@/components/brand/logo";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
-import { NAV, SITE } from "@/lib/site";
+import { NAV } from "@/lib/site";
 import { getPublicPhone } from "@/lib/public-phone";
 
 export function SiteHeader() {
@@ -45,13 +45,6 @@ export function SiteHeader() {
             <Button asChild variant="teal" size="sm" className="min-h-11 whitespace-nowrap px-4">
               <Link to="/contact">Start screening</Link>
             </Button>
-            <a
-              href={`mailto:${SITE.email}`}
-              className="hidden min-h-11 items-center gap-1.5 whitespace-nowrap text-sm font-bold text-navy xl:inline-flex"
-            >
-              <Mail className="size-4 text-teal" />
-              {SITE.email}
-            </a>
           </div>
 
           <Sheet open={open} onOpenChange={setOpen}>
@@ -98,13 +91,6 @@ export function SiteHeader() {
                     Start screening
                   </Link>
                 </Button>
-                <a
-                  href={`mailto:${SITE.email}`}
-                  className="inline-flex min-h-11 items-center justify-center gap-2 text-sm font-semibold text-navy"
-                >
-                  <Mail className="size-4 text-teal" />
-                  {SITE.email}
-                </a>
               </div>
             </SheetContent>
           </Sheet>

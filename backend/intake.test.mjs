@@ -237,7 +237,7 @@ describe("HubSpot primary persist", () => {
     assert.equal(body.properties.zip, "94110");
     assert.equal(body.properties.hs_lead_status, "NEW");
     assert.equal(body.properties.ssdi_lead_stage, "NEW");
-    assert.equal(body.properties.ssdi_inbound_phone, "+15616520362");
+    assert.equal(body.properties.ssdi_inbound_phone, "+15614090180");
     assert.ok(fetchFn.calls.some((c) => c.url.includes("/crm/v3/objects/notes")));
     const intakeNote = fetchFn.calls.find((c) => c.url.includes("/crm/v3/objects/notes"));
     assert.match(String(intakeNote.init.body), /Qualified Educational Screening Intake/);

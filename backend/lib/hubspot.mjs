@@ -1,4 +1,4 @@
-import { envTrim, ssdiOnlyValue } from "./brand.mjs";
+import { envTrim, ssdiOnlyValue, SSDI_INBOUND_E164 } from "./brand.mjs";
 
 const HUBSPOT_API = "https://api.hubapi.com";
 const HSFORMS_API = "https://api.hsforms.com";
@@ -175,7 +175,7 @@ export const HUBSPOT_CUSTOM_PROPERTIES = [
     label: "SSDI Inbound Phone",
     type: "string",
     fieldType: "text",
-    description: "Campaign inbound +15616520362.",
+    description: `Campaign inbound ${SSDI_INBOUND_E164}.`,
   }),
 ];
 
@@ -262,7 +262,7 @@ function customProperties(lead, extra = {}) {
     ssdi_sensitive_health_ack: lead.sensitiveHealth ? "true" : "false",
     ssdi_validator_status: extra.validatorStatus || stage,
     ssdi_lead_stage: stage,
-    ssdi_inbound_phone: "+15616520362",
+    ssdi_inbound_phone: SSDI_INBOUND_E164,
   };
   if (lead.disabilityType) props.ssdi_disability_type = lead.disabilityType;
   if (lead.state) props.ssdi_state = lead.state;
@@ -464,7 +464,7 @@ export function intakeNoteHtml(lead) {
       `ZIP: ${lead.zip || ""}`,
       `Disability type: ${lead.disabilityType || ""}`,
       `Source: ${lead.source || "ssdi-campaigns"}`,
-      "Inbound: +15616520362",
+      `Inbound: ${SSDI_INBOUND_E164}`,
     ]),
     formatWhatsAppSection("✅", "Consent", [
       "TCPA prior express written consent: YES",
